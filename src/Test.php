@@ -1,6 +1,6 @@
 <?php
 
-namespace kyy\laravel;
+namespace hoooo\io;
 
 class Test
 {
