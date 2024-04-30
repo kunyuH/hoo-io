@@ -6,5 +6,6 @@ class Test2
     {
         echo 'test';
         echo 'test1';
+        echo 'test2';
     }
 }
