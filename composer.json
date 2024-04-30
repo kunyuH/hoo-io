@@ -10,9 +10,10 @@
       "email": "1960049949@qq.com"
     }
   ],
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "kyy\\laravel\\": "src/"
+      "hoooo\\io\\": "src/"
     }
   },
   "require": {

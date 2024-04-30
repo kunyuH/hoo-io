@@ -1,5 +1,7 @@
 <?php
 
+namespace hoooo\io;
+
 class Test2
 {
     public function test()
