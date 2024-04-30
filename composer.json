@@ -13,7 +13,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "hoooo\\io\\": "src/"
+      "hoo\\io\\": "src/"
     }
   },
   "require": {
