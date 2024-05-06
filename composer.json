@@ -17,6 +17,15 @@
     }
   },
   "require": {
-      "php": "^7.2.5 || ^8.0"
+      "php": "^7.2.5 || ^8.0",
+      "laravel/framework": "^6.20.26",
+      "ext-json": "*"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "hoo\\io\\IoServiceProvider"
+      ]
+    }
   }
 }

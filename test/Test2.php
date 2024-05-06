@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io;
+namespace hoo\test;
 
 class Test2
 {
@@ -11,5 +11,7 @@ class Test2
         echo 'test2';
         echo 'test3';
         echo 'test4';
+        echo 'test5';
+        echo 'testwwwwwww';
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io;
+namespace hoo\test;
 
 class Test
 {
