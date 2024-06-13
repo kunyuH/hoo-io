@@ -115,9 +115,9 @@ where
     }
 }
 
-$name_or_id_crd_no = '杨宗荣';
-$area = '331083101220,331083101001';
-$hospital = '05424953,4728420442';
+$name_or_id_crd_no = '杨灿荣';
+$area = '331084101820,331069101001';
+$hospital = '05584953,4763280442';
 $register_start_time = '2024-04-10';
 $register_end_time = '2024-05-10';
 
