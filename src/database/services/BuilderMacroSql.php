@@ -3,6 +3,7 @@
 namespace hoo\io\database\services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 宏扩展
@@ -58,8 +59,31 @@ class BuilderMacroSql
      */
     public function get(): array
     {
+        $this->log();
+        $t1 = microtime(true);
         # 分页查询
-        return json_decode(json_encode(static::$query->connection->select($this->sql, $this->bindings)), true);
+        $data = json_decode(json_encode(static::$query->connection->select($this->sql, $this->bindings)), true);
+        $t2 = microtime(true);
+        $this->log($t2-$t1);
+        return $data;
+    }
+
+    /**
+     * 记录日志
+     * @return void
+     */
+    protected function log($runtime = 0)
+    {
+        if($runtime){
+            Log::channel('debug')->info("耗时：".$runtime."s");
+        }else{
+            # 记录日志
+            $sql = $this->sql;
+            foreach ($this->bindings as $key => $value) {
+                $sql = str_replace(':'.$key, "'".$value."'", $sql);
+            }
+            Log::channel('debug')->info($sql);
+        }
     }
 
     /**
@@ -77,7 +101,7 @@ class BuilderMacroSql
         # 每页显示条数
         $per_page =  $per_page ?: (int) request()->input('per_page', 15);
 
-        # 分页sql片段
+        # 分页sql片段【重新绑定】
         $sql = $this->sql . " limit ".($page-1)*$per_page.",".$per_page;
         $this->bindings($sql,$this->bindings);
 
@@ -97,7 +121,12 @@ class BuilderMacroSql
      */
     public function getCountForPagination(): int
     {
-        return self::$query->connection->affectingStatement($this->sql,$this->bindings);
+        $this->log();
+        $t1 = microtime(true);
+        $data = self::$query->connection->affectingStatement($this->sql,$this->bindings);
+        $t2 = microtime(true);
+        $this->log($t2-$t1);
+        return $data;
 //        return self::$query->connection->select("select count(1) as count from ({$this->sql}) as count_table",$this->bindings)[0]->count;
     }
 }

@@ -27,7 +27,7 @@ class BuilderMacroSqlTools
                 # 1. 将绑定参数的值 重新赋值给bindings
                 $bindings = array_merge($bindings,$bindings_arr);
                 # 2. 将绑定参数 sql片段 替换到sql内
-                $sql = str_replace($key,implode(',:',array_keys($bindings_arr)),$sql);
+                $sql = str_replace(':'.$key,':'.implode(',:',array_keys($bindings_arr)),$sql);
             }
         }
         return [$sql,$bindings];
