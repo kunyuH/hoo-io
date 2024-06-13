@@ -13,7 +13,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "hoo\\laravel-io\\": "src/"
+      "hoo\\io\\": "src/"
     }
   },
   "require": {

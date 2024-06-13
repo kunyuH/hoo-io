@@ -1,7 +1,7 @@
 <?php
 
 namespace hoo\io;
-use hoo\io\database\services\BuilderMacroSql;
+use io\database\services\BuilderMacroSql;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 

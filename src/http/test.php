@@ -1,7 +1,7 @@
 <?php
 
 
-use hoo\io\http\HttpInnerService;
+use io\http\HttpInnerService;
 
 class Test
 {

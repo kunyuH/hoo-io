@@ -67,7 +67,7 @@ where
      {$register_end_time_sql}
 ";
         /**
-         * @var hoo\io\database\services\BuilderMacroSql::getSqlQuery()
+         * @var hoo\laravel-io\database\services\BuilderMacroSql::getSqlQuery()
          */
         return DB::connection('mysql_adb')->query()
             ->getSqlQuery()
