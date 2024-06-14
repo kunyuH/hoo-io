@@ -5,9 +5,6 @@
 - 数据库
 - http
 
-### 版本要求
-> **Requires [PHP 7.4+](https://php.net/releases/)**
-
 ### 安装:
 ```bash
 composer require hoo/laravel-io
@@ -20,6 +17,7 @@ filesystems.php 增加配置:
     'driver' => 'daily',
     'path'   => storage_path('logs/io/laravel.log'),
     'level'  => 'debug',
+    'days'   => 30, # 保留30天 根据具体情况设置
 ],
 ```
 
