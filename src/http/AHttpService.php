@@ -113,7 +113,7 @@ abstract class AHttpService
 
     /**
      * 完全转发http请求
-     * @throws Exception
+     * @return $this
      */
     public function send(): AHttpService
     {
@@ -131,7 +131,7 @@ abstract class AHttpService
 
             $this->res_data = $this->outResProcessing($res);
 
-        } catch (GuzzleException|\Exception $e) {
+        } catch (GuzzleException|Exception $e) {
             $this->log($e->getMessage());
             $this->res_data = ['code' => 500, 'message' => $e->getMessage()];
         }
