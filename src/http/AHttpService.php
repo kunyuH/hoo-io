@@ -3,7 +3,7 @@
 namespace hoo\io\http;
 
 use Exception;
-use GuzzleHttp\Client;
+use Cloudladder\Http\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
