@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\View;
 class ClockworkMid
 {
     /**
-     * 对外提供的接口请求日志记录
+     * 请求中间件
+     * 设置clockwork监控插件可视化资源cdn
      * @param Request $request
      * @param Closure $next
      * @return mixed
