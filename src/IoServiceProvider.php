@@ -29,6 +29,9 @@ class IoServiceProvider extends ServiceProvider
             };
 
             $token = $get_token();
+            if($token !== env('CLOCKWORK_AUTH_TOKEN')) {
+                return false;
+            }
             Session::put('clockwork_auth_token', $token);
 
             /**
