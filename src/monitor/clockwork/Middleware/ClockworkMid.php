@@ -5,6 +5,7 @@ namespace hoo\io\monitor\clockwork\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Exception;
 
@@ -19,6 +20,12 @@ class ClockworkMid
      */
     public function handle(Request $request, Closure $next)
     {
+
+        Log::log('info',
+            json_encode($request->input(), JSON_PRETTY_PRINT),
+            ['title'=>'AuthLogin.php 请求参数展示']
+        );
+
         if($request->path() == 'clockwork/app') {
 
             # 判断是否有权限

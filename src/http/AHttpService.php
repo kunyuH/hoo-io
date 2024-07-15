@@ -154,6 +154,11 @@ abstract class AHttpService
      */
     protected function log($res)
     {
+        # 如果是json格式则格式化 保留中文和斜杠展示
+        if($this->isJson($res)){
+            $res = json_decode($res, true);
+            $res = json_encode($res, JSON_UNESCAPED_UNICODE);
+        }
         # 记录日志 格式化记录数组
         Log::channel('debug')->info([
             'url' => $this->url,
@@ -175,11 +180,25 @@ abstract class AHttpService
     protected function outResProcessing($res)
     {
         // 判断返回字符串是否是json格式
-        if (is_null($data = json_decode($res, true))) {
+        if (!$this->isJson($res)) {
             throw new Exception($res);
         }
 
-        return $data;
+        return json_decode($res, true);
+    }
+
+    /**
+     * 判断返回字符串是否是json格式
+     * @param $res
+     * @return bool
+     */
+    protected function isJson($res): bool
+    {
+        // 判断返回字符串是否是json格式
+        if (is_null(json_decode($res, true))) {
+            return false;
+        }
+        return true;
     }
 }
 
