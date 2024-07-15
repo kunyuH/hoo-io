@@ -20,11 +20,13 @@ class ClockworkMid
      */
     public function handle(Request $request, Closure $next)
     {
-
-        Log::log('info',
-            json_encode($request->input(), JSON_PRETTY_PRINT),
-            ['title'=>'AuthLogin.php 请求参数展示']
-        );
+        # 不包含
+        if (strpos($request->path(), 'clockwork') === false) {
+            Log::channel('debug')->info(
+                json_encode($request->input() ?? [], JSON_PRETTY_PRINT),
+                ['title' => 'AuthLogin.php 请求参数展示']
+            );
+        }
 
         if($request->path() == 'clockwork/app') {
 
