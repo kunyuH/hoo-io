@@ -21,14 +21,16 @@ filesystems.php 增加配置:
 ],
 ```
 
-### http客户端调用
+### http客户端调用(与GuzzleHttp用法一致；增加了请求日志记录)
 ```php
-$service = config('http_service.inner_service');
-$api = '/api/test';
-$res = (new HttpInnerService($service))
-    ->setReq($api,'GET')
-    ->send()
-    ->get();
+$uri = config('http_service.inner_service') . '/api/test';
+$res = (new HHttp())->post(
+    uri: $uri,
+    options: [
+        'form_params' => $requestData
+    ]
+);
+$data = $res->getBody()->getContents()
 ```
 
 ### CLOCKWORK监控模块
