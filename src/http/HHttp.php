@@ -22,14 +22,19 @@ class HHttp extends Client
      */
     public function request($method, $uri = '', array $options = []): ResponseInterface
     {
+        $before_time = microtime(true);
+
         $response = parent::request($method, $uri, $options);
+
+        $after_time = microtime(true);
         try {
             // 记录请求日志
             $this->log(
-                $method,$uri,$options,
+                $before_time, $after_time,
+                $method, $uri, $options,
                 $response->getBody()->getContents()
             );
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
         }
         // 重置响应主体流
         $response->getBody()->rewind();
@@ -44,15 +49,16 @@ class HHttp extends Client
      * @param $res
      * @return void
      */
-    protected function log($method,$uri,$options,$res)
+    protected function log($before_time, $after_time, $method, $uri, $options, $res)
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
-        if($this->isJson($res)){
+        if ($this->isJson($res)) {
             $res = json_decode($res, true);
             $res = json_encode($res, JSON_UNESCAPED_UNICODE);
         }
         # 记录日志 格式化记录数组
-        Log::channel('debug')->log('info',"【H-HTTP】",[
+        Log::channel('debug')->log('info', "【H-HTTP】", [
+            '耗时' => round($after_time - $before_time, 3)*1000 . 'ms',
             'url' => $uri,
             'method' => $method,
             'options' => $options,
@@ -75,5 +81,3 @@ class HHttp extends Client
         return true;
     }
 }
-
-

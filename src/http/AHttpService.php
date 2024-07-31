@@ -117,7 +117,10 @@ abstract class AHttpService
      */
     public function send(): AHttpService
     {
+
+        $before_time = microtime(true);
         try {
+
             $client = new Client();
             $response = $client->request($this->method, $this->url, [
                 'headers' => $this->headers,
@@ -127,12 +130,12 @@ abstract class AHttpService
             $res = $response->getBody()->getContents();
 
             # 记录日志
-            $this->log($res);
+            $this->log($res,$before_time);
 
             $this->res_data = $this->outResProcessing($res);
 
         } catch (GuzzleException|Exception $e) {
-            $this->log($e->getMessage());
+            $this->log($e->getMessage(),$before_time);
             $this->res_data = ['code' => 500, 'message' => $e->getMessage()];
         }
         return $this;
@@ -152,22 +155,24 @@ abstract class AHttpService
      * @param $res
      * @return void
      */
-    protected function log($res)
+    protected function log($res, $before_time)
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
         if($this->isJson($res)){
             $res = json_decode($res, true);
             $res = json_encode($res, JSON_UNESCAPED_UNICODE);
         }
+        $after_time = microtime(true);
         # 记录日志 格式化记录数组
-        Log::channel('debug')->info([
+        Log::channel('debug')->info(json_encode([
+            '耗时' => round($after_time - $before_time, 3)*1000 . 'ms',
             'url' => $this->url,
             'method' => $this->method,
             'headers' => $this->headers,
-            'query' => $this->params,
-            'data' => $this->data,
+            'query' => json_encode($this->params, JSON_UNESCAPED_UNICODE),
+            'data' => json_encode($this->data, JSON_UNESCAPED_UNICODE),
             'response' => $res
-        ]);
+        ], JSON_UNESCAPED_UNICODE));
     }
 
 
