@@ -71,12 +71,10 @@ class HHttp extends Client
         if(isset($options['json'])) {
             $json_show['json'] = json_encode($options['json'], JSON_UNESCAPED_UNICODE);
         }
-        if(isset($options['response'])) {
-            $json_show['response'] = json_encode($options['response'], JSON_UNESCAPED_UNICODE);
-        }
+        $json_show['response'] = $res_json;
 
 
-        # 记录日志 格式化记录数组
+            # 记录日志 格式化记录数组
         Log::channel('debug')->log('info', "【H-HTTP】", [
             '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
             'url' => $uri,
