@@ -52,17 +52,38 @@ class HHttp extends Client
     protected function log($before_time, $after_time, $method, $uri, $options, $res)
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
+        $res_json = '';
         if ($this->isJson($res)) {
             $res = json_decode($res, true);
-            $res = json_encode($res, JSON_UNESCAPED_UNICODE);
+            $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
         }
+
+        $json_show['options'] = json_encode($options, JSON_UNESCAPED_UNICODE);
+        if(isset($options['headers'])) {
+            $json_show['headers'] = json_encode($options['headers'], JSON_UNESCAPED_UNICODE);
+        }
+        if(isset($options['query'])) {
+            $json_show['query'] = json_encode($options['query'], JSON_UNESCAPED_UNICODE);
+        }
+        if(isset($options['data'])) {
+            $json_show['data'] = json_encode($options['data'], JSON_UNESCAPED_UNICODE);
+        }
+        if(isset($options['json'])) {
+            $json_show['json'] = json_encode($options['json'], JSON_UNESCAPED_UNICODE);
+        }
+        if(isset($options['response'])) {
+            $json_show['response'] = json_encode($options['response'], JSON_UNESCAPED_UNICODE);
+        }
+
+
         # 记录日志 格式化记录数组
         Log::channel('debug')->log('info', "【H-HTTP】", [
-            '耗时' => round($after_time - $before_time, 3)*1000 . 'ms',
+            '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
             'url' => $uri,
             'method' => $method,
             'options' => $options,
-            'response' => $res
+            'response' => $res,
+            '参数json展示' => $json_show
         ]);
 
     }
