@@ -58,7 +58,6 @@ class HHttp extends Client
             $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
         }
 
-        $json_show['options'] = json_encode($options, JSON_UNESCAPED_UNICODE);
         if(isset($options['headers'])) {
             $json_show['headers'] = json_encode($options['headers'], JSON_UNESCAPED_UNICODE);
         }
@@ -81,7 +80,7 @@ class HHttp extends Client
             'method' => $method,
             'options' => $options,
             'response' => $res,
-            '参数json展示' => $json_show
+            '入参出参json展示' => $json_show
         ]);
 
     }

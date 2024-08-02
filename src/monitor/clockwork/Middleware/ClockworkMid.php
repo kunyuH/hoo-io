@@ -22,13 +22,10 @@ class ClockworkMid
     {
         # 不包含
         if (strpos($request->path(), 'clockwork') === false) {
-            Log::channel('debug')->info(
-                json_encode($request->input() ?? [], JSON_PRETTY_PRINT),
-                [
-                    'title' => 'AuthLogin.php 请求参数展示',
-                    'json'=> json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE)
-                ]
-            );
+            Log::channel('debug')->log('info', "请求参数展示", [
+                '格式化展示'=>$request->input() ?? [],
+                'json展示'=>json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE),
+            ]);
         }
 
         if($request->path() == 'clockwork/app') {
