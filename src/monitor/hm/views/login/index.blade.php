@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control">
+                    <input type="password" name="password" class="form-control" id="password">
                 </div>
                 <a href="javascript:"
                    data-from_id="hoo-login"
@@ -44,8 +44,22 @@
 <script src="/hm-r/js/overall.js"></script>
 
 <script>
-    //Demo
-    // console.log($('#hoo-login')).ajaxSubmit();
+    // 获取输入框元素
+    var password = document.getElementById('password');
+
+    // 为输入框添加事件监听器
+    password.addEventListener('keydown', function(event) {
+        // 检查按下的键是否是Enter键
+        if (event.key === 'Enter') {
+            // 调用处理函数
+            handleEnterPress();
+        }
+    });
+
+    // 定义处理Enter按下时的函数
+    function handleEnterPress() {
+        $(".formSubmit").click();
+    }
 </script>
 </body>
 </html>
