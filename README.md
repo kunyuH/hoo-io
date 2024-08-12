@@ -57,8 +57,16 @@ CLOCKWORK_AUTHENTICATION_PASSWORD=
     // 具体时间配置见env配置步骤中的CLOCKWORK_STORAGE_EXPIRATION项 默认7天
     $schedule->command(ClockworkCleanCommand::class)->hourly();
 ```
+
+### HM监控模块
+
+- env配置
+```bash
+#--------------------hoo_hm--------------------------
+HOO_NAME=
+HOO_PASSWORD=
+#-------------------------------------------------------
+```
+
 - 注意
-- 如果开启鉴权插件-则需要在用户中心将url加入
-- /clockwork/app
-- /__clockwork/latest
-- /__clockwork/auth
+- 如果开启鉴权插件-则需处理网关阻挡问题
