@@ -1,13 +1,13 @@
 <?php
-
+    $cdn = 'https://js.tuguaishou.com/other/hm';
 ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>hoo-hm</title>
-    <link href="/hm-r/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
-    <link href="/hm-r/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="{{$cdn}}/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet" >
 </head>
 <body>
 <div class="container-fluid" style="margin-top: 15px">
@@ -79,13 +79,13 @@
                                       data-href="/hm/logout"
             >退出</a></li>
     </ul>
-    <script src="/hm-r/js/jquery.min.js"></script>
+    <script src="{{$cdn}}/js/jquery.min.js"></script>
     <?php echo $content ?>
 </div>
-<script src="/hm-r/js/bootstrap.bundle.min.js"></script>
+<script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
 
-<script src="/hm-r/layui-v2.6.8/layui/layui.js"></script>
-<script src="/hm-r/js/overall.js"></script>
+<script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
+<script src="{{$cdn}}/js/overall.js"></script>
 
 <script>
     /**
