@@ -1,7 +1,7 @@
 <?php
-    $cdn = 'https://js.tuguaishou.com/other/hm';
+$cdn = 'https://js.tuguaishou.com/other/hm';
 ?>
-<!doctype html>
+        <!doctype html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,8 +13,6 @@
 <div class="container-fluid" style="margin-top: 15px">
     <ul class="layui-nav">
         <li class="layui-nav-item"><a href="/hm/index">首页</a></li>
-        <li class="layui-nav-item"><a target="_blank" href="/clockwork/app">clockwork</a></li>
-        <li class="layui-nav-item"><a target="_blank" href="/log-viewer">log-viewer</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
@@ -29,8 +27,6 @@
                                       class="ky-modal"
                                       data-href="/log-viewer"
             >log-viewer</a></li>
-        <li class="layui-nav-item"><a href="/zentao-v2/build/list">版本管理</a></li>
-        <li class="layui-nav-item"><a href="/zentao-v2/build/pipeline">流水线</a></li>
         <li class="layui-nav-item">
             <a href="javascript:"
                data-title="测试"
@@ -41,34 +37,10 @@
             >测试</a>
         </li>
         <li class="layui-nav-item">
-            <a href="javascript:">甘特图排期</a>
-            <dl class="layui-nav-child">
-                <dd><a href="javascript:"
-                       data-type="get"
-                       data-confirm-ky="确认要全量同步吗？"
-                       class="ky-req"
-                       data-href="/zentao-v2/build/synchronous"
-                    >全量同步</a></dd>
-                <dd><a href="javascript:"
-                       data-type="get"
-                       data-confirm-ky="确认要差异同步吗？"
-                       class="ky-req"
-                       data-href="/zentao-v2/build/diff-synchronous"
-                    >差异同步</a></dd>
-                <dd><a target="_blank" href="https://nvboeslwvm.feishu.cn/docx/TQY4ddyydoX3sHxDiiUcuH10n8f">查看甘特图排期</a></dd>
-            </dl>
-        </li>
-        <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
-                <dd><a href="/zentao-v2/build/check">版本核对</a></dd>
-                <dd><a href="/zentao-v2/build/daily">日报</a></dd>
-                <dd><a href="/zentao-v2/build/check_story">需求核对</a></dd>
-                <dd><a href="/zentao-v2/build/f_group">组明细</a></dd>
-                <dd><a href="/zentao-v2/build/member">组统计</a></dd>
-                <dd><a target="_blank" href="https://zentao-v2.group-ds.com/index.php?m=project&f=browse&projectID=4&status=all">禅道【玉环】</a></dd>
-                <dd><a target="_blank" href="https://zentao-v2.group-ds.com/index.php?m=execution&f=task&executionID=194#app=project">禅道【后端技术部】</a></dd>
-                <dd><a target="_blank" href="https://demo.group-ds.com/gp-cd-tool/#/regional-version">禅道中台</a></dd>
+                <dd><a target="_blank" href="/clockwork/app">clockwork</a></dd>
+                <dd><a target="_blank" href="/log-viewer">log-viewer</a></dd>
             </dl>
         </li>
 
