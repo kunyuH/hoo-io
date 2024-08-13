@@ -14,14 +14,17 @@
   "autoload": {
     "psr-4": {
       "hoo\\io\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "require": {
-      "php": "^7.2.5 || ^8.0",
-      "laravel/framework": "*",
-      "guzzlehttp/guzzle": "^7.4",
-      "ext-json": "*",
-      "cloudladder/http": "^1.2"
+    "php": "^7.2.5 || ^8.0",
+    "laravel/framework": "*",
+    "guzzlehttp/guzzle": "^7.4",
+    "ext-json": "*",
+    "cloudladder/http": "^1.2"
   },
   "extra": {
     "laravel": {

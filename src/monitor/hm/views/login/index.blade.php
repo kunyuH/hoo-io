@@ -1,5 +1,6 @@
 <?php
     $cdn = 'https://js.tuguaishou.com/other/hm';
+    $login_api = jump_link('/hm/login')
 ?>
 <!doctype html>
 <html lang="en">
@@ -34,7 +35,7 @@
                 <a href="javascript:"
                    data-from_id="hoo-login"
                    class="btn btn-primary formSubmit"
-                   data-href="/hm/login"
+                   data-href={{$login_api}}}
                 >Submit</a>
             </form>
         </div>

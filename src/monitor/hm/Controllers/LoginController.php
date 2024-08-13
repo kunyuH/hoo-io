@@ -46,7 +46,7 @@ class LoginController extends BaseController
 
         return $this->resSuccess([
             'type'=>11,
-            'redirect_uri'=>'/hm/index',
+            'redirect_uri'=>jump_link('/hm/index'),
         ]);
     }
 

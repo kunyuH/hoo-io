@@ -28,25 +28,25 @@ class HooMid
         }
 
         # 不包含
-        if (!$this->fnmatchs('clockwork/*',$reqPath) and
-            !$this->fnmatchs('__clockwork/*',$reqPath) and
-            !$this->fnmatchs('log-viewer/*',$reqPath)
+        if (!$this->fnmatchs('clockwork/*', $reqPath) and
+            !$this->fnmatchs('__clockwork/*', $reqPath) and
+            !$this->fnmatchs('log-viewer/*', $reqPath)
         ) {
             Log::channel('debug')->log('info', "请求参数展示", [
-                '格式化展示'=>$request->input() ?? [],
-                'json展示'=>json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE),
+                '格式化展示' => $request->input() ?? [],
+                'json展示' => json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE),
             ]);
         }
 
         # clockwork
-        if($this->fnmatchs('clockwork/*',$reqPath) || $this->fnmatchs('__clockwork/*',$reqPath)) {
+        if ($this->fnmatchs('clockwork/*', $reqPath) || $this->fnmatchs('__clockwork/*', $reqPath)) {
             # 判断是否有权限
-            if (!Gate::allows('hooAuth')){
+            if (!Gate::allows('hooAuth')) {
                 header('HTTP/1.1 500 Server Error');
                 exit();
             }
-            if($this->fnmatchs('clockwork/app',$reqPath)){
-                echo View::file(__DIR__ . '/../../monitor/clockwork/views/index.blade.php',[
+            if ($this->fnmatchs('clockwork/app', $reqPath)) {
+                echo View::file(__DIR__ . '/../../monitor/clockwork/views/index.blade.php', [
                     'cdn' => 'https://js.tuguaishou.com/other/clockwork/',
                 ])->render();
                 exit();
@@ -54,9 +54,9 @@ class HooMid
         }
 
         # log-viewer
-        if($this->fnmatchs('log-viewer/*',$reqPath)) {
+        if ($this->fnmatchs('log-viewer/*', $reqPath)) {
             # 判断是否有权限
-            if (!Gate::allows('hooAuth')){
+            if (!Gate::allows('hooAuth')) {
                 header('HTTP/1.1 500 Server Error');
                 exit();
             }
@@ -64,13 +64,13 @@ class HooMid
         return $next($request);
     }
 
-    private function fnmatchs($pattern,$filename)
+    private function fnmatchs($pattern, $filename)
     {
-        if(is_string($filename)){
-            return fnmatch($pattern,$filename);
-        }elseif(is_array($filename)){
-            foreach ($filename as $v){
-                if(fnmatch($pattern,$v)){
+        if (is_string($filename)) {
+            return fnmatch($pattern, $filename);
+        } elseif (is_array($filename)) {
+            foreach ($filename as $v) {
+                if (fnmatch($pattern, $v)) {
                     return true;
                 }
             }
