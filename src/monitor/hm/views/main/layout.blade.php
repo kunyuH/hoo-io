@@ -12,20 +12,20 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
 <body>
 <div class="container-fluid" style="margin-top: 15px">
     <ul class="layui-nav">
-        <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
+        <li class="layui-nav-item"><a href="/hm/index">首页</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
                                       data-height="600px"
                                       class="ky-modal"
-                                      data-href={{jump_link("/clockwork/app")}}
+                                      data-href={{$service_prefix."/clockwork/app"}}
             >clockwork</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
                                       data-height="600px"
                                       class="ky-modal"
-                                      data-href="/log-viewer"
+                                      data-href={{$service_prefix."/log-viewer"}}
             >log-viewer</a></li>
         <li class="layui-nav-item">
             <a href="javascript:"
@@ -39,8 +39,8 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
         <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
-                <dd><a target="_blank" href="/clockwork/app">clockwork</a></dd>
-                <dd><a target="_blank" href="/log-viewer">log-viewer</a></dd>
+                <dd><a target="_blank" href={{$service_prefix."/clockwork/app"}}>clockwork</a></dd>
+                <dd><a target="_blank" href={{$service_prefix."/log-viewer"}}>log-viewer</a></dd>
             </dl>
         </li>
 
@@ -48,7 +48,7 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
                                       data-type="post"
                                       data-confirm-ky="确认要退出吗？"
                                       class="ky-req"
-                                      data-href="/hm/logout"
+                                      data-href={{$service_prefix."/hm/logout"}}
             >退出</a></li>
     </ul>
     <script src="{{$cdn}}/js/jquery.min.js"></script>

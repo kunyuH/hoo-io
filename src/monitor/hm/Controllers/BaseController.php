@@ -14,6 +14,15 @@ class BaseController extends Controller
 {
     public $layout = "main.layout";
 
+    public $service_prefix = '';
+
+    public function __construct()
+    {
+        if(!empty(env('SERVICE_NAME'))){
+            $this->service_prefix = "/".env('SERVICE_NAME');
+        }
+    }
+
     public function view($view,$data=[])
     {
         # 字符串替换
@@ -25,7 +34,10 @@ class BaseController extends Controller
     public function v($view,$data=[])
     {
         return $this->view($this->layout,[
-            'content' => $this->view($view,$data)
+            'service_prefix'=>$this->service_prefix,
+            'content' => $this->view($view,array_merge($data,[
+                'service_prefix'=>$this->service_prefix,
+            ]))
         ]);
     }
 
