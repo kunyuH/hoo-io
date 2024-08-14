@@ -12,7 +12,7 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
 <body>
 <div class="container-fluid" style="margin-top: 15px">
     <ul class="layui-nav">
-        <li class="layui-nav-item"><a href="/hm/index">首页</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
