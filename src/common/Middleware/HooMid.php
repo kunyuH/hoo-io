@@ -5,6 +5,7 @@ namespace hoo\io\common\Middleware;
 use Closure;
 use hoo\io\common\Support\Facade\HooSession;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
@@ -64,7 +65,19 @@ class HooMid
                 exit();
             }
         }
-        return $next($request);
+
+        $Response = $next($request);
+        # 添加getData方法 兼容【日志中心修改过的Clockwork】
+        if ($Response instanceof Response){
+            $Response->macro('getData',function(){
+                $object = new \stdClass();
+                $object->message = 'ok';
+                $object->data = [];
+                $object->code = 200;
+            });
+        }
+
+        return $Response;
     }
 
     private function fnmatchs($pattern,$filename)
