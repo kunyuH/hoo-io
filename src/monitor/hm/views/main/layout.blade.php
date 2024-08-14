@@ -18,14 +18,14 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
                                       data-width="1200px"
                                       data-height="600px"
                                       class="ky-modal"
-                                      data-href={{$service_prefix."/clockwork/app"}}
+                                      data-href={{jump_link("/clockwork/app")}}
             >clockwork</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
                                       data-height="600px"
                                       class="ky-modal"
-                                      data-href={{$service_prefix."/log-viewer"}}
+                                      data-href={{jump_link("/log-viewer")}}
             >log-viewer</a></li>
         <li class="layui-nav-item">
             <a href="javascript:"
@@ -39,8 +39,8 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
         <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
-                <dd><a target="_blank" href={{$service_prefix."/clockwork/app"}}>clockwork</a></dd>
-                <dd><a target="_blank" href={{$service_prefix."/log-viewer"}}>log-viewer</a></dd>
+                <dd><a target="_blank" href={{jump_link("/clockwork/app")}}>clockwork</a></dd>
+                <dd><a target="_blank" href={{jump_link("/log-viewer")}}>log-viewer</a></dd>
             </dl>
         </li>
 
@@ -48,7 +48,7 @@ $cdn = 'https://js.tuguaishou.com/other/hm';
                                       data-type="post"
                                       data-confirm-ky="确认要退出吗？"
                                       class="ky-req"
-                                      data-href={{$service_prefix."/hm/logout"}}
+                                      data-href={{jump_link("/hm/logout")}}
             >退出</a></li>
     </ul>
     <script src="{{$cdn}}/js/jquery.min.js"></script>

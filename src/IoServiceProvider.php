@@ -23,6 +23,10 @@ class IoServiceProvider extends ServiceProvider
          * 定义权限 是否登录
          */
         Gate::define('hooAuth', function ($user = null) {
+            # true 设置不开启 默认开启
+            if(empty(env('HOO_ENABLE',true))){
+                return false;
+            }
             if(!HooSession::get(SessionEnum::USER_INFO_KEY)){
                 return false;
             }

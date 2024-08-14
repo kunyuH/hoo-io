@@ -34,7 +34,7 @@
                 <a href="javascript:"
                    data-from_id="hoo-login"
                    class="btn btn-primary formSubmit"
-                   data-href={{$service_prefix."/hm/login"}}
+                   data-href={{jump_link("/hm/login")}}
                 >Submit</a>
             </form>
         </div>

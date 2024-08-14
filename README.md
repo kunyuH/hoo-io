@@ -62,8 +62,13 @@ CLOCKWORK_AUTHENTICATION_PASSWORD=
 - env配置
 ```bash
 #--------------------hoo_hm--------------------------
+HOO_ENABLE=true
+# 登录账号
 HOO_NAME=
+# 登录密码
 HOO_PASSWORD=
+# 服务前缀
+SERVICE_NAME=
 #-------------------------------------------------------
 ```
 

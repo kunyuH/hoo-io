@@ -22,9 +22,13 @@ class HooMid
     {
         # 获取当前路由
         $reqPath = $request->path();
-        # 没有斜杠 则增加一个
-        if (substr($reqPath, -1) != '/') {
-            $reqPath .= '/';
+        # 如果第一位是斜杠则去掉
+        if (substr($reqPath, 0, 1) == '/') {
+            $reqPath = substr($reqPath, 1);
+        }
+        # 判断是否包含斜杠 如果不包含则末尾增加斜杠
+        if (strpos($reqPath, '/') === false) {
+            $reqPath = $reqPath . '/';
         }
 
         # 不包含
@@ -45,10 +49,9 @@ class HooMid
                 header('HTTP/1.1 500 Server Error');
                 exit();
             }
+
             if($this->fnmatchs('clockwork/app',$reqPath)){
-                echo View::file(__DIR__ . '/../../monitor/clockwork/views/index.blade.php',[
-                    'cdn' => 'https://js.tuguaishou.com/other/clockwork/',
-                ])->render();
+                echo View::file(__DIR__ . '/../../monitor/clockwork/views/index.blade.php')->render();
                 exit();
             }
         }
