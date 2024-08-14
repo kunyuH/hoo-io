@@ -23,7 +23,7 @@ class HmAuth
         # 判断是否有权限 true 没有权限
         if (!Gate::allows('hooAuth')){
             # 重定向跳转
-            header("Location: /hm/login/index");
+            header("Location: ".jump_link("/hm/login/index"));
             exit();
         }
         return $next($request);
