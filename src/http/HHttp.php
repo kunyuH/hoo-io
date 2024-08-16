@@ -24,7 +24,13 @@ class HHttp extends Client
     {
         $before_time = microtime(true);
 
-        $response = parent::request($method, $uri, $options);
+        try{
+            $response = parent::request($method, $uri, $options);
+            // 重置响应主体流
+            $response->getBody()->rewind();
+        }catch (\Exception $e){
+            $response = $e->getResponse();
+        }
 
         $after_time = microtime(true);
         try {
@@ -36,8 +42,7 @@ class HHttp extends Client
             );
         } catch (\Exception $e) {
         }
-        // 重置响应主体流
-        $response->getBody()->rewind();
+
         return $response;
     }
 
@@ -73,7 +78,7 @@ class HHttp extends Client
         $json_show['response'] = $res_json;
 
 
-            # 记录日志 格式化记录数组
+        # 记录日志 格式化记录数组
         Log::channel('debug')->log('info', "【H-HTTP】", [
             '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
             'url' => $uri,
