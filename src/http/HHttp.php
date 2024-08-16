@@ -26,8 +26,6 @@ class HHttp extends Client
 
         try{
             $response = parent::request($method, $uri, $options);
-            // 重置响应主体流
-            $response->getBody()->rewind();
         }catch (\Exception $e){
             $response = $e->getResponse();
         }
@@ -42,7 +40,8 @@ class HHttp extends Client
             );
         } catch (\Exception $e) {
         }
-
+        // 重置响应主体流
+        $response->getBody()->rewind();
         return $response;
     }
 
