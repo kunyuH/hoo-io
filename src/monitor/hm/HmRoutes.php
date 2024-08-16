@@ -22,6 +22,7 @@ class HmRoutes
             Route::middleware('hoo.auth')->group(function (){
 
                 Route::get('index',[IndexController::class,'index']);
+                Route::post('send-command',[IndexController::class,'sendCommand']);
             });
         });
 

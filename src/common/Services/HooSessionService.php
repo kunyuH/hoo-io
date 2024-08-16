@@ -22,7 +22,7 @@ class HooSessionService
             $name = 'x-hoo-session-id';
             $session_id = Session::getId();
             $expires = time() + 60 * 60 * 24 * 30;
-            setcookie($name, $session_id, $expires,'/');
+            setcookie($name, $session_id, $expires,'/'.env('SERVICE_NAME'));
         }
         $this->id = $session_id;
     }

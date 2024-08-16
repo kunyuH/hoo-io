@@ -36,7 +36,7 @@ class LoginController extends BaseController
         $password = $request->input('password');
 
         # 验证账密
-        if($name != env('HOO_NAME') || $password != env('HOO_PASSWORD')){
+        if($name != env('HOO_NAME','gupo') || $password != env('HOO_PASSWORD','Symantec@123')){
             return $this->resError([],'用户名或密码错误!');
         }
 
