@@ -2,7 +2,7 @@
 
 namespace hoo\io\common\Enums;
 
-enum SessionEnum
+final class SessionEnum
 {
     /**
      * Session key for user info
