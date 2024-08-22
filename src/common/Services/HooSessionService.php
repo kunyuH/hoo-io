@@ -1,15 +1,15 @@
 <?php
 namespace hoo\io\common\Services;
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use \Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Facade;
 
 class HooSessionService
 {
     public $id;
+
+    public $cache_key_prefix = 'hoo-session-';
 
     # 生命周期
     public $expires = 60 * 60 * 24 * 1; // 1天
@@ -38,23 +38,28 @@ class HooSessionService
 
     public function get($key)
     {
-        return Cache::get($this->id)[$key]??null;
+        return Cache::get($this->getCacheKey())[$key]??null;
     }
 
     public function put($key, $value)
     {
-        return Cache::put($this->id, array_merge(Cache::get($this->id)??[], [$key => $value]), $this->expires);
+        return Cache::put($this->getCacheKey(), array_merge(Cache::get($this->getCacheKey())??[], [$key => $value]), $this->expires);
     }
 
     public function all()
     {
-        return Cache::get($this->id);
+        return Cache::get($this->getCacheKey());
     }
 
     public function remove($key)
     {
-        $data = Cache::get($this->id);
+        $data = Cache::get($this->getCacheKey());
         unset($data[$key]);
-        return Cache::put($this->id, $data, $this->expires);
+        return Cache::put($this->getCacheKey(), $data, $this->expires);
+    }
+    
+    private function getCacheKey()
+    {
+        return $this->cache_key_prefix.$this->id;
     }
 }

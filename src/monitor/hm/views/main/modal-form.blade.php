@@ -1,5 +1,7 @@
 <?php
-    $cdn = get_cdn();
+
+$cdn = get_cdn();
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -7,34 +9,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>hoo-login</title>
     <link href="{{$cdn}}/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
-    <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <script src="{{$cdn}}/js/jquery.min.js"></script>
 <script src="{{$cdn}}/js/jquery.form.min.js"></script>
 <div class="container">
-    <br>
-    <br>
     <div class="row">
         <div class="col-12">
-            <h1>hoo-login</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <form style="max-width: 400px" id="hoo-login">
+            <form id="hoo-modal-form">
                 <div class="form-group">
-                    <label for="name">name</label>
-                    <input type="text" name="name" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control" id="password">
+                    <br>
+                    <br>
+                    <textarea name="value" class="form-control" id="hoo-modal-form-value"></textarea>
                 </div>
                 <a href="javascript:"
-                   data-from_id="hoo-login"
+                   data-from_id="hoo-modal-form"
                    class="btn btn-primary formSubmit"
-                   data-href={{jump_link("/hm/login")}}
+                   data-href={{jump_link($submitTo)}}
                 >Submit</a>
             </form>
         </div>
@@ -47,10 +39,10 @@
 
 <script>
     // 获取输入框元素
-    var password = document.getElementById('password');
+    var value = document.getElementById('hoo-modal-form-value');
 
     // 为输入框添加事件监听器
-    password.addEventListener('keydown', function(event) {
+    value.addEventListener('keydown', function (event) {
         // 检查按下的键是否是Enter键
         if (event.key === 'Enter') {
             // 调用处理函数

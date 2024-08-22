@@ -1,5 +1,5 @@
 <?php
-$cdn = 'https://js.tuguaishou.com/other/hm';
+$cdn = get_cdn();
 ?>
         <!doctype html>
 <html lang="en">

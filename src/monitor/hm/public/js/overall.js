@@ -109,7 +109,7 @@ function kyReq(type,href,params) {
                         }else if(e.data.type == 2){ //关闭弹窗刷新
                             parent.layer.close(parent.layer.getFrameIndex(window.name));
                             window.parent.location.reload();
-                        }else if(e.data.type == 7){ //关闭弹窗不刷新
+                        }else if(e.data.type == 7 || e.data.type == 5){ //关闭弹窗不刷新
                             layer.closeAll();
                         }else if(e.data.type == 4){ //刷新
                             history.go(-1);
@@ -130,7 +130,7 @@ function kyReq(type,href,params) {
                         }else if(e.data.type == 3){ //modal后 关闭弹窗不刷新
                             layer.load(1);
                             parent.layer.close(parent.layer.getFrameIndex(window.name));
-                        }else if(e.data.type == 7){ //关闭弹窗不刷新
+                        }else if(e.data.type == 7 || e.data.type == 5){ //关闭弹窗不刷新
                             layer.closeAll();
                         }else if(e.data.type == 4){ //刷新
                             layer.load(1);
@@ -248,8 +248,6 @@ function formSubmit(from_id,url='',_this) {
         dataType: 'json' ,
         success: function (result) {
             layer.closeAll('loading'); //关闭loading
-            console.log(result.code)
-            console.log(result.type)
             if(result.code == 200){
                 if(result.data.type == 3){   //保存并弹出新的窗口
                     var EditRule = result.data.redirect_uri;

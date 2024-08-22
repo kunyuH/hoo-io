@@ -1,16 +1,17 @@
 <?php
 
 namespace hoo\io;
+use hoo\io\common\Command\runCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
 use hoo\io\common\Middleware\HooMid;
-use hoo\io\monitor\hm\HmRoutes;
+use hoo\io\monitor\hm\Controllers\IndexController;
+use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -19,6 +20,43 @@ class IoServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        /**
+         * 注册权限
+         */
+        $this->registerAuth();
+
+        /**
+         * 注册中间件
+         */
+        $this->registerMiddleware();
+
+    }
+
+    public function register()
+    {
+        //注册 sql查询服务
+        QueryBuilder::macro('getSqlQuery', function () {
+            return (new BuilderMacroSql())->getSqlQuery($this);
+        });
+
+        /**
+         * 注册 hm  监控 路由
+         */
+        $this->registerWebRoutes();
+
+        /**
+         * 注册命令
+         */
+        $this->registerCommands();
+    }
+
+    /**
+     * 注册权限
+     * @return void
+     */
+    public function registerAuth()
+    {
+
         /**
          * 定义权限 是否登录
          */
@@ -45,22 +83,66 @@ class IoServiceProvider extends ServiceProvider
             }
             return true;
         });
+    }
 
-        //注册中间件
+    /**
+     * 注册中间件
+     * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function registerMiddleware()
+    {
+        //注册中间件-默认运行
         $kernel = $this->app->make(Kernel::class);
         $kernel->pushMiddleware(HooMid::class);
-        //添加鉴权中间件
+        //注册中间件-路由中引用执行【鉴权中间件】
         Route::aliasMiddleware('hoo.auth',HmAuth::class);
     }
 
-    public function register()
+    /**
+     * 注册命令
+     * @return void
+     */
+    public function registerCommands()
     {
-        //注册 sql查询服务
-        QueryBuilder::macro('getSqlQuery', function () {
-            return (new BuilderMacroSql())->getSqlQuery($this);
+        //注册命令
+        if ($this->app->runningInConsole()){
+            $this->commands([
+                //命令
+                runCodeCommand::class
+            ]);
+        }
+    }
+
+    /**
+     * 注册 hm  监控 路由
+     * @return void
+     */
+    public function registerWebRoutes()
+    {
+        Route::prefix('hm')->group(function (){
+
+            Route::post('login', [LoginController::class,'login']);
+            Route::post('logout', [LoginController::class,'logout']);
+            Route::prefix('login')->group(function (){
+                Route::get('index',[LoginController::class,'index']);
+            });
+
+            Route::middleware('hoo.auth')->group(function (){
+
+                Route::get('index',[IndexController::class,'index']);
+                Route::post('send-command',[IndexController::class,'sendCommand']);
+
+                Route::get('run-command',[IndexController::class,'runCommand']);
+                Route::post('run-command',[IndexController::class,'runCommand']);
+
+                Route::get('run-code',[IndexController::class,'runCode']);
+                Route::post('run-code',[IndexController::class,'runCode']);
+            });
         });
 
-        //注册 hm  监控 路由
-        (new HmRoutes())->registerWebRoutes();
+        Route::prefix('hm-r')->group(function (){
+            Route::get('{path}',[IndexController::class,'webAsset'])->where('path', '.+');
+        });
     }
 }

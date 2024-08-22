@@ -30,9 +30,9 @@ class Web
 	protected function resolveAssetPath($path)
 	{
 		$publicPath = realpath(__DIR__ . '/public/');
-      
-		$path = realpath("$publicPath/{$path}");
 
+		$path = realpath("$publicPath/{$path}");
+   
 		return strpos($path, $publicPath) === 0 ? $path : false;
 	}
 }
