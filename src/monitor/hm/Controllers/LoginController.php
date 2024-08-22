@@ -3,12 +3,8 @@
 namespace hoo\io\monitor\hm\Controllers;
 
 use hoo\io\common\Enums\SessionEnum;
-use hoo\io\monitor\hm\Web;
+use hoo\io\common\Request\HmLoginRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use hoo\io\common\Support\Facade\HooSession;
 
 class LoginController extends BaseController
@@ -27,10 +23,10 @@ class LoginController extends BaseController
 
     /**
      * 登录
-     * @param Request $request
+     * @param HmLoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(HmLoginRequest $request)
     {
         $name = $request->input('name');
         $password = $request->input('password');
