@@ -37,23 +37,5 @@ $cdn = get_cdn();
 <script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
 <script src="{{$cdn}}/js/overall.js"></script>
 
-<script>
-    // 获取输入框元素
-    var value = document.getElementById('hoo-modal-form-value');
-
-    // 为输入框添加事件监听器
-    value.addEventListener('keydown', function (event) {
-        // 检查按下的键是否是Enter键
-        if (event.key === 'Enter') {
-            // 调用处理函数
-            handleEnterPress();
-        }
-    });
-
-    // 定义处理Enter按下时的函数
-    function handleEnterPress() {
-        $(".formSubmit").click();
-    }
-</script>
 </body>
 </html>

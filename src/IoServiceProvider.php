@@ -1,11 +1,14 @@
 <?php
 
 namespace hoo\io;
-use hoo\io\common\Command\runCodeCommand;
+
+use hoo\io\common\Command\DevCommand;
+use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
 use hoo\io\common\Middleware\HooMid;
+use hoo\io\monitor\hm\Controllers\CodeController;
 use hoo\io\monitor\hm\Controllers\IndexController;
 use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
@@ -109,7 +112,8 @@ class IoServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()){
             $this->commands([
                 //命令
-                runCodeCommand::class
+                RunCodeCommand::class,
+                DevCommand::class,
             ]);
         }
     }
@@ -138,6 +142,10 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::get('run-code',[IndexController::class,'runCode']);
                 Route::post('run-code',[IndexController::class,'runCode']);
+
+                Route::prefix('code')->group(function (){
+                    Route::get('index',[CodeController::class,'index']);
+                });
             });
         });
 

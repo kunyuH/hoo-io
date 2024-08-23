@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use \Illuminate\Support\Facades\Cache;
 
-class HooSessionService
+class HooSessionService extends BaseService
 {
     public $id;
 
@@ -57,7 +57,7 @@ class HooSessionService
         unset($data[$key]);
         return Cache::put($this->getCacheKey(), $data, $this->expires);
     }
-    
+
     private function getCacheKey()
     {
         return $this->cache_key_prefix.$this->id;

@@ -14,7 +14,8 @@ if (! function_exists('jump_link')) {
 if (! function_exists('get_cdn')) {
     function get_cdn()
     {
-        return 'https://js.tuguaishou.com/other/hm';
+//        return 'https://js.tuguaishou.com/other/hm';
+        return 'https://ih-patient-v2-api-chongqing.test:8082/hm-r';
     }
 }
 

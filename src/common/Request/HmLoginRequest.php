@@ -2,10 +2,9 @@
 
 namespace hoo\io\common\Request;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class HmLoginRequest extends FormRequest
+class HmLoginRequest extends BaseRequest
 {
     public function rules()
     {
@@ -13,12 +12,17 @@ class HmLoginRequest extends FormRequest
 
         $action_name = $action_name.":".$this->method();
 
-        return match ($action_name) {
-            'login:POST' => [
-                'name' => 'bail|required',
-                'password' => 'bail|required',
-            ],
-            default => [],
-        };
+        switch ($action_name) {
+            case 'login:post':
+                $rules = [
+                    'email' => 'required|email',
+                    'password' => 'required',
+                ];
+                break;
+            default:
+                $rules = [];
+                break;
+        }
+        return $rules;
     }
 }

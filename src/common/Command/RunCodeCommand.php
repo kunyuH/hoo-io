@@ -1,10 +1,9 @@
 <?php
 namespace hoo\io\common\Command;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
-class runCodeCommand extends Command
+class RunCodeCommand extends BaseCommand
 {
     protected $signature = 'hm:runCode {code-key}';
 

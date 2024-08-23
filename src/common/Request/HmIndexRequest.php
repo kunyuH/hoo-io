@@ -2,10 +2,9 @@
 
 namespace hoo\io\common\Request;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class HmIndexRequest extends FormRequest
+class HmIndexRequest extends BaseRequest
 {
     public function rules()
     {
@@ -13,21 +12,32 @@ class HmIndexRequest extends FormRequest
 
         $action_name = $action_name.":".$this->method();
 
-        return match ($action_name) {
-            'runCommand:GET' => [
-                'submitTo' => 'bail|required',
-            ],
-            'runCommand:POST' => [
-                'value' => 'bail|required',
-            ],
-            'runCode:GET' => [
-                'submitTo' => 'bail|required',
-            ],
-            'runCode:POST' => [
-                'value' => 'bail|required',
-            ],
-            default => [],
-        };
+        switch ($action_name) {
+            case 'runCommand:GET':
+                $rules = [
+                    'submitTo' => 'bail|required',
+                ];
+                break;
+            case 'runCommand:POST':
+                $rules = [
+                    'value' => 'bail|required',
+                ];
+                break;
+            case 'runCode:GET':
+                $rules = [
+                    'submitTo' => 'bail|required',
+                ];
+                break;
+            case 'runCode:POST':
+                $rules = [
+                    'value' => 'bail|required',
+                ];
+                break;
+            default:
+                $rules = [];
+                break;
+        }
+        return $rules;
     }
 
     public function messages()

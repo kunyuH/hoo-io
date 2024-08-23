@@ -13,6 +13,7 @@ $cdn = get_cdn();
 <div class="container-fluid" style="margin-top: 15px">
     <ul class="layui-nav">
         <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/code/index")}}>run code</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
@@ -52,6 +53,7 @@ $cdn = get_cdn();
             >退出</a></li>
     </ul>
     <script src="{{$cdn}}/js/jquery.min.js"></script>
+    <script src="{{$cdn}}/js/jquery.form.min.js"></script>
     <?php echo $content ?>
 </div>
 <script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
