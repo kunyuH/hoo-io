@@ -24,6 +24,10 @@ class HmCodeRequest extends BaseRequest
                 $rules = [
                     'id' => 'bail|required',
                 ];
+            case 'delete:POST':
+                $rules = [
+                    'id' => 'bail|required',
+                ];
             default:
                 $rules = [];
                 break;

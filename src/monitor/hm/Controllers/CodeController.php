@@ -53,6 +53,9 @@ class CodeController extends BaseController
         $code = $request->input('value');
 
         if(!empty($id)){
+            if ($id == 1){
+                return $this->resError([],'系统默认，不能修改！');
+            }
             $old_data = CodeObjectModel::query()->find($id);
 
              CodeObjectModel::query()->where('id',$id)->update([
@@ -81,15 +84,21 @@ class CodeController extends BaseController
                 'new_data'=>CodeObjectModel::query()->find($id)
             ],JSON_UNESCAPED_UNICODE));
         }
-        return $this->resSuccess([
-            'open_type'=>1,
-            'type'=>5,
-        ]);
+        return $this->resSuccess();
     }
 
+    /**
+     * 删除code
+     * @param HmCodeRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete(HmCodeRequest $request)
     {
-
+        $id = $request->input('id');
+        if ($id == 1){
+            return $this->resError([],'系统默认，不能删除！');
+        }
+        CodeObjectModel::query()->where('id',$id)->delete();
+        return $this->resSuccess();
     }
-
 }

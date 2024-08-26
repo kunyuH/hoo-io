@@ -148,6 +148,7 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('list',[CodeController::class,'list']);
                     Route::get('details',[CodeController::class,'details']);
                     Route::post('save',[CodeController::class,'save']);
+                    Route::post('delete',[CodeController::class,'delete']);
                 });
             });
         });

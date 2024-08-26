@@ -18,6 +18,19 @@ $cdn = get_cdn();
 <script src="{{$cdn}}/codemirror-5.65.17/mode/php/php.js"></script>
 
 <div class="row">
+    <div class="col-2">
+        <div class="card">
+            <div class="card-header">
+                code object
+            </div>
+            <div class="card-body">
+                <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">新增</a>
+                <hr>
+                <div id="code-object-list">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-10">
         <div class="card">
             <div class="card-body">
@@ -39,37 +52,31 @@ $cdn = get_cdn();
                     <div class="float-right">
                         <a href="javascript:"
                            data-from_id="hoo-run-code"
-                           class="btn btn-primary formRunCodeSubmit"
+                           class="btn btn-outline-primary formRunCodeSubmit"
                            data-href={{jump_link('/hm/run-code')}}
                         >Run</a>
                         <a href="javascript:"
                            data-from_id="hoo-run-code"
-                           class="btn btn-success formSubmit"
+                           class="btn btn-outline-success formRunCodeSave"
+                           id="hm-code-object-save"
                            data-href={{jump_link('/hm/code/save')}}
-                        >Save</a>
+                        >Create</a>
+                        <a href="javascript:"
+                           data-from_id="hoo-run-code"
+                           class="btn btn-outline-danger formCodeDelete"
+                           data-type="POST"
+                           id="hm-code-object-delete"
+                           data-href={{jump_link('/hm/code/delete')}}
+                        >delete</a>
                     </div>
-
                 </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-2">
-        <div class="card">
-            <div class="card-header">
-                code object
-            </div>
-            <div class="card-body">
-                <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm hm-code-create">新增</a>
-                <hr>
-                <div id="code-object-list">
-                </div>
             </div>
         </div>
     </div>
     <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body">
-                <pre id="run-code-output">
+                <pre id="run-code-output" style="min-height: 500px">
                 </pre>
             </div>
         </div>
@@ -77,9 +84,26 @@ $cdn = get_cdn();
 </div>
 <script>
     $(function(){
-        /**
-         * object 列表加载
-         */
+        loadCodeObjectList();
+        loadForm();
+    })
+
+    /**
+     * 表单初始化
+     */
+    function loadForm() {
+        $("#code-object-name").val('');
+        $("#code-object-text").val('');
+        $("#code-object-id").val('');
+        // 改变按钮内容
+        $("#hm-code-object-save").html('Create');
+        editor.setValue("<\?php\n");
+    }
+
+    /**
+     * object 列表加载
+     */
+    function loadCodeObjectList() {
         $.ajax({
             type:'get',
             url:'{{jump_link("/hm/code/list")}}',
@@ -94,7 +118,7 @@ $cdn = get_cdn();
                     $.each(e.data,function(k,v){
                         html += '' +
                             '<a href="javascript:" type="button" ' +
-                            'class="btn btn-primary btn-sm code-object-item-ky-req" ' +
+                            'class="btn btn-outline-primary btn-sm mt-1 mr-1 code-object-item-ky-req" ' +
                             'data-type="get" data-params=\'{"id":"'+v.id+'"}\' ' +
                             'data-href={{jump_link("/hm/code/details")}}>'+v.name+'</a>';
                     })
@@ -110,13 +134,21 @@ $cdn = get_cdn();
                 }
             },
         });
-    })
+    }
 
     /**
      * 新增
      */
     $(document).on("click","#hm-code-create",function(){
 
+        layer.confirm('点击新增后，当前代码会丢失，请先确认是否已保存！', {
+            icon:0,
+            closeBtn: 0,
+            btn: ['我已保存','关闭'] //按钮
+        }, function(){
+            layer.closeAll();
+            loadForm()
+        });
     })
 
     /**
@@ -136,14 +168,10 @@ $cdn = get_cdn();
      * 代码运行
      */
     $(document).on("click",".formRunCodeSubmit",function(){
-
         var from_id = $(this).attr('data-from_id');
         var url = $(this).attr('data-href');
-
         $("#code-object-text").val(editor.getValue());
-
         $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
-
         $("#"+from_id).ajaxSubmit({
             type:"post",
             url:url,
@@ -160,17 +188,78 @@ $cdn = get_cdn();
     })
 
     /**
+     * 代码保存
+     */
+    $(document).on("click",".formRunCodeSave",function(){
+        var from_id = $(this).attr('data-from_id');
+        var url = $(this).attr('data-href');
+        $("#code-object-text").val(editor.getValue());
+
+        $("#"+from_id).ajaxSubmit({
+            type:"post",
+            url:url,
+            dataType: 'json' ,
+            beforeSend:function(e){
+                layer.closeAll();
+                index = layer.load(1);
+            },
+            success: function (result) {
+                layer.close(index);
+                if(result.code == 200){
+                    layer.msg(result.message, {icon: 6, time: 500}, function(){
+                        loadCodeObjectList()
+                    });
+                }else{
+                    layer.alert(result.message, {icon: 5});
+                }
+            },
+        });
+    })
+
+    /**
+     * 代码删除
+     */
+    $(document).on("click",".formCodeDelete",function(){
+        var type = $(this).attr('data-type');
+        var href = $(this).attr('data-href');
+        var id = $('#code-object-id').val()
+        if (id == ''){
+            layer.alert('请选择要删除的对象！', {icon: 5});
+            return false;
+        }
+        $.ajax({
+            type:type,
+            url:href,
+            data:{'id':id},
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                layer.closeAll();
+                index = layer.load(1);
+            },
+            success:function(e){
+                layer.close(index);
+                if(e.code==200){
+                    layer.msg(e.message, {icon: 6, time: 500}, function(){
+                        loadCodeObjectList()
+                        loadForm();
+                    });
+                }else{
+                    layer.alert(e.message,{icon:5});
+                }
+            },
+        });
+    })
+
+    /**
      * object详情获取
      */
     $(document).on("click",".code-object-item-ky-req",function(){
-
         var type = $(this).attr('data-type');
         var href = $(this).attr('data-href');
         var params = $(this).attr('data-params');
         if(params){
             params = JSON.parse(params);
         }
-
         $.ajax({
             type:type,
             url:href,
@@ -188,7 +277,7 @@ $cdn = get_cdn();
                     $("#code-object-label").val(e.data.label);
                     $("#code-object-text").val(e.data.object);
                     editor.setValue(e.data.object);
-                    // editorx.setValue(e.data.object);
+                    $("#hm-code-object-save").html('update');
                 }else{
                     layer.alert(e.message,{icon:5});
                 }
