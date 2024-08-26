@@ -13,10 +13,18 @@
                    type="button"
                    class="btn btn-outline-primary ky-req"
                    data-type="post"
-                   data-confirm-ky="确认要运行命令吗？"
+                   data-confirm-ky="确认要初始化log-viewer模块吗？"
                    data-params='{"value":"log-viewer:publish"}'
                    data-href={{jump_link("/hm/run-command")}}
-                >log-viewer初始化</a>
+                >log-viewer模块初始化</a>
+                <a href="javascript:"
+                   type="button"
+                   class="btn btn-outline-primary ky-req"
+                   data-type="post"
+                   data-confirm-ky="确认要初始化run code模块吗？"
+                   data-params='{"value":"hm:dev runCodeInit"}'
+                   data-href={{jump_link("/hm/run-command")}}
+                >run code模块初始化</a>
             </div>
         </div>
     </div>

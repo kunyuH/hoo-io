@@ -145,12 +145,23 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::prefix('code')->group(function (){
                     Route::get('index',[CodeController::class,'index']);
+                    Route::get('list',[CodeController::class,'list']);
+                    Route::get('details',[CodeController::class,'details']);
+                    Route::post('save',[CodeController::class,'save']);
                 });
             });
         });
 
         Route::prefix('hm-r')->group(function (){
             Route::get('{path}',[IndexController::class,'webAsset'])->where('path', '.+');
+        });
+
+        Route::fallback(function () {
+            return response()->json([
+                'code'    => 404,
+                'message' => 'Not Found!',
+                'data'    => [],
+            ]);
         });
     }
 }

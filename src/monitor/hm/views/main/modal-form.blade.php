@@ -7,7 +7,7 @@ $cdn = get_cdn();
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>hoo-login</title>
+    <title>hoo-modal</title>
     <link href="{{$cdn}}/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
     <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -23,11 +23,17 @@ $cdn = get_cdn();
                     <br>
                     <textarea name="value" class="form-control" id="hoo-modal-form-value"></textarea>
                 </div>
-                <a href="javascript:"
-                   data-from_id="hoo-modal-form"
-                   class="btn btn-primary formSubmit"
-                   data-href={{jump_link($submitTo)}}
-                >Submit</a>
+                <div class="float-right">
+                    <a href="javascript:"
+                       data-from_id="hoo-modal-form"
+                       class="btn btn-primary formSubmit"
+                       data-href={{jump_link($submitTo)}}
+                    >Submit</a>
+                    <a href="javascript:"
+                       class="btn btn-danger  modalClose"
+                    >Close</a>
+                </div>
+
             </form>
         </div>
     </div>
@@ -36,6 +42,12 @@ $cdn = get_cdn();
 
 <script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
 <script src="{{$cdn}}/js/overall.js"></script>
-
+<script>
+    $(function () {
+        $('.modalClose').click(function () {
+            parent.layer.closeAll();
+        });
+    })
+</script>
 </body>
 </html>

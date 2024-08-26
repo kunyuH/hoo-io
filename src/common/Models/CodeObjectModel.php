@@ -4,5 +4,5 @@ namespace hoo\io\common\Models;
 
 class CodeObjectModel extends BaseModel
 {
-    protected $table = 'doctor_schedules';
+    protected $table = 'hm_code_object';
 }
