@@ -63,7 +63,7 @@ $cdn = get_cdn();
                         >Create</a>
                         <a href="javascript:"
                            data-from_id="hoo-run-code"
-                           class="btn btn-outline-danger formCodeDelete"
+                           class="btn btn-danger formCodeDelete"
                            data-type="POST"
                            id="hm-code-object-delete"
                            data-href={{jump_link('/hm/code/delete')}}
