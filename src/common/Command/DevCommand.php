@@ -67,10 +67,10 @@ class DevCommand extends BaseCommand
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();
 
-                $table->index('name');
-                $table->index('label_a');
-                $table->index('label_b');
-                $table->index('label_c');
+                $table->index('name','idx_name');
+                $table->index('label_a','idx_label_a');
+                $table->index('label_b','idx_label_b');
+                $table->index('label_c','idx_label_c');
             });
             $this->info('hm_logs 表创建成功');
         }
