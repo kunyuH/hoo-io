@@ -16,6 +16,7 @@ class HmCodeRequest extends BaseRequest
             case 'save:POST':
                 $rules = [
                     'name' => 'bail|required',
+                    'group' => 'bail|required',
                     'label' => 'bail|required',
                     'value' => 'bail|required',
                 ];

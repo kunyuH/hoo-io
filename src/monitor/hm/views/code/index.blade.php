@@ -42,6 +42,9 @@ $cdn = get_cdn();
                                 <input type="text" id="code-object-name" name="name" placeholder="name" class="form-control">
                             </div>
                             <div class="col">
+                                <input type="text" id="code-object-group" name="group" placeholder="group" class="form-control">
+                            </div>
+                            <div class="col">
                                 <input type="text" id="code-object-label" name="label" placeholder="label" class="form-control">
                             </div>
                         </div>
@@ -93,6 +96,8 @@ $cdn = get_cdn();
      */
     function loadForm() {
         $("#code-object-name").val('');
+        $("#code-object-group").val('');
+        $("#code-object-label").val('');
         $("#code-object-text").val('');
         $("#code-object-id").val('');
         // 改变按钮内容
@@ -274,6 +279,7 @@ $cdn = get_cdn();
                 if(e.code==200){
                     $("#code-object-id").val(e.data.id);
                     $("#code-object-name").val(e.data.name);
+                    $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);
                     $("#code-object-text").val(e.data.object);
                     editor.setValue(e.data.object);

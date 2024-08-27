@@ -49,6 +49,7 @@ class CodeController extends BaseController
     {
         $id = $request->input('id');
         $name = $request->input('name');
+        $group = $request->input('group');
         $label = $request->input('label');
         $code = $request->input('value');
 
@@ -60,6 +61,7 @@ class CodeController extends BaseController
 
              CodeObjectModel::query()->where('id',$id)->update([
                 'name'=>$name,
+                'group'=>$group,
                 'label'=>$label,
                 'object'=>$code,
                 'updated_at'=>date('Y-m-d H:i:s')
@@ -73,6 +75,7 @@ class CodeController extends BaseController
         }else{
             CodeObjectModel::query()->create([
                 'name'=>$name,
+                'group'=>$group,
                 'label'=>$label,
                 'object'=>$code,
                 'created_at'=>date('Y-m-d H:i:s'),

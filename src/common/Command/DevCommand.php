@@ -36,17 +36,23 @@ class DevCommand extends BaseCommand
         if (!Schema::hasTable('hm_code_object')) {
             Schema::create('hm_code_object', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('name')->unique();
+                // 字段不为空 不加索引
+                $table->string('name',50)->unique('idx_name');
+                $table->string('group',50);
                 $table->string('label')->nullable();
+                $table->text('remark')->nullable();
                 $table->longText('object')->nullable();
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();
+
+                $table->index('group','idx_group');
             });
             $this->info('hm_code_object 表创建成功');
             # 放入一个示例
             CodeObjectModel::query()->create([
                 'name' => '示例-phpinfo',
-                'label' => 'system',
+                'group' => 'system',
+                'label' => '',
                 'object' => "<?php phpinfo();",
                 ]);
         }
