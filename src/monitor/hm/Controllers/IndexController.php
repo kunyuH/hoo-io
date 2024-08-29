@@ -61,25 +61,31 @@ class IndexController extends BaseController
         if($request->isMethod('POST')) {
             $code = $request->input('value');
 
-            # 将code保存到缓存
-            $key = HooSession::getId();
-            Cache::put($key, $code, 1000);
-
-            $command = 'hm:runCode '.$key;
-
-            $output = [];
-            $return_var = 0;
-
-            exec('php ../artisan '.$command,$output, $return_var);
-
             // 记录日志
             LogsModel::log(__FUNCTION__.':运行代码',$code);
 
-            return $this->resSuccess([
-                'open_type'=>1,
-                'type'=>5,
-            ],$this->execOutput($output));
+            try{
+                // 将变量内容写入临时文件
+                $tmpfname = tempnam(sys_get_temp_dir(), 'phpinclude');
+                file_put_contents($tmpfname, $code);
 
+                include $tmpfname;
+                unlink($tmpfname);
+
+                $class = new \ReflectionClass('Foo');
+
+                $instance = $class->newInstanceArgs();
+
+                $instance->run();
+            }catch (\Error|\Exception|Throwable|ReflectionException|\UnexpectedValueException $e){
+                if(file_exists($tmpfname)){
+                    unlink($tmpfname);
+                }
+                echo $e->getMessage().PHP_EOL;
+                echo PHP_EOL;
+                echo $e->getTraceAsString();
+            }
+            return '';
         }else{
             return $this->view('main.modal-form',[
                 'submitTo'=>$request->input('submitTo'),

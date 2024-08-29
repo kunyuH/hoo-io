@@ -46,20 +46,5 @@
                 >run command</a>
             </div>
         </div>
-        <div class="card ml-3">
-            <div class="card-body">
-                <h5 class="card-title">运行php脚本</h5>
-                <h6 class="card-subtitle mb-2 text-muted">run code</h6>
-                <p class="card-text">可直接运行php代码，支持class，引入</p>
-                <a href="javascript:"
-                   type="button"
-                   class="btn btn-dark ky-modal"
-                   data-title="run code"
-                   data-width="800px"
-                   data-height="480px"
-                   data-href={{jump_link("/hm/run-code?submitTo=/hm/run-code")}}
-                >run code</a>
-            </div>
-        </div>
     </div>
 </div>

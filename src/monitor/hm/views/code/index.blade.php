@@ -180,15 +180,28 @@ $cdn = get_cdn();
         $("#"+from_id).ajaxSubmit({
             type:"post",
             url:url,
-            dataType: 'json' ,
+            // dataType: 'json' ,
             success: function (result) {
-                if(result.code == 200){
-                    $("#run-code-output").html(result.message);
+                //如果返回的是json 则转为字符串
+                if(typeof result == 'object'){
+                    result = JSON.stringify(result)
+                    result = result.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                    $("#run-code-output").html(result);
                 }else{
-                    layer.alert(result.message, {icon: 5});
-                    $("#run-code-output").html('');
+                    $("#run-code-output").html(result);
                 }
             },
+            error: function(xhr, status, error) {
+                $("#run-code-output").html(xhr.responseText);
+                //如果返回的是json 则转为字符串
+                if(typeof xhr.responseText == 'object'){
+                    responseText = JSON.stringify(xhr.responseText)
+                    responseText = responseText.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                    $("#run-code-output").html(responseText);
+                }else{
+                    $("#run-code-output").html(xhr.responseText);
+                }
+            }
         });
     })
 
