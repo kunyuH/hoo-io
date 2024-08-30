@@ -128,7 +128,7 @@ $cdn = get_cdn();
     editor.session.setMode("ace/mode/" + language);
 
     //字体大小
-    editor.setFontSize(16);
+    editor.setFontSize(14);
 
     //设置只读（true时只读，用于展示代码）
     editor.setReadOnly(false);
@@ -143,6 +143,8 @@ $cdn = get_cdn();
         enableSnippets: true,
         enableLiveAutocompletion: true
     });
+    // 获取光标位置
+    var cursorPosition = editor.getCursorPosition();
 
     $(function(){
         loadCodeObjectList();
@@ -175,14 +177,13 @@ $cdn = get_cdn();
         $("#code-object-name").val('');
         $("#code-object-group").val('');
         $("#code-object-label").val('');
-        // $("#code-object-edit").val('');
-
-        editor.setValue("");
 
         $("#code-object-id").val('');
         // 改变按钮内容
         $("#hm-code-object-save").html('Create');
         editor.setValue("<\?php\n");
+        editor.moveCursorToPosition(cursorPosition);
+        $("#code-object-text").val('');
     }
 
     /**
@@ -377,6 +378,7 @@ $cdn = get_cdn();
                     $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);
                     editor.setValue(e.data.object);
+                    editor.moveCursorToPosition(cursorPosition);
                     $("#hm-code-object-save").html('update');
                 }else{
                     layer.alert(e.message,{icon:5});
