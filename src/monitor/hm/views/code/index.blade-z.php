@@ -2,23 +2,20 @@
 $cdn = get_cdn();
 ?>
 {{--样式css--}}
-{{--<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/theme/night.css">--}}
-{{--<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/theme/seti.css">--}}
+<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/theme/night.css">
+<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/theme/seti.css">
 
 {{--<link rel=stylesheet href="{{$cdn}}/codemirror-5.65.17/doc/docs.css">--}}
 
-{{--<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/lib/codemirror.css">--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/lib/codemirror.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/addon/edit/matchbrackets.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/htmlmixed/htmlmixed.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/xml/xml.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/javascript/javascript.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/css/css.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/clike/clike.js"></script>--}}
-{{--<script src="{{$cdn}}/codemirror-5.65.17/mode/php/php.js"></script>--}}
-
-<script src="{{$cdn}}/ace-builds-master/src/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{$cdn}}/ace-builds-master/src/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/lib/codemirror.css">
+<script src="{{$cdn}}/codemirror-5.65.17/lib/codemirror.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/addon/edit/matchbrackets.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/htmlmixed/htmlmixed.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/xml/xml.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/javascript/javascript.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/css/css.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/clike/clike.js"></script>
+<script src="{{$cdn}}/codemirror-5.65.17/mode/php/php.js"></script>
 
 <div class="row">
     <div class="col-2">
@@ -53,15 +50,7 @@ $cdn = get_cdn();
                         </div>
                     </div>
                     <div class="form-group CodeMirror">
-                        <textarea id="code-object-text" name="value" hidden></textarea>
-                        <pre id="code-object-edit" class="ace_editor" style="min-height:400px">
-                            <textarea></textarea>
-                        </pre>
-                    </div>
-                    <div class="float-left">
-                        <a href="javascript:"
-                           class="btn btn-outline-primary maxCode"
-                        >最大化</a>
+                        <textarea class="form-control" id="code-object-text" name="value" rows="3"></textarea>
                     </div>
                     <div class="float-right">
                         <a href="javascript:"
@@ -96,77 +85,11 @@ $cdn = get_cdn();
         </div>
     </div>
 </div>
-<style>
-    .hoo-layer-open .layui-layer-title{
-        display: none;
-    }
-    .hoo-layer-open .layui-layer-setwin{
-        background-color: #f0f8ff47;
-        right: 25px;
-        border-radius: .25rem;
-        height: 14px;
-        width: 33px;
-    }
-    .hoo-layer-open .layui-layer-content{
-        height: 100% !important;
-    }
-    .hoo-layer-open .layui-layer-content pre{
-        margin-bottom: 0;
-    }
-</style>
 <script>
-    //初始化编辑器
-    editor = ace.edit("code-object-edit");
-    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
-    theme = "clouds"
-    theme = "twilight"
-    // theme = "ambiance"
-    // theme = "solarized_light"
-    language = "php"
-    language = "php_laravel_blade"
-    editor.setTheme("ace/theme/" + theme);
-    editor.session.setMode("ace/mode/" + language);
-
-    //字体大小
-    editor.setFontSize(16);
-
-    //设置只读（true时只读，用于展示代码）
-    editor.setReadOnly(false);
-
-    //自动换行,设置为off关闭
-    editor.setOption("wrap", "free")
-
-    //启用提示菜单
-    ace.require("ace/ext/language_tools");
-    editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true
-    });
-
     $(function(){
         loadCodeObjectList();
         loadForm();
     })
-
-    $(document).on("click",".maxCode",function(){
-        layer.open({
-            skin: 'hoo-layer-open',
-            shade: 0.8,
-            type: 1,
-            area: ['100%', '100%'], // 全屏
-            maxmin: false,
-            scrollbar: true,
-            content: $('#code-object-edit'),
-            success: function(layero, index){
-                document.getElementById("code-object-edit").style.height = '100%';
-            },
-            cancel: function(index, layero){
-                document.getElementById("code-object-edit").style.height = "500px";
-            }
-
-        });
-    });
 
     /**
      * 表单初始化
@@ -175,10 +98,7 @@ $cdn = get_cdn();
         $("#code-object-name").val('');
         $("#code-object-group").val('');
         $("#code-object-label").val('');
-        // $("#code-object-edit").val('');
-
-        editor.setValue("");
-
+        $("#code-object-text").val('');
         $("#code-object-id").val('');
         // 改变按钮内容
         $("#hm-code-object-save").html('Create');
@@ -236,18 +156,18 @@ $cdn = get_cdn();
         });
     })
 
-    // /**
-    //  * CodeMirror 实例
-    //  * @type {CodeMirror|*}
-    //  */
-    // var editor = CodeMirror.fromTextArea(document.getElementById("code-object-text"), {
-    //     lineNumbers: true,
-    //     matchBrackets: true,
-    //     mode: "application/x-httpd-php",
-    //     indentUnit: 4,
-    //     indentWithTabs: true,
-    //     theme: 'seti',
-    // });
+    /**
+     * CodeMirror 实例
+     * @type {CodeMirror|*}
+     */
+    var editor = CodeMirror.fromTextArea(document.getElementById("code-object-text"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "application/x-httpd-php",
+        indentUnit: 4,
+        indentWithTabs: true,
+        theme: 'seti',
+    });
 
     /**
      * 代码运行
@@ -255,9 +175,7 @@ $cdn = get_cdn();
     $(document).on("click",".formRunCodeSubmit",function(){
         var from_id = $(this).attr('data-from_id');
         var url = $(this).attr('data-href');
-
         $("#code-object-text").val(editor.getValue());
-
         $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
         $("#"+from_id).ajaxSubmit({
             type:"post",
@@ -376,6 +294,7 @@ $cdn = get_cdn();
                     $("#code-object-name").val(e.data.name);
                     $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);
+                    $("#code-object-text").val(e.data.object);
                     editor.setValue(e.data.object);
                     $("#hm-code-object-save").html('update');
                 }else{

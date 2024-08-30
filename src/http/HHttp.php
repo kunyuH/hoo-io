@@ -24,20 +24,23 @@ class HHttp extends Client
     {
         $before_time = microtime(true);
 
-        try{
-            $response = parent::request($method, $uri, $options);
-        }catch (\Exception $e){
-            $response = $e->getResponse();
-        }
+        # 调用父类request方法 捕获异常 且记录 错误内容
+        list($response,$err) = $this->parentRequest($method, $uri, $options);
 
         $after_time = microtime(true);
         try {
+
+            try{
+                $res = $response->getBody()->getContents();
+            }catch (\Error $e){$res = '';}
+
             // 记录请求日志
             $this->log(
                 $before_time, $after_time,
                 $method, $uri, $options,
-                $response->getBody()->getContents()
+                $res,$err
             );
+
         } catch (\Exception $e) {
         }
         // 重置响应主体流
@@ -46,22 +49,51 @@ class HHttp extends Client
     }
 
     /**
+     * @param $method
+     * @param $uri
+     * @param $options
+     * @return array
+     * @throws GuzzleException
+     */
+    public function parentRequest($method, $uri, $options)
+    {
+        $err = '';
+        try{
+            $response = parent::request($method, $uri, $options);
+        }catch (\Exception $e){
+            $err = $e->getMessage();
+            try{
+                $response = $e->getResponse();
+            }catch (\Throwable $e){
+                $response = null;
+            }
+        }
+        return [$response,$err];
+    }
+
+    /**
      * 记录日志
      * @param $method
      * @param $uri
      * @param $options
      * @param $res
+     * @param $err
      * @return void
      */
-    protected function log($before_time, $after_time, $method, $uri, $options, $res)
+    protected function log($before_time, $after_time, $method, $uri, $options, $res, $err)
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
         $res_json = '';
         if ($this->isJson($res)) {
             $res = json_decode($res, true);
             $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
+        }else{
+            $res_json = $res;
         }
 
+
+        $json_show['url'] = $uri;
+        $json_show['method'] = $method;
         if(isset($options['headers'])) {
             $json_show['headers'] = json_encode($options['headers'], JSON_UNESCAPED_UNICODE);
         }
@@ -84,6 +116,7 @@ class HHttp extends Client
             'method' => $method,
             'options' => $options,
             'response' => $res,
+            'err' => $err,
             '入参出参json展示' => $json_show
         ]);
 

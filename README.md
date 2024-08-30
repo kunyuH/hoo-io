@@ -42,8 +42,6 @@ $data = $res->getBody()->getContents()
 CLOCKWORK_ENABLE=true
 # 收集的数据存储时效 单位：分钟
 CLOCKWORK_STORAGE_EXPIRATION=120
-# 【控制面板访问】第一层密码
-CLOCKWORK_AUTH_TOKEN=123456
 # 【控制面板访问】是否开启第二层密码
 CLOCKWORK_AUTHENTICATION=
 # 【控制面板访问】第二层密码（默认密码：VerySecretPassword）

@@ -35,7 +35,7 @@ class HooMid
             !$this->fnmatchs('__clockwork/*',$reqPath) and
             !$this->fnmatchs('log-viewer/*',$reqPath)
         ) {
-            Log::channel('debug')->log('info', "请求参数展示", [
+            Log::channel('debug')->log('info', "【请求参数展示】", [
                 '格式化展示'=>$request->input() ?? [],
                 'json展示'=>json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE),
             ]);

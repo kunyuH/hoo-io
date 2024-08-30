@@ -54,12 +54,14 @@ $cdn = get_cdn();
     </ul>
     <script src="{{$cdn}}/js/jquery.min.js"></script>
     <script src="{{$cdn}}/js/jquery.form.min.js"></script>
+    <script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
+    <script src="{{$cdn}}/js/overall.js"></script>
+    
     <?php echo $content ?>
 </div>
-<script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
 
-<script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
-<script src="{{$cdn}}/js/overall.js"></script>
 
 <script>
     /**
