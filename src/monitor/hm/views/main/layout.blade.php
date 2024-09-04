@@ -6,14 +6,15 @@ $cdn = get_cdn();
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>hoo-hm</title>
-    <link href="{{$cdn}}/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
-    <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="<?php echo $cdn?>/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <link href="<?php echo $cdn?>/css/bootstrap.min.css" rel="stylesheet" >
 </head>
 <body>
-<div class="container-fluid" style="margin-top: 15px">
+<div class="container" style="margin-top: 15px">
     <ul class="layui-nav">
         <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
-        <li class="layui-nav-item"><a href={{jump_link("/hm/code/index")}}>run code</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/code/index")}}>logical block</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/logical-pipelines/index")}}>logical pipelines</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
                                       data-width="1200px"
@@ -29,15 +30,6 @@ $cdn = get_cdn();
                                       data-href={{jump_link("/log-viewer")}}
             >log-viewer</a></li>
         <li class="layui-nav-item">
-            <a href="javascript:"
-               data-title="测试"
-               data-width="800px"
-               data-height="500px"
-               class="ky-modal"
-               data-href="/ding/list"
-            >测试</a>
-        </li>
-        <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
                 <dd><a target="_blank" href={{jump_link("/clockwork/app")}}>clockwork</a></dd>
@@ -52,13 +44,19 @@ $cdn = get_cdn();
                                       data-href={{jump_link("/hm/logout")}}
             >退出</a></li>
     </ul>
-    <script src="{{$cdn}}/js/jquery.min.js"></script>
-    <script src="{{$cdn}}/js/jquery.form.min.js"></script>
-    <script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo $cdn?>/js/jquery.min.js"></script>
+    <script src="<?php echo $cdn?>/js/jquery.form.min.js"></script>
+    <script src="<?php echo $cdn?>/js/bootstrap.bundle.min.js"></script>
 
-    <script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
-    <script src="{{$cdn}}/js/overall.js"></script>
-    
+    <script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
+    <script src="<?php echo $cdn?>/js/overall.js"></script>
+    <style>
+        .star::after{
+            content:" *";
+            color:red
+        }
+    </style>
+
     <?php echo $content ?>
 </div>
 

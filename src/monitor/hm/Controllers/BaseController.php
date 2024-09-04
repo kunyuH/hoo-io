@@ -6,6 +6,7 @@ use hoo\io\common\Enums\HttpResponseEnum;
 use hoo\io\monitor\hm\Web;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use hoo\io\common\Response\HmBinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -28,6 +29,9 @@ class BaseController extends Controller
         # 字符串替换
         $view = str_replace('.','/',$view);
         $view = str_replace('::','/',$view);
+
+
+        # 渲染视图
         return View::file(__DIR__ . "/../views/{$view}.blade.php",$data)->render();
     }
 
@@ -39,6 +43,20 @@ class BaseController extends Controller
      */
     public function v($view,$data=[])
     {
+        return $this->view($this->layout,[
+            'content' => $this->view($view,$data)
+        ]);
+    }
+
+    /**
+     * 渲染弹出层视图
+     * @param $view
+     * @param $data
+     * @return string
+     */
+    public function modal($view,$data=[])
+    {
+        $this->layout = "main.modal";
         return $this->view($this->layout,[
             'content' => $this->view($view,$data)
         ]);

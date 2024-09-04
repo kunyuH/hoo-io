@@ -13,7 +13,7 @@ class LogsModel extends BaseModel
      * @param $label_a
      * @param $label_b
      * @param $label_c
-     * @return CodeObjectModel
+     * @return LogicalBlockModel
      */
     public static function log($name,$content,$label_a='',$label_b='',$label_c=''){
         try {

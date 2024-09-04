@@ -2,7 +2,7 @@
 
 namespace hoo\io\common\Command;
 
-use hoo\io\common\Models\CodeObjectModel;
+use hoo\io\common\Models\LogicalBlockModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -33,23 +33,25 @@ class DevCommand extends BaseCommand
     public function runCodeInit()
     {
         # 检查表是否存在
-        if (!Schema::hasTable('hm_code_object')) {
-            Schema::create('hm_code_object', function (Blueprint $table) {
+        if (!Schema::hasTable('hm_logical_block')) {
+            Schema::create('hm_logical_block', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 // 字段不为空 不加索引
-                $table->string('name',50)->unique('idx_name');
+                $table->string('name',50);
                 $table->string('group',50);
                 $table->string('label')->nullable();
                 $table->text('remark')->nullable();
                 $table->longText('object')->nullable();
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();
+                $table->dateTime('deleted_at')->nullable();
 
+                $table->index('name','idx_name');
                 $table->index('group','idx_group');
             });
-            $this->info('hm_code_object 表创建成功');
+            $this->info('hm_logical_block 表创建成功');
             # 放入一个示例
-            CodeObjectModel::query()->create([
+            LogicalBlockModel::query()->create([
                 'name' => '示例-phpinfo',
                 'group' => 'system',
                 'label' => '',

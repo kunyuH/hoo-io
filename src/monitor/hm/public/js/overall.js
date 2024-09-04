@@ -57,7 +57,21 @@ function open_layer(EditTitle,EditRule,width,height){
         area: [width, height],
         maxmin: true,
         scrollbar: false,
-        content: EditRule
+        content: EditRule,
+        success: function(layero, index){
+            // 绑定键盘事件
+            $(document).on('keydown', function(e){
+                e = e || window.event;
+                var key = e.keyCode || e.which; // 获取按键的keyCode
+                if(key == 27){ // 27是ESC按键的keyCode
+                    layer.close(index); // 关闭弹层
+                }
+            });
+        },
+        end: function(){
+            // 移除键盘事件监听
+            $(document).off('keydown');
+        }
     });
 }
 

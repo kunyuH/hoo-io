@@ -2,9 +2,11 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
-use hoo\io\common\Models\CodeObjectModel;
+use hoo\io\common\Models\LogicalBlockModel;
 use hoo\io\common\Models\LogsModel;
 use hoo\io\common\Request\HmCodeRequest;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Blueprint;
 
 
 class CodeController extends BaseController
@@ -24,7 +26,12 @@ class CodeController extends BaseController
      */
     public function list()
     {
-        $list = CodeObjectModel::query()->get();
+        $list = LogicalBlockModel::query()
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at')
+                ->orWhere('deleted_at','');
+            })
+            ->get();
         return $this->resSuccess($list);
     }
 
@@ -36,7 +43,7 @@ class CodeController extends BaseController
     public function details(HmCodeRequest $request)
     {
         $id = $request->input('id');
-        $item = CodeObjectModel::query()->find($id);
+        $item = LogicalBlockModel::query()->find($id);
         return $this->resSuccess($item);
     }
 
@@ -57,34 +64,34 @@ class CodeController extends BaseController
             if ($id == 1){
                 return $this->resError([],'系统默认，不能修改！');
             }
-            $old_data = CodeObjectModel::query()->find($id);
+            $old_data = LogicalBlockModel::query()->find($id);
 
-             CodeObjectModel::query()->where('id',$id)->update([
+            LogicalBlockModel::query()->where('id',$id)->update([
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
-                'object'=>$code,
+                'logical_block'=>$code,
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
 
              // 记录日志
-            LogsModel::log(__FUNCTION__.':hm_code_object表-更新',json_encode([
+            LogsModel::log(__FUNCTION__.':hm_logical_block-更新',json_encode([
                 'old_data'=>$old_data,
-                'new_data'=>CodeObjectModel::query()->find($id)
+                'new_data'=>LogicalBlockModel::query()->find($id)
             ],JSON_UNESCAPED_UNICODE));
         }else{
-            CodeObjectModel::query()->create([
+            LogicalBlockModel::query()->create([
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
-                'object'=>$code,
+                'logical_block'=>$code,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
             // 记录日志
-            LogsModel::log(__FUNCTION__.':hm_code_object表-新增',json_encode([
+            LogsModel::log(__FUNCTION__.':hm_logical_block-新增',json_encode([
                 'old_data'=>[],
-                'new_data'=>CodeObjectModel::query()->find($id)
+                'new_data'=>LogicalBlockModel::query()->find($id)
             ],JSON_UNESCAPED_UNICODE));
         }
         return $this->resSuccess();
@@ -101,7 +108,16 @@ class CodeController extends BaseController
         if ($id == 1){
             return $this->resError([],'系统默认，不能删除！');
         }
-        CodeObjectModel::query()->where('id',$id)->delete();
+        LogicalBlockModel::query()->where('id',$id)->update([
+            'deleted_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s')
+        ]);
+
+        // 记录日志
+        LogsModel::log(__FUNCTION__.':hm_logical_block-删除',json_encode([
+            'id'=>$id
+        ]));
+
         return $this->resSuccess();
     }
 }

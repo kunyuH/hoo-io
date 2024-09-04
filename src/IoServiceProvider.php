@@ -5,14 +5,18 @@ namespace hoo\io;
 use hoo\io\common\Command\DevCommand;
 use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
+use hoo\io\common\Models\LogicalPipelinesArrangeModel;
+use hoo\io\common\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
 use hoo\io\common\Middleware\HooMid;
 use hoo\io\monitor\hm\Controllers\CodeController;
 use hoo\io\monitor\hm\Controllers\IndexController;
+use hoo\io\monitor\hm\Controllers\LogicalPipelinesController;
 use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +37,10 @@ class IoServiceProvider extends ServiceProvider
          */
         $this->registerMiddleware();
 
+        /**
+         * 动态注册路由
+         */
+        $this->registerRoutes();
     }
 
     public function register()
@@ -51,7 +59,27 @@ class IoServiceProvider extends ServiceProvider
          * 注册命令
          */
         $this->registerCommands();
+
     }
+
+    public function registerRoutes()
+    {
+        $pipelines = LogicalPipelinesModel::query()
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at')
+                    ->orWhere('deleted_at','');
+            })
+            ->get();
+
+        Route::prefix('hm')->group(function () use ($pipelines){
+            foreach ($pipelines as $pipeline){
+                Route::get($pipeline->route, function () use ($pipeline){
+                    return LogicalPipelinesArrangeModel::run($pipeline->id);
+                });
+            }
+        });
+    }
+
 
     /**
      * 注册权限
@@ -149,6 +177,15 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('details',[CodeController::class,'details']);
                     Route::post('save',[CodeController::class,'save']);
                     Route::post('delete',[CodeController::class,'delete']);
+                });
+
+                Route::prefix('logical-pipelines')->group(function (){
+                    Route::get('index',[LogicalPipelinesController::class,'index']);
+                    Route::get('save',[LogicalPipelinesController::class,'save']);
+                    Route::post('save',[LogicalPipelinesController::class,'save']);
+                    Route::post('delete',[LogicalPipelinesController::class,'delete']);
+                    Route::post('run',[LogicalPipelinesController::class,'run']);
+                    Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
                 });
             });
         });

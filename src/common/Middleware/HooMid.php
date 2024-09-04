@@ -63,9 +63,20 @@ class HooMid
                 exit();
             }
         }
+        /**
+         * gupo 日志中心 改造的clockwork 展示异常处理 修复异常报错
+         */
+        return $this->gupoClockErrorCorrect($request,$next($request));
+    }
 
-        $Response = $next($request);
-        # 添加getData方法 兼容【日志中心修改过的Clockwork】
+    /**
+     * gupo 日志中心 改造的clockwork 展示异常处理
+     * @param $Response
+     * @return Response|mixed
+     */
+    private function gupoClockErrorCorrect(Request $request, $Response)
+    {
+        # 添加getData方法 兼容【gupo 日志中心修改过的Clockwork】
         if ($Response instanceof Response){
             $Response->macro('getData',function(){
                 $object = new \stdClass();
@@ -73,6 +84,21 @@ class HooMid
                 $object->data = [];
                 $object->code = 200;
             });
+        }
+
+        /**
+         * 出现错误 Error loading request metadata
+         * 路由 __clockwork
+         * only=clientMetrics%2CwebVitals
+         * 返回值为[]
+         */
+        if($this->fnmatchs('__clockwork/*',$request->path())
+            and $request->get('only') == 'clientMetrics,webVitals'
+            and empty($Response->getData())){
+            $Response = response()->json([
+                'clientMetrics' => [],
+                'webVitals' => []
+            ]);
         }
 
         return $Response;

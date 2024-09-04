@@ -6,12 +6,12 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>hoo-login</title>
-    <link href="{{$cdn}}/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
-    <link href="{{$cdn}}/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="<?php echo $cdn?>/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <link href="<?php echo $cdn?>/css/bootstrap.min.css" rel="stylesheet" >
 </head>
 <body>
-<script src="{{$cdn}}/js/jquery.min.js"></script>
-<script src="{{$cdn}}/js/jquery.form.min.js"></script>
+<script src="<?php echo $cdn?>/js/jquery.min.js"></script>
+<script src="<?php echo $cdn?>/js/jquery.form.min.js"></script>
 <div class="container">
     <br>
     <br>
@@ -40,10 +40,10 @@
         </div>
     </div>
 </div>
-<script src="{{$cdn}}/js/bootstrap.bundle.min.js"></script>
+<script src="<?php echo $cdn?>/js/bootstrap.bundle.min.js"></script>
 
-<script src="{{$cdn}}/layui-v2.6.8/layui/layui.js"></script>
-<script src="{{$cdn}}/js/overall.js"></script>
+<script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
+<script src="<?php echo $cdn?>/js/overall.js"></script>
 
 <script>
     // 获取输入框元素

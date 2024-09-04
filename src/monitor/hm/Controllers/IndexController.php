@@ -2,7 +2,8 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
-use hoo\io\common\Models\CodeObjectModel;
+use hoo\io\common\Models\LogicalBlockModel;
+use hoo\io\common\Models\LogicalPipelinesArrangeModel;
 use hoo\io\common\Models\LogsModel;
 use hoo\io\common\Request\HmIndexRequest;
 use Illuminate\Http\Request;
@@ -59,33 +60,14 @@ class IndexController extends BaseController
     public function runCode(HmIndexRequest $request)
     {
         if($request->isMethod('POST')) {
-            $code = $request->input('value');
+            $logical_block = $request->input('value');
 
             // 记录日志
-            LogsModel::log(__FUNCTION__.':运行代码',$code);
+            LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
 
-            try{
-                // 将变量内容写入临时文件
-                $tmpfname = tempnam(sys_get_temp_dir(), 'phpinclude');
-                file_put_contents($tmpfname, $code);
-
-                include $tmpfname;
-                unlink($tmpfname);
-
-                $class = new \ReflectionClass('Foo');
-
-                $instance = $class->newInstanceArgs();
-
-                $instance->run();
-            }catch (\Error|\Exception|Throwable|ReflectionException|\UnexpectedValueException $e){
-                if(file_exists($tmpfname)){
-                    unlink($tmpfname);
-                }
-                echo $e->getMessage().PHP_EOL;
-                echo PHP_EOL;
-                echo $e->getTraceAsString();
-            }
-            return '';
+            $resData = LogicalPipelinesArrangeModel::logicalBlockExec($logical_block);
+            
+            return $resData;
         }else{
             return $this->view('main.modal-form',[
                 'submitTo'=>$request->input('submitTo'),
