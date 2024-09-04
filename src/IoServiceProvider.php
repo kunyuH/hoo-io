@@ -19,65 +19,73 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Exception;
 
 class IoServiceProvider extends ServiceProvider
 {
 
     public function boot()
     {
-        /**
-         * 注册权限
-         */
-        $this->registerAuth();
+        try{
+            /**
+             * 注册权限
+             */
+            $this->registerAuth();
 
-        /**
-         * 注册中间件
-         */
-        $this->registerMiddleware();
+            /**
+             * 注册中间件
+             */
+            $this->registerMiddleware();
 
-        /**
-         * 动态注册路由
-         */
-        $this->registerRoutes();
+            /**
+             * 动态注册路由
+             */
+            $this->registerRoutes();
+        }catch (\Exception $e){}
     }
 
     public function register()
     {
-        //注册 sql查询服务
-        QueryBuilder::macro('getSqlQuery', function () {
-            return (new BuilderMacroSql())->getSqlQuery($this);
-        });
+        try{
+            //注册 sql查询服务
+            QueryBuilder::macro('getSqlQuery', function () {
+                return (new BuilderMacroSql())->getSqlQuery($this);
+            });
 
-        /**
-         * 注册 hm  监控 路由
-         */
-        $this->registerWebRoutes();
+            /**
+             * 注册 hm  监控 路由
+             */
+            $this->registerWebRoutes();
 
-        /**
-         * 注册命令
-         */
-        $this->registerCommands();
-
+            /**
+             * 注册命令
+             */
+            $this->registerCommands();
+        }catch (Exception $e){}
     }
 
     public function registerRoutes()
     {
-        $pipelines = LogicalPipelinesModel::query()
-            ->where(function (Builder $q){
-                $q->whereNull('deleted_at')
-                    ->orWhere('deleted_at','');
-            })
-            ->get();
+        # 检查表是否存在
+        if (Schema::hasTable('hm_logical_pipelines')) {
+            $pipelines = LogicalPipelinesModel::query()
+                ->where(function (Builder $q){
+                    $q->whereNull('deleted_at')
+                        ->orWhere('deleted_at','');
+                })
+                ->get();
 
-        Route::prefix('hm')->group(function () use ($pipelines){
-            foreach ($pipelines as $pipeline){
-                Route::get($pipeline->route, function () use ($pipeline){
-                    return LogicalPipelinesArrangeModel::run($pipeline->id);
-                });
-            }
-        });
+            Route::prefix('hm')->group(function () use ($pipelines){
+                foreach ($pipelines as $pipeline){
+                    Route::get($pipeline->route, function () use ($pipeline){
+                        return LogicalPipelinesArrangeModel::run($pipeline->id);
+                    });
+                }
+            });
+        }
     }
 
 
