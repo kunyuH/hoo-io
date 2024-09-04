@@ -1,5 +1,5 @@
 <?php
-$cdn = get_cdn();
+$cdn = get_cdn().'/hm';
 ?>
 {{--样式css--}}
 <link rel="stylesheet" href="{{$cdn}}/codemirror-5.65.17/theme/night.css">

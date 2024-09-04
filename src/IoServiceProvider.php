@@ -64,6 +64,18 @@ class IoServiceProvider extends ServiceProvider
              * 注册命令
              */
             $this->registerCommands();
+
+            /**
+             * 判断laravel版本
+             * 低于9 才会加载aravelLogViewer模块
+             */
+            if (version_compare(app()->version(), '9.0.0', '<')) {
+                $serviceProvider = new \Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider($this->app);
+                $serviceProvider->register();
+                Route::middleware('hoo.auth')->group(function (){
+                    Route::get('hm/logs', '\hoo\io\monitor\LaravelLogView\Controllers\HooLogViewerController@index');
+                });
+            }
         }catch (Exception $e){}
     }
 

@@ -1,5 +1,5 @@
 <?php
-$cdn = get_cdn();
+$cdn = get_cdn().'/hm';
 ?>
 <script src="<?php echo $cdn?>/ace-builds-master/src/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="<?php echo $cdn?>/ace-builds-master/src/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>

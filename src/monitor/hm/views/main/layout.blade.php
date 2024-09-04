@@ -1,5 +1,5 @@
 <?php
-$cdn = get_cdn();
+$cdn = get_cdn().'/hm';
 ?>
         <!doctype html>
 <html lang="en">
@@ -23,17 +23,25 @@ $cdn = get_cdn();
                                       data-href={{jump_link("/clockwork/app")}}
             >clockwork</a></li>
         <li class="layui-nav-item"><a href="javascript:"
-                                      data-title="clockwork"
+                                      data-title="log-viewer"
                                       data-width="1200px"
                                       data-height="600px"
                                       class="ky-modal"
                                       data-href={{jump_link("/log-viewer")}}
             >log-viewer</a></li>
+        <li class="layui-nav-item"><a href="javascript:"
+                                      data-title="log-viewer(laravel 6)"
+                                      data-width="1200px"
+                                      data-height="600px"
+                                      class="ky-modal"
+                                      data-href={{jump_link("/hm/logs")}}
+            >log-viewer(laravel 6)</a></li>
         <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
                 <dd><a target="_blank" href={{jump_link("/clockwork/app")}}>clockwork</a></dd>
                 <dd><a target="_blank" href={{jump_link("/log-viewer")}}>log-viewer</a></dd>
+                <dd><a target="_blank" href={{jump_link("/hm/logs")}}>log-viewer(laravel 6)</a></dd>
             </dl>
         </li>
 

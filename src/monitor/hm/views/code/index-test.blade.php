@@ -1,5 +1,5 @@
 <?php
-$cdn = get_cdn();
+$cdn = get_cdn().'/hm';
 ?>
 <!--导入js库-->
 

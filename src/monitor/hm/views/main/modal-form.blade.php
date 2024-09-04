@@ -1,6 +1,6 @@
 <?php
 
-$cdn = get_cdn();
+$cdn = get_cdn().'/hm';
 
 ?>
 <!doctype html>
