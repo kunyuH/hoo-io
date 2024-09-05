@@ -76,6 +76,38 @@ class LogicalPipelinesController extends BaseController
     }
 
     /**
+     * 删除
+     * @param HmCodeRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(LogicalPipelinesRequest $request)
+    {
+        $id = $request->input('id');
+        if ($id == 1){
+            return $this->resError([],'系统默认，不能删除！');
+        }
+        LogicalPipelinesModel::query()->where('id',$id)->update([
+            'deleted_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s')
+        ]);
+        // 记录日志
+        LogsModel::log(__FUNCTION__.':hm_logical_pipelines-删除',json_encode([
+            'id'=>$id
+        ]));
+        return $this->resSuccess();
+    }
+
+    /**
+     * 运行逻辑线
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function run(LogicalPipelinesRequest $request)
+    {
+        $id = $request->input('id');
+        return LogicalPipelinesArrangeModel::run($id);
+    }
+
+    /**
      * 编排
      * @param LogicalPipelinesRequest $request
      * @return void
@@ -104,49 +136,69 @@ class LogicalPipelinesController extends BaseController
 
         $pipelineData = LogicalPipelinesArrangeModel::arrange($pipeline);
 
-        # 补充操作链接
-        foreach ($pipelineData as $key=>&$value){
-            $value['action'] = [
-                'save'=>jump_link('/hm/code/save'),
-                'run'=>jump_link('/hm/code/run'),
-            ];
-        }
-        return $this->resSuccess($pipelineData);
-    }
-
-    /**
-     * 删除
-     * @param HmCodeRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function delete(LogicalPipelinesRequest $request)
-    {
-        $id = $request->input('id');
-        if ($id == 1){
-            return $this->resError([],'系统默认，不能删除！');
-        }
-
-        LogicalPipelinesModel::query()->where('id',$id)->update([
-            'deleted_at'=>date('Y-m-d H:i:s'),
-            'updated_at'=>date('Y-m-d H:i:s')
+        return $this->view('logicalPipelines.arrange',[
+            'pipelineData'=>$pipelineData
         ]);
-
-        // 记录日志
-        LogsModel::log(__FUNCTION__.':hm_logical_pipelines-删除',json_encode([
-            'id'=>$id
-        ]));
-
-        return $this->resSuccess();
     }
 
-    /**
-     * 运行逻辑线
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function run(LogicalPipelinesRequest $request)
+    public function addNext(LogicalPipelinesRequest $request)
     {
         $id = $request->input('id');
+        $arrange_id = $request->input('arrange_id');
+        if($request->isMethod('POST')) {
+            $logical_block_id = $request->input('logical_block_id');
 
-        return LogicalPipelinesArrangeModel::run($id);
+            /**
+             * before 上一条 逻辑线项
+             * new 新增 逻辑线项
+             * after 下一条 逻辑线项
+             * 要使用事务
+             */
+
+            #上一条 逻辑线项id
+            $before_id = $arrange_id;
+
+            # 添加一条 逻辑线项
+            $new_id = LogicalPipelinesArrangeModel::query()->insertGetId([
+                'logical_pipeline_id'=>$id,
+                'logical_block_id'=>$logical_block_id,
+                'next_id'=>0,
+                'type'=>'common',
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=>date('Y-m-d H:i:s')
+            ]);
+
+            # 下一条 逻辑线项id
+            $after_id = LogicalPipelinesArrangeModel::find($arrange_id)->next_id;
+
+            # 修改 上一条 逻辑线项
+            LogicalPipelinesArrangeModel::query()
+                ->where('id',$arrange_id)
+                ->update([
+                    'next_id'=>$new_id,
+                    'updated_at'=>date('Y-m-d H:i:s')
+                ]);
+
+            # 修改 新增的 逻辑线项
+            LogicalPipelinesArrangeModel::query()
+                ->where('id',$new_id)
+                ->update([
+                    'next_id'=>$after_id,
+                    'updated_at'=>date('Y-m-d H:i:s')
+                ]);
+
+            return $this->resSuccess();
+
+        }else{
+            return $this->modal('logicalPipelines.addNext',[
+                'logical_blocks'=>LogicalBlockModel::query()
+                    ->where(function (Builder $q){
+                        $q->whereNull('deleted_at')
+                            ->orWhere('deleted_at','');
+                    })->get(),
+                'id'=>$id,
+                'arrange_id'=>$arrange_id,
+            ]);
+        }
     }
 }

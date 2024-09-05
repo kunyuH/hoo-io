@@ -36,6 +36,19 @@ class LogicalPipelinesRequest extends BaseRequest
                     'id' => 'bail|required',
                 ];
                 break;
+            case 'addNext:GET':
+                $rules = [
+                    'id' => 'bail|required',
+                    'arrange_id' => 'bail|required',
+                ];
+                break;
+            case 'addNext:POST':
+                $rules = [
+                    'id' => 'bail|required',
+                    'arrange_id' => 'bail|required',
+                    'logical_block_id' => 'bail|required',
+                ];
+                break;
             default:
                 $rules = [];
                 break;

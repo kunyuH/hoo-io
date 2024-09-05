@@ -47,57 +47,14 @@ $(document).on("click","#logical-pipelines-arrange",function(){
     $.ajax({
         type:type,
         url:href,
-        dataType:"json",//返回数据形式为json
+        // dataType:"json",//返回数据形式为json
         success:function(e){
-            if(e.code==200){
-                html = '<div class="row">';
-                for(var i=0;i<e.data.length;i++) {
-                    className = 'ml-3'
-                    if (i == 0) {
-                        className = 'ml-0'
-                    }
-                    className = ''
-                    html += ' <div class="col-md-12">' +
-                        '<div class="card ' + className + '">' +
-                        '<div class="card-body" style="">' +
-                        '<h5 class="card-title">' + e.data[i].block_name + '</h5>' +
-                        '<p class="card-text">' + e.data[i].block_remark + '</p>' +
-                        '<form id="form-code-object-' + e.data[i].id + '">' +
-                        '<div class="form-group">' +
-                        '<input hidden name="id" value="'+ e.data[i].block_id +'"/>' +
-                        '<input hidden name="name" value="'+ e.data[i].block_name +'"/>' +
-                        '<input hidden name="group" value="'+ e.data[i].block_group +'"/>' +
-                        '<input hidden name="label" value="'+ e.data[i].block_label +'"/>' +
-                        '<input hidden name="remark" value="'+ e.data[i].block_remark +'"/>' +
-                        '<textarea id="code-object-text-' + e.data[i].id + '" name="value" hidden>' + e.data[i].block_logical_block + '</textarea>' +
-                        '<pre id="code-object-edit-' + e.data[i].id + '"  data-id="' + e.data[i].id + '" class="logical-pipelines-arrange-ace-editor" style="min-height:200px;min-width: 400px"></pre>' +
-                        '</div>' +
-                        '</form>' +
-                        '<div class="float-left">' +
-                        '<a href="javascript:" class="btn btn-outline-primary btn-sm maxCode">最大化</a>' +
-                        '</div>' +
-                        '<div class="float-right">' +
-                        '<a href="javascript:" class="btn btn-outline-primary btn-sm RunLogicalPipeline">run</a>' +
-                        '<a href="javascript:" class="btn btn-outline-primary btn-sm ml-1 formRunCodeSave" ' +
-                        'id="hm-code-object-save" ' +
-                        'data-id="'+e.data[i].id+'" ' +
-                        'data-href="'+e.data[i].action.save+'" ' +
-                        'data-from_id="form-code-object-' + e.data[i].id + '">save</a>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<br>' +
-                        '</div>';
-                }
-                html += '</div>'
-                $('#logical-pipelines-arrange-show').html(html);
-
-                show_edit();
-            }else{
-                layer.alert(e.message,{icon:5});
-                $('#logical-pipelines-arrange-show').html("");
-            }
+            $('#logical-pipelines-arrange-show').html(e);
+            show_edit();
         },
+        error: function(xhr, status, error) {
+            $("#logical-pipelines-arrange-show").html(xhr.responseText);
+        }
     });
 })
 
@@ -150,7 +107,6 @@ function edit_init(id,index){
 
     //设置光标位置
     editor.moveCursorToPosition(cursorPosition);
-    console.log(cursorPosition)
 
     editors[index] = editor;
 }

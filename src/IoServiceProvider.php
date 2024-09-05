@@ -206,6 +206,8 @@ class IoServiceProvider extends ServiceProvider
                     Route::post('delete',[LogicalPipelinesController::class,'delete']);
                     Route::post('run',[LogicalPipelinesController::class,'run']);
                     Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
+                    Route::get('add-next',[LogicalPipelinesController::class,'addNext']);
+                    Route::post('add-next',[LogicalPipelinesController::class,'addNext']);
                 });
             });
         });

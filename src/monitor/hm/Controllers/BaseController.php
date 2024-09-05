@@ -19,7 +19,7 @@ class BaseController extends Controller
     public $layout = "main.layout";
 
     /**
-     * 渲染视图
+     * 渲染视图-不带公共布局
      * @param $view
      * @param $data
      * @return string
@@ -49,7 +49,7 @@ class BaseController extends Controller
     }
 
     /**
-     * 渲染弹出层视图
+     * 渲染弹出层视图-带公共布局
      * @param $view
      * @param $data
      * @return string

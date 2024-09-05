@@ -93,7 +93,7 @@ class LogicalPipelinesArrangeModel extends BaseModel
         $resData = [];
         foreach ($pipeline as $k=>$v){
             $block = LogicalBlockModel::find($v['logical_block_id']);
-            list($resData,$error) = self::logicalBlockExec($block->name,$block->logical_block,$resData);
+            list($resData,$error) = self::logicalBlockExec($block->logical_block,$block->name,$resData);
             if(!empty($error)) {
 //                dd($error);
                 throw new Exception($error->getMessage(), $error->getCode());
@@ -112,12 +112,12 @@ class LogicalPipelinesArrangeModel extends BaseModel
 
     /**
      * 逻辑单元运行
-     * @param $name
      * @param $logical_block
+     * @param $name
      * @param $resData
      * @return array|mixed
      */
-    public static function logicalBlockExec($name, $logical_block,$resData=[])
+    public static function logicalBlockExec($logical_block,$name='',$resData=[])
     {
         $before_time = microtime(true);
         $inputData = $resData;
@@ -173,14 +173,12 @@ class LogicalPipelinesArrangeModel extends BaseModel
         if(empty($error)){
             Log::channel('debug')->log('info', "【logical block】{$name}", [
                 '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-                'name' => $name,
                 'input' => $inputData,
                 'out' => $resData,
             ]);
         }else{
             Log::channel('debug')->log('error', "【logical block】{$name}", [
                 '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-                'name' => $name,
                 'input' => $inputData,
                 'out' => $resData,
                 'error' => [

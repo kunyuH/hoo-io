@@ -66,7 +66,7 @@ class IndexController extends BaseController
             LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
 
             $resData = LogicalPipelinesArrangeModel::logicalBlockExec($logical_block);
-            
+
             return $resData;
         }else{
             return $this->view('main.modal-form',[
