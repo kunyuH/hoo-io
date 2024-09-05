@@ -75,9 +75,9 @@ class HooLogViewerController extends LogViewerController
 
             if(is_dir($log)){
                 foreach (get_files($log) as $file){
-                    $k = str_replace($data['storage_path'], '', $file);
-                    # 第一位是斜杠则去除
-                    if(substr($k, 0, 1) == '/'){$k = substr($k, 1);}
+                    $k = str_replace("{$data['storage_path']}/{$key}/", '', $file);
+//                    # 第一位是斜杠则去除
+//                    if(substr($k, 0, 1) == '/'){$k = substr($k, 1);}
                     $hoo_data['dir'][$key][$k] = $file;
                 }
             }else{

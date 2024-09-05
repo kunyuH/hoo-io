@@ -31,6 +31,8 @@
     .sidebar {
         font-size: 0.85rem;
         line-height: 1;
+        padding-right: 0;
+        padding-left: 0;
     }
 
     .btn {
@@ -188,20 +190,21 @@
       <div class="list-group div-scroll">
           @foreach($hoo_data['dir'] as $dirName => $dir)
               <div class="list-group-item">
+                  <h6><span class="fa fa-folder"></span> {{$dirName}}</h6>
                   @foreach($dir as $name=>$filePath)
+                      <div class="list-group">
                       <a  href="?l={{Crypt::encrypt($filePath)}}">
-                          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
-                              class="fa fa-file"></span>{{$name}}
+                          <span class="fa fa-file"></span> {{$name}}
                       </a>
+                      </div>
                   @endforeach
               </div>
           @endforeach
           <div class="list-group-item">
           @foreach($hoo_data['file'] as $name=>$filePath)
               <div class="list-group">
-                  <a  href="?l={{Crypt::encrypt($filePath)}}">
-                      <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
-                          class="fa fa-file"></span>{{$name}}
+                  <a href="?l={{Crypt::encrypt($filePath)}}">
+                      <span class="fa fa-file"></span>{{$name}}
                   </a>
               </div>
           @endforeach
