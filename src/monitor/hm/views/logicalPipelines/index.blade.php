@@ -95,7 +95,7 @@ $cdn = get_cdn().'/hm';
                 </div>
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body" id="logical-pipelines-arrange-show" style="height: 500px;overflow-y: auto">
+                    <div class="card-body" id="logical-pipelines-arrange-show">
 
                     </div>
                 </div>

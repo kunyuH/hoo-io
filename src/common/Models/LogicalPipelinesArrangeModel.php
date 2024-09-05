@@ -2,7 +2,10 @@
 
 namespace hoo\io\common\Models;
 
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
+use Throwable;
+use Exception;
 
 class LogicalPipelinesArrangeModel extends BaseModel
 {
@@ -89,20 +92,36 @@ class LogicalPipelinesArrangeModel extends BaseModel
     {
         $resData = [];
         foreach ($pipeline as $k=>$v){
-            $logical_block = LogicalBlockModel::find($v['logical_block_id'])->logical_block;
-            $resData = self::logicalBlockExec($logical_block,$resData);
+            $block = LogicalBlockModel::find($v['logical_block_id']);
+            list($resData,$error) = self::logicalBlockExec($block->name,$block->logical_block,$resData);
+            if(!empty($error)) {
+//                dd($error);
+                throw new Exception($error->getMessage(), $error->getCode());
+//                if (config('app.debug', false)) {
+//                    echo $error->getMessage() . PHP_EOL;
+//                    echo PHP_EOL;
+//                    echo $error->getTraceAsString();
+//                    return [];
+//                } else {
+//                    throw new Exception($error->getMessage(), $error->getCode());
+//                }
+            }
         }
         return $resData;
     }
 
     /**
      * 逻辑单元运行
+     * @param $name
      * @param $logical_block
      * @param $resData
      * @return array|mixed
      */
-    public static function logicalBlockExec($logical_block,$resData=[])
+    public static function logicalBlockExec($name, $logical_block,$resData=[])
     {
+        $before_time = microtime(true);
+        $inputData = $resData;
+        $error = null;
         try{
             # 加载时应用的类名
             $class_name = 'Foo_'.md5(time().Uuid::uuid1()->toString());
@@ -110,7 +129,7 @@ class LogicalPipelinesArrangeModel extends BaseModel
             $logical_block = str_replace('Foo',$class_name,$logical_block);
 
             // 将变量内容写入临时文件
-            $tmpfname = tempnam(sys_get_temp_dir(), 'phpinclude');
+            $tmpfname = tempnam(sys_get_temp_dir(), 'logical-block:');
             file_put_contents($tmpfname, $logical_block);
 
             include $tmpfname;
@@ -125,14 +144,53 @@ class LogicalPipelinesArrangeModel extends BaseModel
                 $resData = $instance->run();
             }
 
-        }catch (\Error|\Exception|Throwable|ReflectionException|\UnexpectedValueException $e){
+        }catch (Throwable $e){
             if(file_exists($tmpfname)){
                 unlink($tmpfname);
             }
-            echo $e->getMessage().PHP_EOL;
-            echo PHP_EOL;
-            echo $e->getTraceAsString();
+            $error = $e;
         }
-        return $resData;
+        $after_time = microtime(true);
+
+        self::log($name,$before_time,$after_time,$inputData,$resData,$error);
+
+        return [$resData,$error];
+    }
+
+    /**
+     * 记录日志
+     * @param $name
+     * @param $before_time
+     * @param $after_time
+     * @param $inputData
+     * @param $resData
+     * @param null|Throwable $error
+     * @return void
+     */
+    public static function log($name,$before_time,$after_time,$inputData,$resData,null|Throwable $error)
+    {
+        # 记录日志 格式化记录数组
+        if(empty($error)){
+            Log::channel('debug')->log('info', "【logical block】{$name}", [
+                '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
+                'name' => $name,
+                'input' => $inputData,
+                'out' => $resData,
+            ]);
+        }else{
+            Log::channel('debug')->log('error', "【logical block】{$name}", [
+                '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
+                'name' => $name,
+                'input' => $inputData,
+                'out' => $resData,
+                'error' => [
+                    'code' => $error->getCode(),
+                    'message' => $error->getMessage(),
+                    'file' => $error->getFile(),
+                    'line' => $error->getLine(),
+//                    'trace' => $error->getTrace()
+                ]
+            ]);
+        }
     }
 }
