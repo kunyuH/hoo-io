@@ -44,6 +44,7 @@
                            data-from_id="form-code-object-{{$value['id']}}">save</a>
                         <a href="javascript:"
                            class="btn btn-danger btn-sm ky-req"
+                           data-confirm-ky="Are you sure?"
                            data-href="{{jump_link("/hm/logical-pipelines/delete-arrange?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}")}}"
                            data-type="POST"
                         >delete</a>

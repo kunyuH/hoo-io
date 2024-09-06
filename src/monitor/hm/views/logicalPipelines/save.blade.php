@@ -9,8 +9,8 @@ $cdn = get_cdn().'/hm';
         <form id="logical-pipeline-create">
             <input hidden name="id" value="{{$id??''}}">
             <div class="form-group">
-                <label class="star">route</label>
-                <input type="text" class="form-control" name="route" value="{{$route??''}}" placeholder="demo/test">
+                <label class="star">rec_subject_id</label>
+                <input type="text" class="form-control" name="rec_subject_id" value="{{$rec_subject_id??''}}" placeholder="demo/test">
             </div>
             <div class="form-group">
                 <label class="star">name</label>

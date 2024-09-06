@@ -15,7 +15,7 @@ class LogicalPipelinesRequest extends BaseRequest
         switch ($action_name) {
             case 'save:POST':
                 $rules = [
-                    'route' => 'bail|required',
+                    'rec_subject_id' => 'bail|required',
                     'name' => 'bail|required',
                     'group' => 'bail|required',
                     'label' => 'bail|required',

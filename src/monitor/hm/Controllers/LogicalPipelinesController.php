@@ -45,7 +45,7 @@ class LogicalPipelinesController extends BaseController
         $id = $request->input('id');
         if($request->isMethod('POST')) {
             $this->pipelines->save(
-                $request->input('route'),
+                $request->input('rec_subject_id'),
                 $request->input('name'),
                 $request->input('group'),
                 $request->input('label'),
@@ -57,6 +57,17 @@ class LogicalPipelinesController extends BaseController
             if($id){
                 $info = LogicalPipelinesModel::query()->where('id',$id)->first();
             }
+
+            $info['setting'] = json_decode($info['setting']??"{}",true);
+            
+//            dd($info['setting']);
+//            $info['setting'] = [
+//                'method'=>'POST',
+//                'middleware'=>'',
+//                //参数校验策略
+//                'validate'=>[]
+//            ];
+
             return $this->modal('logicalPipelines.save',$info);
         }
     }

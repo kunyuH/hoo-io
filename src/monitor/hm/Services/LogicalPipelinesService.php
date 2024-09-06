@@ -29,7 +29,7 @@ class LogicalPipelinesService extends BaseService
 
     /**
      * 逻辑线保存
-     * @param $route
+     * @param $rec_subject_id
      * @param $name
      * @param $group
      * @param $label
@@ -38,14 +38,14 @@ class LogicalPipelinesService extends BaseService
      * @return true
      * @throws HooException
      */
-    public function save($route,$name,$group,$label='',$remark='',$id='')
+    public function save($rec_subject_id,$name,$group,$label='',$remark='',$id='')
     {
         if ($id == 1){
             throw new HooException('系统默认流水线不可修改！');
         }
         if($id){
             LogicalPipelinesModel::query()->where('id',$id)->update([
-                'route'=>$route,
+                'rec_subject_id'=>$rec_subject_id,
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
@@ -55,11 +55,11 @@ class LogicalPipelinesService extends BaseService
         }else{
             if(LogicalPipelinesModel::query()
                 ->where('id','<>',$id)
-                ->where('route',$route)->count()){
+                ->where('rec_subject_id',$rec_subject_id)->count()){
                 throw new HooException('路由已存在！');
             }
             LogicalPipelinesModel::query()->insert([
-                'route'=>$route,
+                'rec_subject_id'=>$rec_subject_id,
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,

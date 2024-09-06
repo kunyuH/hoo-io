@@ -35,7 +35,7 @@ $cdn = get_cdn().'/hm';
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">route</th>
+                        <th scope="col">rec_subject_id</th>
                         <th scope="col">name</th>
                         <th scope="col">group</th>
                         <th scope="col">label</th>
@@ -46,7 +46,7 @@ $cdn = get_cdn().'/hm';
                     @foreach($logicalPipelines as $pipeline)
                         <tr>
                             <th scope="row">{{$pipeline->id}}</th>
-                            <td>{{$pipeline->route}}</td>
+                            <td>{{$pipeline->rec_subject_id}}</td>
                             <td>{{$pipeline->name}}</td>
                             <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->label}}</td>
