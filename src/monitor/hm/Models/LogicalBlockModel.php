@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io\common\Models;
+namespace hoo\io\monitor\hm\Models;
 
 class LogicalBlockModel extends BaseModel
 {

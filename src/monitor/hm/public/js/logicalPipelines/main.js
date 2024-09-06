@@ -1,4 +1,17 @@
 /**
+ * 页面加载后运行
+ */
+$(document).ready(function(){
+    //获取当前页面url携带的参数
+    var url = window.location.href;
+    params = getUrlParams(new URL(url));
+    if(params['pipeline_id']){
+        //加载编排数据
+        getArrangeList(params['pipeline_id']);
+    }
+})
+
+/**
  * 逻辑线运行
  */
 $(document).on("click",".RunLogicalPipeline",function(){
@@ -38,25 +51,40 @@ $(document).on("click",".RunLogicalPipeline",function(){
 /**
  * 编排
  */
-$(document).on("click","#logical-pipelines-arrange",function(){
-    var href = $(this).attr('data-href');
-    var type = $(this).attr('data-type');
+$(document).on("click",".logical-pipelines-arrange",function(){
+    var id = $(this).attr('data-id');
+    getArrangeList(id)
+})
+
+/**
+ * 获取逻辑线的编排列表
+ * @param id
+ */
+function getArrangeList(id){
+    var href = jump_link('/hm/logical-pipelines/arrange?id='+id);
 
     $('#logical-pipelines-arrange-show').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
 
     $.ajax({
-        type:type,
+        type:'get',
         url:href,
         // dataType:"json",//返回数据形式为json
-        success:function(e){
-            $('#logical-pipelines-arrange-show').html(e);
+        success:function(result){
+            //如果返回的是json 则转为字符串
+            if(typeof result == 'object'){
+                result = JSON.stringify(result)
+                result = result.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                $("#logical-pipelines-arrange-show").html(result);
+            }else{
+                $("#logical-pipelines-arrange-show").html(result);
+            }
             show_edit();
         },
         error: function(xhr, status, error) {
             $("#logical-pipelines-arrange-show").html(xhr.responseText);
         }
     });
-})
+}
 
 function show_edit() {
     // 确定有多少个编辑框需要初始化

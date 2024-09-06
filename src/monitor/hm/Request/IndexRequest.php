@@ -1,10 +1,10 @@
 <?php
 
-namespace hoo\io\common\Request;
+namespace hoo\io\monitor\hm\Request;
 
 use Illuminate\Support\Str;
 
-class HmCodeRequest extends BaseRequest
+class IndexRequest extends BaseRequest
 {
     public function rules()
     {
@@ -13,22 +13,16 @@ class HmCodeRequest extends BaseRequest
         $action_name = $action_name.":".$this->method();
 
         switch ($action_name) {
-            case 'save:POST':
+            case 'runCommand:GET':
                 $rules = [
-                    'name' => 'bail|required',
-                    'group' => 'bail|required',
-                    'label' => 'bail|required',
+                    'submitTo' => 'bail|required',
+                ];
+                break;
+            case 'runCommand:POST':
+                $rules = [
                     'value' => 'bail|required',
                 ];
                 break;
-            case 'details:GET':
-                $rules = [
-                    'id' => 'bail|required',
-                ];
-            case 'delete:POST':
-                $rules = [
-                    'id' => 'bail|required',
-                ];
             default:
                 $rules = [];
                 break;

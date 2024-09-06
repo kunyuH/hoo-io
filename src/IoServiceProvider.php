@@ -10,7 +10,7 @@ use hoo\io\common\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
 use hoo\io\common\Middleware\HooMid;
-use hoo\io\monitor\hm\Controllers\CodeController;
+use hoo\io\monitor\hm\Controllers\LogicalBlockController;
 use hoo\io\monitor\hm\Controllers\IndexController;
 use hoo\io\monitor\hm\Controllers\LogicalPipelinesController;
 use hoo\io\monitor\hm\Controllers\LoginController;
@@ -147,7 +147,7 @@ class IoServiceProvider extends ServiceProvider
         $kernel = $this->app->make(Kernel::class);
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
-        Route::aliasMiddleware('hoo.auth',HmAuth::class);
+//        Route::aliasMiddleware('hoo.auth',HmAuth::class);
     }
 
     /**
@@ -180,7 +180,7 @@ class IoServiceProvider extends ServiceProvider
                 Route::get('index',[LoginController::class,'index']);
             });
 
-            Route::middleware('hoo.auth')->group(function (){
+            Route::middleware(HmAuth::class)->group(function (){
 
                 Route::get('index',[IndexController::class,'index']);
                 Route::post('send-command',[IndexController::class,'sendCommand']);
@@ -188,15 +188,13 @@ class IoServiceProvider extends ServiceProvider
                 Route::get('run-command',[IndexController::class,'runCommand']);
                 Route::post('run-command',[IndexController::class,'runCommand']);
 
-                Route::get('run-code',[IndexController::class,'runCode']);
-                Route::post('run-code',[IndexController::class,'runCode']);
-
-                Route::prefix('code')->group(function (){
-                    Route::get('index',[CodeController::class,'index']);
-                    Route::get('list',[CodeController::class,'list']);
-                    Route::get('details',[CodeController::class,'details']);
-                    Route::post('save',[CodeController::class,'save']);
-                    Route::post('delete',[CodeController::class,'delete']);
+                Route::prefix('logical-block')->group(function (){
+                    Route::get('index',[LogicalBlockController::class,'index']);
+                    Route::get('list',[LogicalBlockController::class,'list']);
+                    Route::get('detail',[LogicalBlockController::class,'detail']);
+                    Route::post('save',[LogicalBlockController::class,'save']);
+                    Route::post('delete',[LogicalBlockController::class,'delete']);
+                    Route::post('run',[LogicalBlockController::class,'run']);
                 });
 
                 Route::prefix('logical-pipelines')->group(function (){
@@ -206,22 +204,15 @@ class IoServiceProvider extends ServiceProvider
                     Route::post('delete',[LogicalPipelinesController::class,'delete']);
                     Route::post('run',[LogicalPipelinesController::class,'run']);
                     Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
-                    Route::get('add-next',[LogicalPipelinesController::class,'addNext']);
-                    Route::post('add-next',[LogicalPipelinesController::class,'addNext']);
+                    Route::get('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
+                    Route::post('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
+                    Route::post('delete-arrange',[LogicalPipelinesController::class,'deleteArrange']);
                 });
             });
         });
 
         Route::prefix('hm-r')->group(function (){
             Route::get('{path}',[IndexController::class,'webAsset'])->where('path', '.+');
-        });
-
-        Route::fallback(function () {
-            return response()->json([
-                'code'    => 404,
-                'message' => 'Not Found!',
-                'data'    => [],
-            ]);
         });
     }
 }

@@ -13,7 +13,7 @@ $cdn = get_cdn().'/hm';
 <div class="container" style="margin-top: 15px">
     <ul class="layui-nav">
         <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
-        <li class="layui-nav-item"><a href={{jump_link("/hm/code/index")}}>logical block</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/logical-block/index")}}>logical block</a></li>
         <li class="layui-nav-item"><a href={{jump_link("/hm/logical-pipelines/index")}}>logical pipelines</a></li>
         <li class="layui-nav-item"><a href="javascript:"
                                       data-title="clockwork"
@@ -64,6 +64,19 @@ $cdn = get_cdn().'/hm';
             color:red
         }
     </style>
+    <script>
+        var jump_link = function (url) {
+            return '{{jump_link("")}}' + url;
+        }
+        function getUrlParams(url) {
+            const searchParams = new URLSearchParams(url.search);
+            const params = {};
+            for (let [key, value] of searchParams) {
+                params[key] = value;
+            }
+            return params;
+        }
+    </script>
 
     <?php echo $content ?>
 </div>

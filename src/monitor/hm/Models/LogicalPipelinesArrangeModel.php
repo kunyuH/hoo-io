@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io\common\Models;
+namespace hoo\io\monitor\hm\Models;
 
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;

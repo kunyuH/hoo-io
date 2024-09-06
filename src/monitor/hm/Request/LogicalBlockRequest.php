@@ -1,10 +1,10 @@
 <?php
 
-namespace hoo\io\common\Request;
+namespace hoo\io\monitor\hm\Request;
 
 use Illuminate\Support\Str;
 
-class HmIndexRequest extends BaseRequest
+class LogicalBlockRequest extends BaseRequest
 {
     public function rules()
     {
@@ -13,24 +13,27 @@ class HmIndexRequest extends BaseRequest
         $action_name = $action_name.":".$this->method();
 
         switch ($action_name) {
-            case 'runCommand:GET':
+            case 'save:POST':
                 $rules = [
-                    'submitTo' => 'bail|required',
-                ];
-                break;
-            case 'runCommand:POST':
-                $rules = [
+                    'name' => 'bail|required',
+                    'group' => 'bail|required',
+                    'label' => 'bail|required',
                     'value' => 'bail|required',
                 ];
                 break;
-            case 'runCode:GET':
+            case 'detail:GET':
                 $rules = [
-                    'submitTo' => 'bail|required',
+                    'id' => 'bail|required',
                 ];
                 break;
-            case 'runCode:POST':
+            case 'delete:POST':
                 $rules = [
-                    'value' => 'bail|required',
+                    'id' => 'bail|required',
+                ];
+                break;
+            case 'run:POST':
+                $rules = [
+                    'logical_block' => 'bail|required',
                 ];
                 break;
             default:
@@ -38,12 +41,5 @@ class HmIndexRequest extends BaseRequest
                 break;
         }
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'value' => '请输入命令',
-        ];
     }
 }

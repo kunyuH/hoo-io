@@ -64,10 +64,8 @@ $cdn = get_cdn().'/hm';
                                 >edit</a>
                                 <a href="javascript:"
                                    type="button"
-                                   class="btn btn-outline-primary btn-sm"
-                                   data-type="GET"
-                                   id="logical-pipelines-arrange"
-                                   data-href={{jump_link("/hm/logical-pipelines/arrange?id=".$pipeline->id)}}
+                                   class="btn btn-outline-primary btn-sm logical-pipelines-arrange"
+                                   data-id="{{$pipeline->id}}"
                                 >arrange</a>
                                 <a href="javascript:"
                                    class="btn btn-danger btn-sm ky-req"

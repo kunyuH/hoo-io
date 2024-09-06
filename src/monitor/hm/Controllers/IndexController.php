@@ -2,10 +2,8 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
-use hoo\io\common\Models\LogicalBlockModel;
-use hoo\io\common\Models\LogicalPipelinesArrangeModel;
 use hoo\io\common\Models\LogsModel;
-use hoo\io\common\Request\HmIndexRequest;
+use hoo\io\monitor\hm\Request\IndexRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use hoo\io\common\Support\Facade\HooSession;
@@ -27,7 +25,7 @@ class IndexController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|string
      */
-    public function runCommand(HmIndexRequest $request)
+    public function runCommand(IndexRequest $request)
     {
         if($request->isMethod('POST')) {
             $command = $request->input('value');
@@ -57,22 +55,5 @@ class IndexController extends BaseController
         }
     }
 
-    public function runCode(HmIndexRequest $request)
-    {
-        if($request->isMethod('POST')) {
-            $logical_block = $request->input('value');
 
-            // 记录日志
-            LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
-
-            $resData = LogicalPipelinesArrangeModel::logicalBlockExec($logical_block);
-
-            return $resData;
-        }else{
-            return $this->view('main.modal-form',[
-                'submitTo'=>$request->input('submitTo'),
-            ]);
-        }
-
-    }
 }

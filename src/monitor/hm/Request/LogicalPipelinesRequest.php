@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io\common\Request;
+namespace hoo\io\monitor\hm\Request;
 
 use Illuminate\Support\Str;
 
@@ -36,17 +36,24 @@ class LogicalPipelinesRequest extends BaseRequest
                     'id' => 'bail|required',
                 ];
                 break;
-            case 'addNext:GET':
+            case 'addArrangeItem:GET':
                 $rules = [
-                    'id' => 'bail|required',
+                    'pipeline_id' => 'bail|required',
                     'arrange_id' => 'bail|required',
                 ];
                 break;
-            case 'addNext:POST':
+            case 'addArrangeItem:POST':
                 $rules = [
-                    'id' => 'bail|required',
+                    'pipeline_id' => 'bail|required',
                     'arrange_id' => 'bail|required',
                     'logical_block_id' => 'bail|required',
+                    'op' => 'bail|required',
+                ];
+                break;
+            case 'deleteArrange:POST':
+                $rules = [
+                    'pipeline_id' => 'bail|required',
+                    'arrange_id' => 'bail|required',
                 ];
                 break;
             default:
@@ -54,12 +61,5 @@ class LogicalPipelinesRequest extends BaseRequest
                 break;
         }
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'value' => '请输入命令',
-        ];
     }
 }

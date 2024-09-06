@@ -7,7 +7,8 @@ $cdn = get_cdn().'/hm';
 <div class="row">
     <div class="col-12 mb-3 mt-3">
         <form id="logical-pipeline-add-next">
-            <input hidden name="id" value="{{$id??''}}">
+            <input hidden name="pipeline_id" value="{{$pipeline_id??''}}">
+            <input hidden name="op" value="{{$op??''}}">
             <input hidden name="arrange_id" value="{{$arrange_id??''}}">
             <div class="form-group">
                 <label for="logical-block-select" class="star">logical block</label>
@@ -22,7 +23,7 @@ $cdn = get_cdn().'/hm';
                 <a href="javascript:"
                    data-from_id="logical-pipeline-add-next"
                    class="btn btn-primary formSubmit"
-                   data-href={{jump_link('/hm/logical-pipelines/add-next')}}
+                   data-href={{jump_link('/hm/logical-pipelines/add-arrange-item')}}
                 >Submit</a>
                 <a href="javascript:"
                    class="btn btn-danger  modalClose"

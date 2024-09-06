@@ -2,26 +2,27 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
-use hoo\io\common\Models\LogicalBlockModel;
 use hoo\io\common\Models\LogsModel;
-use hoo\io\common\Request\HmCodeRequest;
+use hoo\io\monitor\hm\Request\LogicalBlockRequest;
+use hoo\io\monitor\hm\Models\LogicalBlockModel;
+use hoo\io\monitor\hm\Services\LogicalPipelinesService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class CodeController extends BaseController
+class LogicalBlockController extends BaseController
 {
     /**
-     * run code首页
+     * run LogicalBlock首页
      * @return string
      */
     public function index()
     {
-        return $this->v('code.index');
+        return $this->v('LogicalBlock.index');
     }
 
     /**
-     * 获取code列表
+     * 获取LogicalBlock列表
      * @return \Illuminate\Http\JsonResponse
      */
     public function list()
@@ -36,11 +37,11 @@ class CodeController extends BaseController
     }
 
     /**
-     * 获取code详情
-     * @param HmCodeRequest $request
+     * 获取LogicalBlock详情
+     * @param LogicalBlockRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function details(HmCodeRequest $request)
+    public function detail(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
         $item = LogicalBlockModel::query()->find($id);
@@ -48,11 +49,11 @@ class CodeController extends BaseController
     }
 
     /**
-     * 保存code
-     * @param HmCodeRequest $request
+     * 保存LogicalBlock
+     * @param LogicalBlockRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function save(HmCodeRequest $request)
+    public function save(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
         $name = $request->input('name');
@@ -98,11 +99,11 @@ class CodeController extends BaseController
     }
 
     /**
-     * 删除code
-     * @param HmCodeRequest $request
+     * 删除LogicalBlock
+     * @param LogicalBlockRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(HmCodeRequest $request)
+    public function delete(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
         if ($id == 1){
@@ -119,5 +120,29 @@ class CodeController extends BaseController
         ]));
 
         return $this->resSuccess();
+    }
+
+    /**
+     * 运行代码块
+     * @param LogicalBlockRequest $request
+     * @return string
+     */
+    public function run(LogicalBlockRequest $request)
+    {
+        if($request->isMethod('POST')) {
+            $logical_block = $request->input('logical_block');
+
+            // 记录日志
+            LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
+
+            list($resData,) = (new LogicalPipelinesService())->logicalBlockExec($logical_block);
+
+            return $resData;
+        }else{
+            return $this->view('main.modal-form',[
+                'submitTo'=>$request->input('submitTo'),
+            ]);
+        }
+
     }
 }
