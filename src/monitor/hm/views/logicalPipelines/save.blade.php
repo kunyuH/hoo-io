@@ -28,6 +28,22 @@ $cdn = get_cdn().'/hm';
                 <label>remark</label>
                 <textarea class="form-control" name="remark" value="{{$remark??''}}" rows="3"></textarea>
             </div>
+            <div class="form-group">
+                <label for="method-select" class="star">method</label>
+                <select class="form-control" name="setting[method]" id="method-select">
+                    <option value="" selected>method...</option>
+                    <option value="get" {{$setting['method']??'' == 'get'?'selected':''}}>get</option>
+                    <option value="post" {{$setting['method']??'' == 'post'?'selected':''}}>post</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>middleware</label>
+                <input type="text" class="form-control" value="{{$setting['middleware']??''}}" name="setting[middleware]">
+            </div>
+            <div class="form-group">
+                <label>validate</label>
+                <textarea class="form-control" name="setting[validate]" value="{{$setting['validate']??''}}" rows="3">{{$setting['validate']??''}}</textarea>
+            </div>
             <div class="float-right">
                 <a href="javascript:"
                    data-from_id="logical-pipeline-create"

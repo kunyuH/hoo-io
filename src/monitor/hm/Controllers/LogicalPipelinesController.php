@@ -50,24 +50,15 @@ class LogicalPipelinesController extends BaseController
                 $request->input('group'),
                 $request->input('label'),
                 $request->input('remark'),
+                $request->input('setting'),
                 $id);
             return $this->resSuccess(['type'=>2]);
         }else{
             $info = [];
             if($id){
                 $info = LogicalPipelinesModel::query()->where('id',$id)->first();
+                $info['setting'] = json_decode($info['setting'],true);
             }
-
-            $info['setting'] = json_decode($info['setting']??"{}",true);
-            
-//            dd($info['setting']);
-//            $info['setting'] = [
-//                'method'=>'POST',
-//                'middleware'=>'',
-//                //参数校验策略
-//                'validate'=>[]
-//            ];
-
             return $this->modal('logicalPipelines.save',$info);
         }
     }

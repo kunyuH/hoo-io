@@ -38,7 +38,7 @@ class LogicalPipelinesService extends BaseService
      * @return true
      * @throws HooException
      */
-    public function save($rec_subject_id,$name,$group,$label='',$remark='',$id='')
+    public function save($rec_subject_id,$name,$group,$label='',$remark='',$setting,$id='')
     {
         if ($id == 1){
             throw new HooException('系统默认流水线不可修改！');
@@ -50,6 +50,7 @@ class LogicalPipelinesService extends BaseService
                 'group'=>$group,
                 'label'=>$label,
                 'remark'=>$remark,
+                'setting'=>json_encode($setting,JSON_UNESCAPED_UNICODE),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
         }else{
@@ -64,6 +65,7 @@ class LogicalPipelinesService extends BaseService
                 'group'=>$group,
                 'label'=>$label,
                 'remark'=>$remark,
+                'setting'=>json_encode($setting,JSON_UNESCAPED_UNICODE),
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
@@ -269,6 +271,7 @@ class LogicalPipelinesService extends BaseService
      */
     private function arrange($pipeline)
     {
+        if(empty($pipeline)){return [];}
         # next_id 数据预处理 为null 和 为'' 都置为0
         foreach ($pipeline as $k=>$v){
             if($v['next_id'] === null){
