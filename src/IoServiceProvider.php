@@ -157,7 +157,7 @@ class IoServiceProvider extends ServiceProvider
         $kernel = $this->app->make(Kernel::class);
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
-//        Route::aliasMiddleware('hoo.auth',HmAuth::class);
+        Route::aliasMiddleware('hoo.auth',HmAuth::class);
     }
 
     /**
@@ -190,7 +190,7 @@ class IoServiceProvider extends ServiceProvider
                 Route::get('index',[LoginController::class,'index']);
             });
 
-            Route::middleware(HmAuth::class)->group(function (){
+            Route::middleware('hoo.auth')->group(function (){
 
                 Route::get('index',[IndexController::class,'index']);
                 Route::post('send-command',[IndexController::class,'sendCommand']);
