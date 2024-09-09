@@ -5,20 +5,7 @@ $cdn = get_cdn().'/hm';
 <script src="<?php echo $cdn?>/ace-builds-master/src/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 
 <div class="row">
-    <div class="col-2">
-        <div class="card">
-            <div class="card-header">
-                logical block
-            </div>
-            <div class="card-body">
-                <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">新增</a>
-                <hr>
-                <div id="code-object-list">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-10">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
                 <div class="float-right mb-3">
@@ -35,9 +22,9 @@ $cdn = get_cdn().'/hm';
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">group</th>
                         <th scope="col">rec_subject_id</th>
                         <th scope="col">name</th>
-                        <th scope="col">group</th>
                         <th scope="col">label</th>
                         <th scope="col">op</th>
                     </tr>
@@ -46,9 +33,9 @@ $cdn = get_cdn().'/hm';
                     @foreach($logicalPipelines as $pipeline)
                         <tr>
                             <th scope="row">{{$pipeline->id}}</th>
+                            <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->rec_subject_id}}</td>
                             <td>{{$pipeline->name}}</td>
-                            <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->label}}</td>
                             <td><a href="javascript:"
                                    class="btn btn-outline-primary btn-sm RunLogicalPipeline"

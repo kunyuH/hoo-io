@@ -9,16 +9,16 @@ $cdn = get_cdn().'/hm';
         <form id="logical-pipeline-create">
             <input hidden name="id" value="{{$id??''}}">
             <div class="form-group">
+                <label class="star">group</label>
+                <input type="text" class="form-control" value="{{$group??''}}" name="group">
+            </div>
+            <div class="form-group">
                 <label class="star">rec_subject_id</label>
-                <input type="text" class="form-control" name="rec_subject_id" value="{{$rec_subject_id??''}}" placeholder="demo/test">
+                <input type="text" class="form-control" name="rec_subject_id" value="{{$rec_subject_id??''}}" placeholder="demo/add-item">
             </div>
             <div class="form-group">
                 <label class="star">name</label>
                 <input type="text" class="form-control" value="{{$name??''}}" name="name">
-            </div>
-            <div class="form-group">
-                <label class="star">group</label>
-                <input type="text" class="form-control" value="{{$group??''}}" name="group">
             </div>
             <div class="form-group">
                 <label>label</label>
@@ -30,10 +30,10 @@ $cdn = get_cdn().'/hm';
             </div>
             <div class="form-group">
                 <label for="method-select" class="star">method</label>
-                <select class="form-control" name="setting[method]" id="method-select">
+                <select class="form-control" name="setting[method]" data-xx="{{$setting['method']}}" id="method-select">
                     <option value="" selected>method...</option>
-                    <option value="get" {{$setting['method']??'' == 'get'?'selected':''}}>get</option>
-                    <option value="post" {{$setting['method']??'' == 'post'?'selected':''}}>post</option>
+                    <option value="get" {{($setting['method']??'') == 'get'?'selected':''}}>get</option>
+                    <option value="post" {{($setting['method']??'') == 'post'?'selected':''}}>post</option>
                 </select>
             </div>
             <div class="form-group">

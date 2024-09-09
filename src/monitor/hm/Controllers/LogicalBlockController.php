@@ -2,10 +2,11 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
+use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Models\LogsModel;
+use hoo\io\monitor\hm\Support\Facades\Logical;
 use hoo\io\monitor\hm\Request\LogicalBlockRequest;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
-use hoo\io\monitor\hm\Services\LogicalPipelinesService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 
@@ -56,10 +57,11 @@ class LogicalBlockController extends BaseController
     public function save(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
+        $object_id = $request->input('object_id');
         $name = $request->input('name');
         $group = $request->input('group');
         $label = $request->input('label');
-        $code = $request->input('value');
+        $logical_block = $request->input('logical_block');
 
         if(!empty($id)){
             if ($id == 1){
@@ -67,11 +69,21 @@ class LogicalBlockController extends BaseController
             }
             $old_data = LogicalBlockModel::query()->find($id);
 
+            # 检测是否存在重复
+            if(LogicalBlockModel::query()
+                ->where('object_id',$object_id)
+                ->where('id','<>',$id)
+                ->where(function (Builder $q){
+                    $q->whereNull('deleted_at')
+                        ->orWhere('deleted_at','');
+                })->count()){throw new HooException('object_id已存在！');}
+
             LogicalBlockModel::query()->where('id',$id)->update([
+                'object_id'=>$object_id,
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
-                'logical_block'=>$code,
+                'logical_block'=>$logical_block,
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
 
@@ -81,11 +93,20 @@ class LogicalBlockController extends BaseController
                 'new_data'=>LogicalBlockModel::query()->find($id)
             ],JSON_UNESCAPED_UNICODE));
         }else{
+            # 检测是否存在重复
+            if(LogicalBlockModel::query()
+                ->where('object_id',$object_id)
+                ->where(function (Builder $q){
+                    $q->whereNull('deleted_at')
+                        ->orWhere('deleted_at','');
+                })->count()){throw new HooException('object_id已存在！');}
+
             LogicalBlockModel::query()->create([
+                'object_id'=>$object_id,
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
-                'logical_block'=>$code,
+                'logical_block'=>$logical_block,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
@@ -135,7 +156,7 @@ class LogicalBlockController extends BaseController
             // 记录日志
             LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
 
-            list($resData,) = (new LogicalPipelinesService())->logicalBlockExec($logical_block);
+            list($resData,) = Logical::logicalBlockExecByCode($logical_block);
 
             return $resData;
         }else{

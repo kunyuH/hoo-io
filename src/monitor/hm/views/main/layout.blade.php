@@ -8,6 +8,7 @@ $cdn = get_cdn().'/hm';
     <title>hoo-hm</title>
     <link href="<?php echo $cdn?>/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
     <link href="<?php echo $cdn?>/css/bootstrap.min.css" rel="stylesheet" >
+    <link rel="stylesheet" href="<?php echo $cdn?>/icons-1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
 <div class="container" style="margin-top: 15px">

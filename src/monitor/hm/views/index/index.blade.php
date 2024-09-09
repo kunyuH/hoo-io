@@ -21,10 +21,10 @@
                    type="button"
                    class="btn btn-outline-primary ky-req"
                    data-type="post"
-                   data-confirm-ky="确认要初始化run code模块吗？"
-                   data-params='{"value":"hm:dev runCodeInit"}'
+                   data-confirm-ky="确认要初始化logical pipelines模块吗？"
+                   data-params='{"value":"hm:dev logicalPipelinesInit"}'
                    data-href={{jump_link("/hm/run-command")}}
-                >run code模块初始化</a>
+                >logical pipelines模块初始化</a>
             </div>
         </div>
     </div>

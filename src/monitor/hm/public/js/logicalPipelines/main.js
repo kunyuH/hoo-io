@@ -10,6 +10,45 @@ $(document).ready(function(){
         getArrangeList(params['pipeline_id']);
     }
 })
+/**
+ * 最大化
+ */
+$(document).on("click",".maxCode",function(){
+
+    code_id = 'code-object-edit-'+$(this).attr('data-id');
+    //code-object-edit-14
+    console.log(code_id);
+
+    layer.open({
+        // skin: 'hoo-layer-open',
+        title: 'logical block',
+        shade: 0.8,
+        type: 1,
+        // area: ['100%', '100%'], // 全屏
+        area: ['800px', '500px'], // 全屏
+        maxmin: true,
+        scrollbar: true,
+        content: $('#'+code_id),
+        success: function(layero, index){
+            document.getElementById(code_id).style.height = '100%';
+            // 绑定键盘事件
+            $(document).on('keydown', function(e){
+                e = e || window.event;
+                var key = e.keyCode || e.which; // 获取按键的keyCode
+                if(key == 27){ // 27是ESC按键的keyCode
+                    layer.close(index); // 关闭弹层
+                }
+            });
+        },
+        cancel: function(index, layero){
+            document.getElementById(code_id).style.height = "200px";
+        },
+        end: function(){
+            // 移除键盘事件监听
+            $(document).off('keydown');
+        }
+    });
+});
 
 /**
  * 逻辑线运行

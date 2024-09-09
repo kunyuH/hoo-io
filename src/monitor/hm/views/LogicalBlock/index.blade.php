@@ -26,6 +26,9 @@ $cdn = get_cdn().'/hm';
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
+                                <input type="text" id="code-object-object-id" name="object_id" placeholder="object_id" class="form-control">
+                            </div>
+                            <div class="col">
                                 <input type="text" id="code-object-name" name="name" placeholder="name" class="form-control">
                             </div>
                             <div class="col">
@@ -161,6 +164,7 @@ $cdn = get_cdn().'/hm';
      * 表单初始化
      */
     function loadForm() {
+        $("#code-object-object-id").val('');
         $("#code-object-name").val('');
         $("#code-object-group").val('');
         $("#code-object-label").val('');
@@ -379,6 +383,7 @@ $cdn = get_cdn().'/hm';
                 layer.close(index);
                 if(e.code==200){
                     $("#code-object-id").val(e.data.id);
+                    $("#code-object-object-id").val(e.data.object_id);
                     $("#code-object-name").val(e.data.name);
                     $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);

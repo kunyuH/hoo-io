@@ -3,27 +3,17 @@
 namespace hoo\io\monitor\hm\Controllers;
 
 use hoo\io\common\Exceptions\HooException;
+use hoo\io\monitor\hm\Support\Facades\Logical;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Models\LogsModel;
 use hoo\io\monitor\hm\Request\LogicalPipelinesRequest;
-use hoo\io\monitor\hm\Services\LogicalPipelinesService;
 use Illuminate\Database\Eloquent\Builder;
 
 
 class LogicalPipelinesController extends BaseController
 {
-
-    /**
-     * @var LogicalPipelinesService
-     */
-    public $pipelines;
-
-    public function __construct()
-    {
-        $this->pipelines = new LogicalPipelinesService();
-    }
     /**
      * logical pipelines首页
      * @return string
@@ -31,7 +21,7 @@ class LogicalPipelinesController extends BaseController
     public function index()
     {
         return $this->v('logicalPipelines.index',[
-            'logicalPipelines'=>$this->pipelines->list()
+            'logicalPipelines'=>Logical::list()
         ]);
     }
 
@@ -44,7 +34,7 @@ class LogicalPipelinesController extends BaseController
     {
         $id = $request->input('id');
         if($request->isMethod('POST')) {
-            $this->pipelines->save(
+            Logical::save(
                 $request->input('rec_subject_id'),
                 $request->input('name'),
                 $request->input('group'),
@@ -71,7 +61,7 @@ class LogicalPipelinesController extends BaseController
     public function delete(LogicalPipelinesRequest $request)
     {
         $id = $request->input('id');
-        $this->pipelines->delete($id);
+        Logical::delete($id);
         return $this->resSuccess();
     }
 
@@ -82,7 +72,7 @@ class LogicalPipelinesController extends BaseController
     public function run(LogicalPipelinesRequest $request)
     {
         $id = $request->input('id');
-        return $this->pipelines->run($id);
+        return Logical::runById($id);
     }
 
     /**
@@ -93,7 +83,9 @@ class LogicalPipelinesController extends BaseController
     public function arrange(LogicalPipelinesRequest $request)
     {
         return $this->view('logicalPipelines.arrange',[
-            'pipelineData'=>$this->pipelines->pipelineArrangeList($request->input('id'))
+            'pipelineData'=>Logical::arrangeList($request->input('id')),
+//            'pipeline'=>LogicalPipelinesModel::query()->where('id',$request->input('id'))->first(),
+            'pipeline'=>Logical::firstById($request->input('id')),
         ]);
     }
 
@@ -111,7 +103,7 @@ class LogicalPipelinesController extends BaseController
         if($request->isMethod('POST')) {
             $logical_block_id = $request->input('logical_block_id');
 
-            $this->pipelines->addPipelineArrangeItem($pipeline_id,$arrange_id,$logical_block_id,$op);
+            Logical::arrangeAddItem($pipeline_id,$arrange_id,$logical_block_id,$op);
             return $this->resSuccess([
                 'type'=>6,
                 'redirect_uri'=>jump_link("/hm/logical-pipelines/index?pipeline_id={$pipeline_id}"),
@@ -135,11 +127,11 @@ class LogicalPipelinesController extends BaseController
      * @param LogicalPipelinesRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteArrange(LogicalPipelinesRequest $request)
+    public function arrangeDelete(LogicalPipelinesRequest $request)
     {
         $pipeline_id = $request->input('pipeline_id');
         $arrange_id = $request->input('arrange_id');
-        $this->pipelines->deleteArrange($arrange_id);
+        Logical::arrangeDelete($arrange_id);
         return $this->resSuccess([
             'type'=>6,
             'redirect_uri'=>jump_link("/hm/logical-pipelines/index?pipeline_id={$pipeline_id}"),

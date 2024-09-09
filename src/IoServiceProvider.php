@@ -15,7 +15,7 @@ use hoo\io\monitor\hm\Controllers\IndexController;
 use hoo\io\monitor\hm\Controllers\LogicalPipelinesController;
 use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
-use hoo\io\monitor\hm\Services\LogicalPipelinesService;
+use hoo\io\monitor\hm\Services\LogicalPipelinesApiRunService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
@@ -90,23 +90,24 @@ class IoServiceProvider extends ServiceProvider
                         ->orWhere('deleted_at','');
                 })
                 ->get();
-            Route::prefix('hm')->group(function () use ($pipelines){
-                foreach ($pipelines as $pipeline){
+            foreach ($pipelines as $pipeline){
+                Route::prefix($pipeline->group)->group(function () use ($pipeline){
+
                     $pipeline->setting = json_decode($pipeline->setting,true);
                     $middleware = $pipeline->setting['middleware']??'';
                     if($middleware){
                         Route::middleware($middleware)->group(function () use ($pipeline){
                             Route::{$pipeline->setting['method']??'get'}($pipeline->rec_subject_id, function () use ($pipeline){
-                                return (new LogicalPipelinesService())->run($pipeline->id);
+                                return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
                             });
                         });
                     }else{
                         Route::{$pipeline->setting['method']??'get'}($pipeline->rec_subject_id, function () use ($pipeline){
-                            return (new LogicalPipelinesService())->run($pipeline->id);
+                            return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
                         });
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -216,7 +217,7 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
                     Route::get('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
-                    Route::post('delete-arrange',[LogicalPipelinesController::class,'deleteArrange']);
+                    Route::post('delete-arrange',[LogicalPipelinesController::class,'arrangeDelete']);
                 });
             });
         });

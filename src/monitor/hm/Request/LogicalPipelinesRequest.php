@@ -50,7 +50,7 @@ class LogicalPipelinesRequest extends BaseRequest
                     'op' => 'bail|required',
                 ];
                 break;
-            case 'deleteArrange:POST':
+            case 'arrangeDelete:POST':
                 $rules = [
                     'pipeline_id' => 'bail|required',
                     'arrange_id' => 'bail|required',

@@ -28,6 +28,30 @@ class LogicalPipelinesService extends BaseService
     }
 
     /**
+     * 单个逻辑线查询【按照id】
+     * @param $id
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object
+     */
+    public function firstById($id)
+    {
+        $data = LogicalPipelinesModel::query()->where('id',$id)->first();
+        $data['setting'] = json_decode($data['setting'],true);
+        return $data;
+    }
+
+    /**
+     * 单个逻辑线查询【按照rec_subject_id】
+     * @param $rec_subject_id
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object
+     */
+    public function firstByRecSubjectId($rec_subject_id)
+    {
+        $data = LogicalPipelinesModel::query()->where('rec_subject_id',$rec_subject_id)->first();
+        $data['setting'] = json_decode($data['setting'],true);
+        return $data;
+    }
+
+    /**
      * 逻辑线保存
      * @param $rec_subject_id
      * @param $name
@@ -40,9 +64,6 @@ class LogicalPipelinesService extends BaseService
      */
     public function save($rec_subject_id,$name,$group,$label='',$remark='',$setting,$id='')
     {
-        if ($id == 1){
-            throw new HooException('系统默认流水线不可修改！');
-        }
         if($id){
             LogicalPipelinesModel::query()->where('id',$id)->update([
                 'rec_subject_id'=>$rec_subject_id,
@@ -95,26 +116,11 @@ class LogicalPipelinesService extends BaseService
     }
 
     /**
-     * 运行逻辑线
-     * @param $id
-     * @return void
-     */
-    public function run($id)
-    {
-        $pipelines = LogicalPipelinesArrangeModel::query()
-            ->where('logical_pipeline_id',$id)
-            ->get()->toArray();
-
-        $pipelines = $this->arrange($pipelines);
-        return $this->exec($pipelines);
-    }
-
-    /**
      * 逻辑线 编排列表
      * @param $id
      * @return array
      */
-    public function pipelineArrangeList($id)
+    public function arrangeList($id)
     {
         # 获取表名
         $logicalPipelinesArrangeTableName = (new LogicalPipelinesArrangeModel())->getTable();
@@ -147,7 +153,7 @@ class LogicalPipelinesService extends BaseService
      * @return void
      * @throws HooException
      */
-    public function addPipelineArrangeItem($pipeline_id,$arrange_id,$logical_block_id,$op)
+    public function arrangeAddItem($pipeline_id,$arrange_id,$logical_block_id,$op)
     {
         if($op=='next'){
             /**
@@ -157,7 +163,6 @@ class LogicalPipelinesService extends BaseService
              * after 下一条 逻辑线项
              * 要使用事务
              */
-
             #上一条 逻辑线项id
             $before_id = $arrange_id;
 
@@ -172,7 +177,7 @@ class LogicalPipelinesService extends BaseService
             ]);
 
             # 下一条 逻辑线项id
-            $after_id = LogicalPipelinesArrangeModel::find($arrange_id)->next_id;
+            $after_id = LogicalPipelinesArrangeModel::find($arrange_id)->next_id??0;
 
             # 修改 上一条 逻辑线项
             LogicalPipelinesArrangeModel::query()
@@ -229,11 +234,11 @@ class LogicalPipelinesService extends BaseService
     }
 
     /**
-     * 删除逻辑线编排项
+     * 逻辑线 编排项删除
      * @param $arrange_id
      * @return true
      */
-    public function deleteArrange($arrange_id)
+    public function arrangeDelete($arrange_id)
     {
         /**
          * 在当前项上插入一项
@@ -262,6 +267,36 @@ class LogicalPipelinesService extends BaseService
             ->delete();
 
         return true;
+    }
+
+    /**
+     * 逻辑线 运行【通过id】
+     * @param $id
+     * @return void
+     */
+    public function runById($id,$resData = [])
+    {
+        $pipelines = LogicalPipelinesArrangeModel::query()
+            ->where('logical_pipeline_id',$id)
+            ->get()->toArray();
+
+        $pipelines = $this->arrange($pipelines);
+        return $this->exec($pipelines,$resData);
+    }
+
+    /**
+     * 逻辑线 运行【通过rec_subject_id】
+     * @param $id
+     * @return void
+     */
+    public function runByRecSubjectId($rec_subject_id,$resData = [])
+    {
+        $pipelines = LogicalPipelinesArrangeModel::query()
+            ->where('rec_subject_id',rec_subject_id)
+            ->get()->toArray();
+
+        $pipelines = $this->arrange($pipelines);
+        return $this->exec($pipelines,$resData);
     }
 
     /**
@@ -326,12 +361,11 @@ class LogicalPipelinesService extends BaseService
      * @param $pipeline
      * @return array
      */
-    private function exec($pipelines)
+    private function exec($pipelines,$resData = [])
     {
-        $resData = [];
         foreach ($pipelines as $k=>$v){
             $block = LogicalBlockModel::find($v['logical_block_id']);
-            list($resData,$error) = $this->logicalBlockExec($block->logical_block,$block->name,$resData);
+            list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
             if(!empty($error)) {
                 throw new Exception($error->getMessage(), $error->getCode());
 //                if (config('app.debug', false)) {
@@ -347,17 +381,12 @@ class LogicalPipelinesService extends BaseService
         return $resData;
     }
 
-    /**
-     * 逻辑单元运行
-     * @param $logical_block
-     * @param $name
-     * @param $resData
-     * @return array|mixed
-     */
-    public function logicalBlockExec($logical_block,$name='',$resData=[])
+
+    public function logicalBlockExecByCode($logical_block,$name='',$resData=[])
     {
         $before_time = microtime(true);
         $inputData = $resData;
+
         $error = null;
         try{
             # 加载时应用的类名
@@ -391,6 +420,36 @@ class LogicalPipelinesService extends BaseService
 
         $this->log($name,$before_time,$after_time,$inputData,$resData,$error);
 
+        return [$resData,$error];
+    }
+
+    /**
+     * 逻辑块运行【通过id】
+     * @param $logical_block
+     * @param $name
+     * @param $resData
+     * @return array|mixed
+     */
+    public function logicalBlockExecById($id,$resData=[])
+    {
+        $block = LogicalBlockModel::find($id);
+        list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
+        return [$resData,$error];
+    }
+
+
+    /**
+     * 逻辑块运行【通过对象id】
+     * @param $logical_block
+     * @param $name
+     * @param $resData
+     * @return array|mixed
+     */
+    public function logicalBlockExecByObjectId($object_id,$resData=[])
+    {
+        $block = LogicalBlockModel::query()
+            ->where('object_id',$object_id)->first();
+        list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
         return [$resData,$error];
     }
 
