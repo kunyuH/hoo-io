@@ -5,7 +5,6 @@ namespace hoo\io;
 use hoo\io\common\Command\DevCommand;
 use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
-use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;

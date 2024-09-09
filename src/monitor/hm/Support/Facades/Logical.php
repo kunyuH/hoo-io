@@ -12,6 +12,14 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
  * @method static list()
  * @var LogicalPipelinesService::list()
  *
+ * 单个逻辑线查询【按照id】
+ * @method static firstById($id)
+ * @var LogicalPipelinesService::firstById()
+ *
+ * 单个逻辑线查询【按照rec_subject_id】
+ * @method static firstByRecSubjectId($rec_subject_id)
+ * @var LogicalPipelinesService::firstByRecSubjectId()
+ *
  * 逻辑线保存
  * @method static save($rec_subject_id,$name,$group,$label='',$remark='',$setting,$id='')
  * @var LogicalPipelinesService::save()

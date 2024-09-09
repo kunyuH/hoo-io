@@ -46,7 +46,7 @@ class LogicalPipelinesController extends BaseController
         }else{
             $info = [];
             if($id){
-                $info = LogicalPipelinesModel::query()->where('id',$id)->first();
+                $info = Logical::firstById($id);
                 $info['setting'] = json_decode($info['setting'],true);
             }
             return $this->modal('logicalPipelines.save',$info);
@@ -83,8 +83,7 @@ class LogicalPipelinesController extends BaseController
     public function arrange(LogicalPipelinesRequest $request)
     {
         return $this->view('logicalPipelines.arrange',[
-            'pipelineData'=>Logical::arrangeList($request->input('id')),
-//            'pipeline'=>LogicalPipelinesModel::query()->where('id',$request->input('id'))->first(),
+            'arranges'=>Logical::arrangeList($request->input('id')),
             'pipeline'=>Logical::firstById($request->input('id')),
         ]);
     }

@@ -129,6 +129,7 @@ class LogicalPipelinesService extends BaseService
         $pipeline = LogicalPipelinesArrangeModel::query()
             ->select('pipelines_arrange.*',
                 'block.id as block_id',
+                'block.object_id as block_object_id',
                 'block.name as block_name',
                 'block.group as block_group',
                 'block.label as block_label',
