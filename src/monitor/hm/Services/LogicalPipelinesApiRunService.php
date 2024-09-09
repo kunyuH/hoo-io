@@ -16,9 +16,8 @@ class LogicalPipelinesApiRunService extends BaseService
         $validate = $pipeline->setting['validate']??'';
         $validate = json_decode($validate, true);
 
-        $validator = Validator::make($request->all(), $validate);
-
         if($validate) {
+            $validator = Validator::make($request->all(), $validate);
             if ($validator->fails())
                 throw new HooException($validator->errors()->first());
         }

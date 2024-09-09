@@ -464,7 +464,7 @@ class LogicalPipelinesService extends BaseService
      * @param null|Throwable $error
      * @return void
      */
-    private function log($name,$before_time,$after_time,$inputData,$resData,null|Throwable $error)
+    private function log($name,$before_time,$after_time,$inputData,$resData,$error)
     {
         # 记录日志 格式化记录数组
         if(empty($error)){
