@@ -30,7 +30,7 @@ $cdn = get_cdn().'/hm';
             </div>
             <div class="form-group">
                 <label for="method-select" class="star">method</label>
-                <select class="form-control" name="setting[method]" data-xx="{{$setting['method']}}" id="method-select">
+                <select class="form-control" name="setting[method]" id="method-select">
                     <option value="" selected>method...</option>
                     <option value="get" {{($setting['method']??'') == 'get'?'selected':''}}>get</option>
                     <option value="post" {{($setting['method']??'') == 'post'?'selected':''}}>post</option>

@@ -47,7 +47,6 @@ class LogicalPipelinesController extends BaseController
             $info = [];
             if($id){
                 $info = Logical::firstById($id);
-                $info['setting'] = json_decode($info['setting'],true);
             }
             return $this->modal('logicalPipelines.save',$info);
         }

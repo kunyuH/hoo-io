@@ -35,7 +35,7 @@ class LogicalPipelinesService extends BaseService
     public function firstById($id)
     {
         $data = LogicalPipelinesModel::query()->where('id',$id)->first();
-        $data['setting'] = json_decode($data['setting'],true);
+        $data['setting'] = json_decode($data['setting']??'',true);
         return $data;
     }
 
