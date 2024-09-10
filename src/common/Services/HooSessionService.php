@@ -27,30 +27,59 @@ class HooSessionService extends BaseService
         $this->id = $session_id;
     }
 
+    /**
+     * 设置hoo session id
+     * @param $id
+     * @return void
+     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
+    /**
+     * 获取hoo session id
+     * @return array|string|null
+     */
     public function getId(){
         return $this->id;
     }
 
+    /**
+     * 获取hoo session 内key的值
+     * @param $key
+     * @return mixed|null
+     */
     public function get($key)
     {
         return Cache::get($this->getCacheKey())[$key]??null;
     }
 
+    /**
+     * 设置hoo session 内key的值
+     * @param $key
+     * @param $value
+     * @return bool
+     */
     public function put($key, $value)
     {
         return Cache::put($this->getCacheKey(), array_merge(Cache::get($this->getCacheKey())??[], [$key => $value]), $this->expires);
     }
 
+    /**
+     * 获取hoo session内所有数据
+     * @return mixed
+     */
     public function all()
     {
         return Cache::get($this->getCacheKey());
     }
 
+    /**
+     * 删除hoo session内key的值
+     * @param $key
+     * @return bool
+     */
     public function remove($key)
     {
         $data = Cache::get($this->getCacheKey());
@@ -58,6 +87,10 @@ class HooSessionService extends BaseService
         return Cache::put($this->getCacheKey(), $data, $this->expires);
     }
 
+    /**
+     * 获取hoo session 缓存key
+     * @return string
+     */
     private function getCacheKey()
     {
         return $this->cache_key_prefix.$this->id;

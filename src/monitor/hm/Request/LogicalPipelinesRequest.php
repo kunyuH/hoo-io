@@ -36,6 +36,13 @@ class LogicalPipelinesRequest extends BaseRequest
                     'id' => 'bail|required',
                 ];
                 break;
+            case 'arrangeEdit:POST':
+                $rules = [
+                    'arrange_id' => 'bail|required',
+                    'logical_block' => 'bail|required',
+                    'name' => 'bail|required',
+                ];
+                break;
             case 'addArrangeItem:GET':
                 $rules = [
                     'pipeline_id' => 'bail|required',
@@ -46,8 +53,8 @@ class LogicalPipelinesRequest extends BaseRequest
                 $rules = [
                     'pipeline_id' => 'bail|required',
                     'arrange_id' => 'bail|required',
-                    'logical_block_id' => 'bail|required',
                     'op' => 'bail|required',
+                    'type' => 'bail|required',
                 ];
                 break;
             case 'arrangeDelete:POST':

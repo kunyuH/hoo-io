@@ -1,3 +1,8 @@
+<?php
+
+use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
+
+?>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -25,7 +30,11 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body dropdown" style="padding-bottom: 0;">
-                    <h5 class="card-title float-left">{{$value['block_name']}}</h5>
+                    @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
+                        <h5 class="card-title float-left">【{{$value['block_group']}}】{{$value['block_name']}}</h5>
+                    @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
+                        <h5 class="card-title float-left">{{$value['name']}}</h5>
+                    @endif
                     <span class="float-right" style="padding: 0px 10px;">
                         <i class="bi bi-arrows-fullscreen maxCode" data-id="{{$value['id']}}"></i>
                     </span>
@@ -56,11 +65,21 @@
                            data-href={{jump_link("/hm/logical-pipelines/add-arrange-item?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}&op=next")}}
                         >add next</a>
                         <div class="dropdown-divider"></div>
-                        <a href="javascript:" class="dropdown-item formRunCodeSave"
-                           id="hm-code-object-save"
-                           data-id="{{$value['id']}}"
-                           data-href="{{jump_link('/hm/logical-block/save')}}"
-                           data-from_id="form-code-object-{{$value['id']}}">save</a>
+
+                        @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
+                            <a href="javascript:" class="dropdown-item formRunCodeSave"
+                               id="hm-code-object-save"
+                               data-id="{{$value['id']}}"
+                               data-href="{{jump_link('/hm/logical-block/save')}}"
+                               data-from_id="form-code-object-{{$value['id']}}">save</a>
+                        @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
+                            <a href="javascript:" class="dropdown-item formRunCodeSave"
+                               id="hm-code-object-save"
+                               data-id="{{$value['id']}}"
+                               data-href="{{jump_link('/hm/logical-pipelines/edit-arrange')}}"
+                               data-from_id="form-code-object-{{$value['id']}}">save</a>
+                        @endif
+
                         <div class="dropdown-divider"></div>
                         <a href="javascript:"
                            class="dropdown-item ky-req"
@@ -69,18 +88,25 @@
                            data-type="POST"
                         >delete</a>
                     </div>
-
-                    <p class="card-text">{{$value['block_remark']}}</p>
                     <form id="form-code-object-{{$value['id']}}">
-                        <div class="form-group">
-                            <input hidden name="id" value="{{$value['block_id']}}"/>
-                            <input hidden name="object_id" value="{{$value['block_object_id']}}"/>
-                            <input hidden name="name" value="{{$value['block_name']}}"/>
-                            <input hidden name="group" value="{{$value['block_group']}}"/>
-                            <input hidden name="label" value="{{$value['block_label']}}"/>
-                            <textarea id="code-object-text-{{$value['id']}}" name="logical_block" hidden>{{$value['block_logical_block']}}</textarea>
-                            <pre id="code-object-edit-{{$value['id']}}"  data-id="{{$value['id']}}" class="logical-pipelines-arrange-ace-editor" style="min-height:200px;min-width: 400px"></pre>
-                        </div>
+                        @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
+                            <div class="form-group">
+                                <input hidden name="id" value="{{$value['block_id']}}"/>
+                                <input hidden name="object_id" value="{{$value['block_object_id']}}"/>
+                                <input hidden name="name" value="{{$value['block_name']}}"/>
+                                <input hidden name="group" value="{{$value['block_group']}}"/>
+                                <input hidden name="label" value="{{$value['block_label']}}"/>
+                                <textarea id="code-object-txt-{{$value['id']}}" name="logical_block" hidden>{{$value['block_logical_block']}}</textarea>
+                                <pre id="code-object-edit-{{$value['id']}}"  data-id="{{$value['id']}}" class="logical-pipelines-arrange-ace-editor" style="min-height:200px;min-width: 400px"></pre>
+                            </div>
+                        @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
+                            <div class="form-group">
+                                <input hidden name="arrange_id" value="{{$value['id']}}"/>
+                                <input hidden name="name" value="{{$value['name']}}"/>
+                                <textarea id="code-object-txt-{{$value['id']}}" name="logical_block" hidden>{{$value['logical_block']}}</textarea>
+                                <pre id="code-object-edit-{{$value['id']}}"  data-id="{{$value['id']}}" class="logical-pipelines-arrange-ace-editor" style="min-height:200px;min-width: 400px"></pre>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>

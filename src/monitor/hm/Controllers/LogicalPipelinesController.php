@@ -9,6 +9,7 @@ use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Models\LogsModel;
 use hoo\io\monitor\hm\Request\LogicalPipelinesRequest;
+use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
 use Illuminate\Database\Eloquent\Builder;
 
 
@@ -88,6 +89,20 @@ class LogicalPipelinesController extends BaseController
     }
 
     /**
+     * 编辑编排
+     * @param LogicalPipelinesRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function arrangeEdit(LogicalPipelinesRequest $request)
+    {
+        $arrange_id = $request->input('arrange_id');
+        $logical_block = $request->input('logical_block');
+        $name = $request->input('name');
+        Logical::arrangeEdit($arrange_id,$logical_block,$name);
+        return $this->resSuccess();
+    }
+
+    /**
      * 添加编排项
      * @param LogicalPipelinesRequest $request
      * @return \Illuminate\Http\JsonResponse|string
@@ -99,20 +114,19 @@ class LogicalPipelinesController extends BaseController
         $arrange_id = $request->input('arrange_id');
         $op = $request->input('op');
         if($request->isMethod('POST')) {
+            $type = $request->input('type');
             $logical_block_id = $request->input('logical_block_id');
+            $logical_block = $request->input('logical_block');
+            $name = $request->input('name');
 
-            Logical::arrangeAddItem($pipeline_id,$arrange_id,$logical_block_id,$op);
+            Logical::arrangeAddItem($pipeline_id,$arrange_id,$type,$logical_block_id,$logical_block,$name,$op);
+
             return $this->resSuccess([
-                'type'=>6,
                 'redirect_uri'=>jump_link("/hm/logical-pipelines/index?pipeline_id={$pipeline_id}"),
             ]);
         }else{
             return $this->modal('logicalPipelines.addArrangeItem',[
-                'logical_blocks'=>LogicalBlockModel::query()
-                    ->where(function (Builder $q){
-                        $q->whereNull('deleted_at')
-                            ->orWhere('deleted_at','');
-                    })->get(),
+                'logical_blocks'=>LogicalBlock::list(),
                 'pipeline_id'=>$pipeline_id,
                 'arrange_id'=>$arrange_id,
                 'op'=>$op,

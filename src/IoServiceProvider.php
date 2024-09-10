@@ -217,6 +217,7 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('delete-arrange',[LogicalPipelinesController::class,'arrangeDelete']);
+                    Route::post('edit-arrange',[LogicalPipelinesController::class,'arrangeEdit']);
                 });
             });
         });

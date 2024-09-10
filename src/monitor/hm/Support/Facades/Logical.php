@@ -34,8 +34,16 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
  * @method static arrangeList($id)
  * @var LogicalPipelinesService::arrangeList()
  *
+ * 逻辑线 编排项 【通过id查】
+ * @method static arrangeFirstById($id)
+ * @var LogicalPipelinesService::arrangeFirstById()
+ *
  * 逻辑线 编排项添加
- * @method static arrangeAddItem($pipeline_id,$arrange_id,$logical_block_id,$op)
+ * @method static arrangeEdit($arrange_id, $logical_block,$name)
+ * @var LogicalPipelinesService::arrangeEdit()
+ *
+ * 逻辑线 编排项添加
+ * @method static arrangeAddItem($pipeline_id,$arrange_id,$type,$logical_block_id,$logical_block,$name,$op)
  * @var LogicalPipelinesService::arrangeAddItem()
  *
  * 逻辑线 编排项删除

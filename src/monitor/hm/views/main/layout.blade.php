@@ -59,6 +59,7 @@ $cdn = get_cdn().'/hm';
 
     <script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
     <script src="<?php echo $cdn?>/js/overall.js"></script>
+    <script src="<?php echo $cdn?>/js/main.js"></script>
     <style>
         .star::after{
             content:" *";
@@ -68,14 +69,6 @@ $cdn = get_cdn().'/hm';
     <script>
         var jump_link = function (url) {
             return '{{jump_link("")}}' + url;
-        }
-        function getUrlParams(url) {
-            const searchParams = new URLSearchParams(url.search);
-            const params = {};
-            for (let [key, value] of searchParams) {
-                params[key] = value;
-            }
-            return params;
         }
     </script>
 

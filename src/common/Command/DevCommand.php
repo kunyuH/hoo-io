@@ -111,6 +111,7 @@ class DevCommand extends BaseCommand
                 $table->integer('logical_block_id')->nullable();
                 $table->integer('next_id');
                 $table->longText('logical_block')->nullable();
+                $table->string('name',50)->nullable();
                 $table->enum('type',['custom','common'])->default('common');
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();

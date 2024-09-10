@@ -97,5 +97,5 @@ $cdn = get_cdn().'/hm';
     </div>
 </div>
 {{-- <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>--}}
-<script src="<?php echo $cdn?>/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{$cdn}}/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
 

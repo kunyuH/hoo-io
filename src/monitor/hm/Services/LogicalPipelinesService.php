@@ -4,11 +4,13 @@ namespace hoo\io\monitor\hm\Services;
 
 use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Models\LogsModel;
+use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
@@ -126,6 +128,8 @@ class LogicalPipelinesService extends BaseService
         # 获取表名
         $logicalPipelinesArrangeTableName = (new LogicalPipelinesArrangeModel())->getTable();
         $logicalBlockTableName = (new LogicalBlockModel())->getTable();
+        # 获取表前缀
+        $prefix = DB::getTablePrefix();
 
         $pipeline = LogicalPipelinesArrangeModel::query()
             ->select('pipelines_arrange.*',
@@ -136,27 +140,69 @@ class LogicalPipelinesService extends BaseService
                 'block.label as block_label',
                 'block.logical_block as block_logical_block',
                 'block.remark as block_remark',
+//                DB::raw("IF(pipelines_arrange.logical_block <> '', pipelines_arrange.logical_block, block..logical_block) AS block_logical_block")
             )
             # 表设置别名
             ->from($logicalPipelinesArrangeTableName.' as pipelines_arrange')
-            ->leftJoin($logicalBlockTableName.' as block','pipelines_arrange.logical_block_id','=','block.id')
+            ->leftJoin($logicalBlockTableName.' as block','pipelines_arrange.logical_block_id','=','block.id' )
             ->where('pipelines_arrange.logical_pipeline_id',$id)
             ->get()->toArray();
 
+//        # 逻辑线项 当为自定义时补充一个名称 用于展示
+//        foreach ($pipeline as &$value){
+//            if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM){
+//                $value['block_name'] = 'custom';
+//                $value['block_group'] = 'custom';
+//            }
+//        }
+
         return $this->arrange($pipeline);
+    }
+
+    /**
+     * 逻辑线 编排项 【通过id查】
+     * @param $id
+     * @return Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function arrangeFirstById($id)
+    {
+        return LogicalPipelinesArrangeModel::query()->where('id',$id)->first();
+    }
+
+    /**
+     * 逻辑线 编排项 编辑
+     * @param $arrange_id
+     * @param $logical_block
+     * @param $name
+     * @return void
+     */
+    public function arrangeEdit($arrange_id,$logical_block,$name)
+    {
+        return LogicalPipelinesArrangeModel::query()->where('id',$arrange_id)->update([
+            'logical_block'=>$logical_block,
+            'name'=>$name,
+            'updated_at'=>date('Y-m-d H:i:s')
+        ]);
     }
 
     /**
      * 逻辑线 编排项添加
      * @param $pipeline_id      //逻辑线id
      * @param $arrange_id       //逻辑线项id
+     * @param $type             //逻辑编排类型  custom：自定义逻辑块  common：公共逻辑块
      * @param $logical_block_id //逻辑块id
+     * @param $logical_block    //逻辑块   【自定义逻辑块时，此项必填】
+     * @param $name             //逻辑名称   【自定义逻辑块时，此项必填】
      * @param $op               //操作类型 next：向下添加  previous：向上添加
      * @return void
      * @throws HooException
      */
-    public function arrangeAddItem($pipeline_id,$arrange_id,$logical_block_id,$op)
+    public function arrangeAddItem($pipeline_id,$arrange_id,$type,$logical_block_id,$logical_block,$name,$op)
     {
+        if(!in_array($type,LogicalPipelinesArrangeEnums::TYPE)){throw new HooException('未知的type！');}
+
+        if($type == LogicalPipelinesArrangeEnums::TYPE_CUSTOM && empty($logical_block) && empty($name)){throw new HooException('自定义逻辑块或name不能为空！');}
+
         if($op=='next'){
             /**
              * 在当前下插入一项
@@ -172,8 +218,10 @@ class LogicalPipelinesService extends BaseService
             $new_id = LogicalPipelinesArrangeModel::query()->insertGetId([
                 'logical_pipeline_id'=>$pipeline_id,
                 'logical_block_id'=>$logical_block_id,
+                'logical_block'=>$logical_block,
+                'name'=>$name,
                 'next_id'=>0,
-                'type'=>'common',
+                'type'=>$type,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
@@ -212,8 +260,10 @@ class LogicalPipelinesService extends BaseService
             $new_id = LogicalPipelinesArrangeModel::query()->insertGetId([
                 'logical_pipeline_id'=>$pipeline_id,
                 'logical_block_id'=>$logical_block_id,
+                'logical_block'=>$logical_block,
+                'name'=>$name,
                 'next_id'=>0,
-                'type'=>'common',
+                'type'=>$type,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
             ]);
@@ -282,7 +332,6 @@ class LogicalPipelinesService extends BaseService
             ->where('logical_pipeline_id',$id)
             ->get()->toArray();
 
-        $pipelines = $this->arrange($pipelines);
         return $this->exec($pipelines,$resData);
     }
 
@@ -297,7 +346,6 @@ class LogicalPipelinesService extends BaseService
             ->where('rec_subject_id',rec_subject_id)
             ->get()->toArray();
 
-        $pipelines = $this->arrange($pipelines);
         return $this->exec($pipelines,$resData);
     }
 
@@ -365,9 +413,19 @@ class LogicalPipelinesService extends BaseService
      */
     private function exec($pipelines,$resData = [])
     {
+        $pipelines = $this->arrange($pipelines);
+
         foreach ($pipelines as $k=>$v){
-            $block = LogicalBlockModel::find($v['logical_block_id']);
-            list($resData,$error) = LogicalBlock::execByCode($block->logical_block,$block->name,$resData);
+            if($v['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON){
+                $block = LogicalBlockModel::find($v['logical_block_id']);
+                $logical_block = $block->logical_block;
+                $name = $block->name;
+            }else{
+                $logical_block = $v['logical_block'];
+                $name = $v['name'];
+            }
+
+            list($resData,$error) = LogicalBlock::execByCode($logical_block,$name,$resData);
             if(!empty($error)) {
                 throw new Exception($error->getMessage(), $error->getCode());
 //                if (config('app.debug', false)) {

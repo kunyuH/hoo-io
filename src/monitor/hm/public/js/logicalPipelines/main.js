@@ -130,52 +130,18 @@ function show_edit() {
     var _divArr = document.getElementsByClassName('logical-pipelines-arrange-ace-editor');
     var divLength = _divArr.length;
     for(var i=0;i<divLength;i++){
-        edit_init(_divArr[i].id, _divArr[i].getAttribute('data-id'))
+        class_name = _divArr[i].id;
+        id = _divArr[i].getAttribute('data-id')
+
+        edit_init(class_name)
+
+        //填充内容
+        editors[class_name].setValue(document.getElementById('code-object-txt-'+id).value);
+
+        //设置光标位置
+        editors[class_name].moveCursorToPosition({row: 0, column: 0});
     }
     return ;
-}
-
-/**
- * 编辑器对象池
- * @type {*[]}
- */
-var editors = [];
-function edit_init(id,index){
-    //初始化编辑器
-    editor = ace.edit(id);
-    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
-    theme = "clouds"
-    theme = "twilight"
-    // theme = "ambiance"
-    // theme = "solarized_light"
-    language = "php"
-    // language = "php_laravel_blade"
-    editor.setTheme("ace/theme/" + theme);
-    editor.session.setMode("ace/mode/" + language);
-    //字体大小
-    editor.setFontSize(14);
-    //设置只读（true时只读，用于展示代码）
-    editor.setReadOnly(false);
-    editor.highlightActiveLine = true;
-    //自动换行,设置为off关闭
-    editor.setOption("wrap", "free")
-    //启用提示菜单
-    ace.require("ace/ext/language_tools");
-    editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true
-    });
-    // 获取光标位置
-    var cursorPosition = editor.getCursorPosition();
-
-    //填充内容
-    editor.setValue(document.getElementById('code-object-text-'+index).value);
-
-    //设置光标位置
-    editor.moveCursorToPosition(cursorPosition);
-
-    editors[index] = editor;
 }
 
 /**
@@ -189,8 +155,8 @@ function save(_this,calleBack=function(){}) {
     var id = $(_this).attr('data-id');
     var from_id = $(_this).attr('data-from_id');
     var href = $(_this).attr('data-href');
-
-    $("#code-object-text-"+id).val(editors[id].getValue());
+    
+    $("#code-object-txt-"+id).val(editors['code-object-edit-'+id].getValue());
 
     $("#"+from_id).ajaxSubmit({
         type:"post",
