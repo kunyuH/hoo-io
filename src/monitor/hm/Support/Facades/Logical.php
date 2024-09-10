@@ -8,6 +8,7 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
 /**
  * 逻辑线模块
  *
+ * ***********************************基础信息更新*****************************************
  * 逻辑线列表
  * @method static list()
  * @var LogicalPipelinesService::list()
@@ -28,7 +29,7 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
  * @method static delete($id)
  * @var LogicalPipelinesService::delete()
  *
- *
+ * ************************************编排*********************************************
  * 逻辑线 编排列表
  * @method static arrangeList($id)
  * @var LogicalPipelinesService::arrangeList()
@@ -41,7 +42,7 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
  * @method static arrangeDelete($pipeline_id, $arrange_id, $logical_block_id, $op)
  * @var LogicalPipelinesService::arrangeDelete()
  *
- *
+ * *************************************运行*********************************************
  * 逻辑线 运行【通过id】
  * @method static runById($id,$resData = [])
  * @var LogicalPipelinesService::runById()
@@ -49,18 +50,6 @@ use hoo\io\monitor\hm\Services\LogicalPipelinesService;
  * 逻辑线 运行【通过rec_subject_id】
  * @method static runByRecSubjectId($rec_subject_id, $resData = [])
  * @var LogicalPipelinesService::runByRecSubjectId()
- *
- * 逻辑块运行【通过id】
- * @method static logicalBlockExecById($id, $resData = [])
- * @var LogicalPipelinesService::logicalBlockExecById()
- *
- * 逻辑块运行【通过对象id】
- * @method static logicalBlockExecByObjectId($object_id, $resData = [])
- * @var LogicalPipelinesService::logicalBlockExecById()
- *
- * 逻辑块运行【通过源代码直接运行】
- * @method static logicalBlockExecByCode($logical_block, $name = '', $resData = [])
- * @var LogicalPipelinesService::logicalBlockExecByCode()
  *
  * @see LogicalPipelinesService
  */

@@ -78,7 +78,6 @@
                             <input hidden name="name" value="{{$value['block_name']}}"/>
                             <input hidden name="group" value="{{$value['block_group']}}"/>
                             <input hidden name="label" value="{{$value['block_label']}}"/>
-                            <input hidden name="remark" value="{{$value['block_remark']}}"/>
                             <textarea id="code-object-text-{{$value['id']}}" name="logical_block" hidden>{{$value['block_logical_block']}}</textarea>
                             <pre id="code-object-edit-{{$value['id']}}"  data-id="{{$value['id']}}" class="logical-pipelines-arrange-ace-editor" style="min-height:200px;min-width: 400px"></pre>
                         </div>

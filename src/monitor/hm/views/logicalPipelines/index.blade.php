@@ -96,10 +96,6 @@ $cdn = get_cdn().'/hm';
         </div>
     </div>
 </div>
-<style>
-
-</style>
-{{--<script src="<?php echo jump_link('/hm-r/js/logicalPipelines/main.js')?>" type="text/javascript" charset="utf-8"></script>--}}
+{{-- <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>--}}
 <script src="<?php echo $cdn?>/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
-
 

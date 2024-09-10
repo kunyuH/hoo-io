@@ -7,6 +7,7 @@ use hoo\io\common\Models\LogsModel;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
+use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
@@ -366,7 +367,7 @@ class LogicalPipelinesService extends BaseService
     {
         foreach ($pipelines as $k=>$v){
             $block = LogicalBlockModel::find($v['logical_block_id']);
-            list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
+            list($resData,$error) = LogicalBlock::execByCode($block->logical_block,$block->name,$resData);
             if(!empty($error)) {
                 throw new Exception($error->getMessage(), $error->getCode());
 //                if (config('app.debug', false)) {
@@ -380,112 +381,5 @@ class LogicalPipelinesService extends BaseService
             }
         }
         return $resData;
-    }
-
-
-    public function logicalBlockExecByCode($logical_block,$name='',$resData=[])
-    {
-        $before_time = microtime(true);
-        $inputData = $resData;
-
-        $error = null;
-        try{
-            # 加载时应用的类名
-            $class_name = 'Foo_'.md5(time().Uuid::uuid1()->toString());
-            # 字符串替换
-            $logical_block = str_replace('Foo',$class_name,$logical_block);
-
-            // 将变量内容写入临时文件
-            $tmpfname = tempnam(sys_get_temp_dir(), 'logical-block:');
-            file_put_contents($tmpfname, $logical_block);
-
-            include $tmpfname;
-            unlink($tmpfname);
-
-            $class = new \ReflectionClass($class_name);
-            $instance = $class->newInstanceArgs();
-
-            if(!empty($resData)){
-                $resData = $instance->run(...$resData);
-            }else{
-                $resData = $instance->run();
-            }
-
-        }catch (Throwable $e){
-            if(file_exists($tmpfname)){
-                unlink($tmpfname);
-            }
-            $error = $e;
-        }
-        $after_time = microtime(true);
-
-        $this->log($name,$before_time,$after_time,$inputData,$resData,$error);
-
-        return [$resData,$error];
-    }
-
-    /**
-     * 逻辑块运行【通过id】
-     * @param $logical_block
-     * @param $name
-     * @param $resData
-     * @return array|mixed
-     */
-    public function logicalBlockExecById($id,$resData=[])
-    {
-        $block = LogicalBlockModel::find($id);
-        list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
-        return [$resData,$error];
-    }
-
-
-    /**
-     * 逻辑块运行【通过对象id】
-     * @param $logical_block
-     * @param $name
-     * @param $resData
-     * @return array|mixed
-     */
-    public function logicalBlockExecByObjectId($object_id,$resData=[])
-    {
-        $block = LogicalBlockModel::query()
-            ->where('object_id',$object_id)->first();
-        list($resData,$error) = $this->logicalBlockExecByCode($block->logical_block,$block->name,$resData);
-        return [$resData,$error];
-    }
-
-    /**
-     * 记录日志
-     * @param $name
-     * @param $before_time
-     * @param $after_time
-     * @param $inputData
-     * @param $resData
-     * @param null|Throwable $error
-     * @return void
-     */
-    private function log($name,$before_time,$after_time,$inputData,$resData,$error)
-    {
-        # 记录日志 格式化记录数组
-        if(empty($error)){
-            Log::channel('debug')->log('info', "【logical block】{$name}", [
-                '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-                'input' => $inputData,
-                'out' => $resData,
-            ]);
-        }else{
-            Log::channel('debug')->log('error', "【logical block】{$name}", [
-                '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-                'input' => $inputData,
-                'out' => $resData,
-                'error' => [
-                    'code' => $error->getCode(),
-                    'message' => $error->getMessage(),
-                    'file' => $error->getFile(),
-                    'line' => $error->getLine(),
-//                    'trace' => $error->getTrace()
-                ]
-            ]);
-        }
     }
 }
