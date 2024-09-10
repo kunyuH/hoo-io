@@ -100,6 +100,6 @@ $cdn = get_cdn().'/hm';
 
 </style>
 {{--<script src="<?php echo jump_link('/hm-r/js/logicalPipelines/main.js')?>" type="text/javascript" charset="utf-8"></script>--}}
-<script src="<?php echo $cdn?>/hm/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="<?php echo $cdn?>/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
 
 
