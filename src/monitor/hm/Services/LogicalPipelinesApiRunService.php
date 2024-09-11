@@ -9,7 +9,13 @@ use hoo\io\common\Exceptions\HooException;
 
 class LogicalPipelinesApiRunService extends BaseService
 {
-
+    /**
+     * 运行逻辑线
+     * @param Request $request
+     * @param $pipeline
+     * @return mixed
+     * @throws HooException
+     */
     public function run(Request $request, $pipeline)
     {
         # 1.参数校验

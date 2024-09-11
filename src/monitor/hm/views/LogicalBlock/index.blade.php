@@ -97,6 +97,20 @@ $cdn = get_cdn().'/hm';
     }
 </style>
 <script>
+
+    /**
+     * 页面加载后运行
+     */
+    $(document).ready(function(){
+        //获取当前页面url携带的参数
+        var url = window.location.href;
+        params = getUrlParams(new URL(url));
+        if(params['id']){
+            //加载编排数据
+            getDetail(params['id']);
+        }
+    })
+
     //初始化编辑器
     editor = ace.edit("code-object-edit");
     //设置风格和语言（更多风格和语言，请到github上相应目录查看）
@@ -173,7 +187,8 @@ $cdn = get_cdn().'/hm';
         // 改变按钮内容
         $("#hm-code-object-save").html('Create');
         editor.setValue("<\?php\n\n" +
-            "class Foo{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
+            "use hoo\\io\\monitor\\hm\\Services\\LogicalService;\n\n" +
+            "class Foo extends LogicalService{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
         editor.moveCursorToPosition(cursorPosition);
         $("#code-object-text").val('');
     }
@@ -195,8 +210,8 @@ $cdn = get_cdn().'/hm';
                         html += '' +
                             '<a href="javascript:" type="button" ' +
                             'class="btn btn-outline-primary btn-sm mt-1 mr-1 code-object-item-ky-req" ' +
-                            'data-type="get" data-params=\'{"id":"'+v.id+'"}\' ' +
-                            'data-href={{jump_link("/hm/logical-block/detail")}}>'+v.name+'</a>';
+                            'data-id='+v.id+' ' +
+                            '>'+v.name+'</a>';
                     })
                     $('#code-object-list').html(html);
                 }else{
@@ -364,16 +379,16 @@ $cdn = get_cdn().'/hm';
      * object详情获取
      */
     $(document).on("click",".code-object-item-ky-req",function(){
-        var type = $(this).attr('data-type');
-        var href = $(this).attr('data-href');
-        var params = $(this).attr('data-params');
-        if(params){
-            params = JSON.parse(params);
-        }
+        var id = $(this).attr('data-id');
+        getDetail(id)
+    })
+
+    function getDetail(id){
+        var href = "{{jump_link("/hm/logical-block/detail")}}";
         $.ajax({
-            type:type,
+            type:'get',
             url:href,
-            data:params,
+            data:{"id":id},
             dataType:"json",//返回数据形式为json
             beforeSend:function(e){
                 layer.closeAll();
@@ -395,5 +410,5 @@ $cdn = get_cdn().'/hm';
                 }
             },
         });
-    })
+    }
 </script>

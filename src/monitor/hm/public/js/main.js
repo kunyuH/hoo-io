@@ -54,6 +54,7 @@ function edit_init(index){
  */
 function editorSetDifaultCode(index){
     editors[index].setValue("<\?php\n\n" +
-        "class Foo{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
+        "use hoo\\io\\monitor\\hm\\Services\\LogicalService;\n\n" +
+        "class Foo extends LogicalService{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
     editors[index].moveCursorToPosition({row: 0, column: 0});
 }

@@ -96,6 +96,46 @@ $(document).on("click",".logical-pipelines-arrange",function(){
 })
 
 /**
+ * 编排项逻辑块运行
+ */
+$(document).on("click",".arrangeItemCodeRun",function(){
+    var href = $(this).attr('data-href');
+    var type = "POST";
+    var id = $(this).attr('data-id');
+    var logical_block = editors['code-object-edit-'+id].getValue();;
+    
+    $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
+
+    $.ajax({
+        type:type,
+        url:href,
+        data:{logical_block:logical_block},
+        // dataType:"json",//返回数据形式为json
+        success:function(result){
+            //如果返回的是json 则转为字符串
+            if(typeof result == 'object'){
+                result = JSON.stringify(result)
+                result = result.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                $("#run-code-output").html(result);
+            }else{
+                $("#run-code-output").html(result);
+            }
+        },
+        error: function(xhr, status, error) {
+            $("#run-code-output").html(xhr.responseText);
+            //如果返回的是json 则转为字符串
+            if(typeof xhr.responseText == 'object'){
+                responseText = JSON.stringify(xhr.responseText)
+                responseText = responseText.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                $("#run-code-output").html(responseText);
+            }else{
+                $("#run-code-output").html(xhr.responseText);
+            }
+        }
+    });
+})
+
+/**
  * 获取逻辑线的编排列表
  * @param id
  */
@@ -155,7 +195,7 @@ function save(_this,calleBack=function(){}) {
     var id = $(_this).attr('data-id');
     var from_id = $(_this).attr('data-from_id');
     var href = $(_this).attr('data-href');
-    
+
     $("#code-object-txt-"+id).val(editors['code-object-edit-'+id].getValue());
 
     $("#"+from_id).ajaxSubmit({

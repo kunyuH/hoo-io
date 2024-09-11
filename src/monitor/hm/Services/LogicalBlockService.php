@@ -162,7 +162,7 @@ class LogicalBlockService extends BaseService
             $instance = $class->newInstanceArgs();
 
             if(!empty($resData)){
-                $resData = $instance->run(...$resData);
+                $resData = $instance->run($resData);
             }else{
                 $resData = $instance->run();
             }

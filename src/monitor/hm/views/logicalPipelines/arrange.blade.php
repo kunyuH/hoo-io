@@ -30,21 +30,23 @@ use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body dropdown" style="padding-bottom: 0;">
-                    @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
-                        <h5 class="card-title float-left">【{{$value['block_group']}}】{{$value['block_name']}}</h5>
-                    @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
-                        <h5 class="card-title float-left">{{$value['name']}}</h5>
-                    @endif
-                    <span class="float-right" style="padding: 0px 10px;">
+                    <div style="height: 36px">
+                        @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
+                            <h5 class="card-title float-left"><a target="_blank" href="{{jump_link('/hm/logical-block/index?id='.$value['block_id'])}}">【{{$value['block_group']}}】{{$value['block_name']}}</a></h5>
+                        @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
+                            <h5 class="card-title float-left">{{$value['name']}}</h5>
+                        @endif
+                        <span class="float-right" style="padding: 0px 10px;">
                         <i class="bi bi-arrows-fullscreen maxCode" data-id="{{$value['id']}}"></i>
-                    </span>
-                    <span class="float-right" data-toggle="dropdown" aria-expanded="false" style="padding: 0px 10px;">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </span>
+                        </span>
+                            <span class="float-right" data-toggle="dropdown" aria-expanded="false" style="padding: 0px 10px;">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </span>
+                    </div>
                     <div class="dropdown-menu" style="margin-left:-110px">
                         <a href="javascript:"
-                           data-from_id="hoo-run-code"
-                           class="dropdown-item formRunCodeSubmit"
+                           data-id="{{$value['id']}}"
+                           class="dropdown-item arrangeItemCodeRun"
                            data-href={{jump_link('/hm/logical-block/run')}}
                         >Run</a>
                         <div class="dropdown-divider"></div>
