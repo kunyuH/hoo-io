@@ -188,7 +188,7 @@ $cdn = get_cdn().'/hm';
         $("#hm-code-object-save").html('Create');
         editor.setValue("<\?php\n\n" +
             "use hoo\\io\\monitor\\hm\\Services\\LogicalService;\n\n" +
-            "class Foo extends LogicalService{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
+            "class Foo extends LogicalService{\n\n\tpublic function handle()\n\t{ \n\t\t\n\t}\n}");
         editor.moveCursorToPosition(cursorPosition);
         $("#code-object-text").val('');
     }
