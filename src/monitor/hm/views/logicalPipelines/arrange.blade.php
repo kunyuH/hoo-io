@@ -29,8 +29,8 @@ use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
     @foreach($arranges as $key=>$value)
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body dropdown" style="padding-bottom: 0;">
-                    <div style="height: 36px">
+                <div class="card-body" style="padding-bottom: 0;">
+                    <div class="dropdown" style="height: 36px">
                         @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
                             <h5 class="card-title float-left"><a target="_blank" href="{{jump_link('/hm/logical-block/index?id='.$value['block_id'])}}">【{{$value['block_group']}}】{{$value['block_name']}}</a></h5>
                         @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
@@ -39,57 +39,58 @@ use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
                         <span class="float-right" style="padding: 0px 10px;">
                         <i class="bi bi-arrows-fullscreen maxCode" data-id="{{$value['id']}}"></i>
                         </span>
-                            <span class="float-right" data-toggle="dropdown" aria-expanded="false" style="padding: 0px 10px;">
+                        <span class="float-right" data-toggle="dropdown" aria-expanded="false" style="padding: 0px 10px;">
                             <i class="bi bi-three-dots-vertical"></i>
                         </span>
-                    </div>
-                    <div class="dropdown-menu" style="margin-left:-110px">
-                        <a href="javascript:"
-                           data-id="{{$value['id']}}"
-                           class="dropdown-item arrangeItemCodeRun"
-                           data-href={{jump_link('/hm/logical-block/run')}}
-                        >Run</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="javascript:"
-                           type="button"
-                           class="dropdown-item ky-modal"
-                           data-title="add previous"
-                           data-width="800px"
-                           data-height="600px"
-                           data-href={{jump_link("/hm/logical-pipelines/add-arrange-item?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}&op=previous")}}
-                        >add previous</a>
-                        <a href="javascript:"
-                           type="button"
-                           class="dropdown-item ky-modal"
-                           data-title="add next"
-                           data-width="800px"
-                           data-height="600px"
-                           data-href={{jump_link("/hm/logical-pipelines/add-arrange-item?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}&op=next")}}
-                        >add next</a>
-                        <div class="dropdown-divider"></div>
-
-                        @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
-                            <a href="javascript:" class="dropdown-item formRunCodeSave"
-                               id="hm-code-object-save"
+                        <div class="dropdown-menu" style="margin-left:-110px">
+                            <a href="javascript:"
                                data-id="{{$value['id']}}"
-                               data-href="{{jump_link('/hm/logical-block/save')}}"
-                               data-from_id="form-code-object-{{$value['id']}}">save</a>
-                        @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
-                            <a href="javascript:" class="dropdown-item formRunCodeSave"
-                               id="hm-code-object-save"
-                               data-id="{{$value['id']}}"
-                               data-href="{{jump_link('/hm/logical-pipelines/edit-arrange')}}"
-                               data-from_id="form-code-object-{{$value['id']}}">save</a>
-                        @endif
+                               class="dropdown-item arrangeItemCodeRun"
+                               data-href={{jump_link('/hm/logical-block/run')}}
+                            >Run</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="javascript:"
+                               type="button"
+                               class="dropdown-item ky-modal"
+                               data-title="add previous"
+                               data-width="800px"
+                               data-height="600px"
+                               data-href={{jump_link("/hm/logical-pipelines/add-arrange-item?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}&op=previous")}}
+                            >add previous</a>
+                            <a href="javascript:"
+                               type="button"
+                               class="dropdown-item ky-modal"
+                               data-title="add next"
+                               data-width="800px"
+                               data-height="600px"
+                               data-href={{jump_link("/hm/logical-pipelines/add-arrange-item?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}&op=next")}}
+                            >add next</a>
+                            <div class="dropdown-divider"></div>
 
-                        <div class="dropdown-divider"></div>
-                        <a href="javascript:"
-                           class="dropdown-item ky-req"
-                           data-confirm-ky="Are you sure?"
-                           data-href="{{jump_link("/hm/logical-pipelines/delete-arrange?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}")}}"
-                           data-type="POST"
-                        >delete</a>
+                            @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
+                                <a href="javascript:" class="dropdown-item formRunCodeSave"
+                                   id="hm-code-object-save"
+                                   data-id="{{$value['id']}}"
+                                   data-href="{{jump_link('/hm/logical-block/save')}}"
+                                   data-from_id="form-code-object-{{$value['id']}}">save</a>
+                            @elseif($value['type'] == LogicalPipelinesArrangeEnums::TYPE_CUSTOM)
+                                <a href="javascript:" class="dropdown-item formRunCodeSave"
+                                   id="hm-code-object-save"
+                                   data-id="{{$value['id']}}"
+                                   data-href="{{jump_link('/hm/logical-pipelines/edit-arrange')}}"
+                                   data-from_id="form-code-object-{{$value['id']}}">save</a>
+                            @endif
+
+                            <div class="dropdown-divider"></div>
+                            <a href="javascript:"
+                               class="dropdown-item ky-req"
+                               data-confirm-ky="Are you sure?"
+                               data-href="{{jump_link("/hm/logical-pipelines/delete-arrange?pipeline_id={$value['logical_pipeline_id']}&arrange_id={$value['id']}")}}"
+                               data-type="POST"
+                            >delete</a>
+                        </div>
                     </div>
+
                     <form id="form-code-object-{{$value['id']}}">
                         @if($value['type'] == LogicalPipelinesArrangeEnums::TYPE_COMMON)
                             <div class="form-group">

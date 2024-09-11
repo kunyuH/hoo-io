@@ -238,7 +238,7 @@ class LogicalBlockService extends BaseService
                     'message' => $error->getMessage(),
                     'file' => $error->getFile(),
                     'line' => $error->getLine(),
-//                    'trace' => $error->getTrace()
+                    'trace' => $error->getTrace()
                 ]
             ]);
         }
