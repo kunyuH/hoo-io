@@ -15,7 +15,7 @@ use hoo\io\monitor\hm\Enums\LogicalPipelinesArrangeEnums;
                 @if(empty($arranges))
                     <a href="javascript:"
                        type="button"
-                       class="btn btn-outline-primary btn-sm ky-modal"
+                       class="btn btn-outline-primary btn-sm ky-modal mt-3"
                        data-title="add next"
                        data-width="800px"
                        data-height="600px"

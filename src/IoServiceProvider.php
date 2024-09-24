@@ -200,7 +200,7 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::prefix('logical-block')->group(function (){
                     Route::get('index',[LogicalBlockController::class,'index']);
-                    Route::get('list',[LogicalBlockController::class,'list']);
+//                    Route::get('list',[LogicalBlockController::class,'list']);
                     Route::get('detail',[LogicalBlockController::class,'detail']);
                     Route::post('save',[LogicalBlockController::class,'save']);
                     Route::post('delete',[LogicalBlockController::class,'delete']);
@@ -214,6 +214,7 @@ class IoServiceProvider extends ServiceProvider
                     Route::post('delete',[LogicalPipelinesController::class,'delete']);
                     Route::post('run',[LogicalPipelinesController::class,'run']);
                     Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
+                    Route::get('arrangex',[LogicalPipelinesController::class,'arrangex']);
                     Route::get('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('delete-arrange',[LogicalPipelinesController::class,'arrangeDelete']);

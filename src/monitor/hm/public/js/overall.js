@@ -78,7 +78,9 @@ function open_layer(EditTitle,EditRule,width,height){
 /**
  * ajax请求
  */
-$(document).on("click",".ky-req",function(){
+$(document).on("click",".ky-req",function(event){
+    // 阻止事件冒泡，防止行点击事件被触发
+    event.stopPropagation()
     var type = $(this).attr('data-type');
     var href = $(this).attr('data-href');
     var params = $(this).attr('data-params');

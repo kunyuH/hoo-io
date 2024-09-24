@@ -20,14 +20,26 @@ class LogicalPipelinesService extends BaseService
      * 逻辑线列表
      * @return Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function list()
+    public function list($rec_subject_id,$name,$group,$label)
     {
         return LogicalPipelinesModel::query()
             ->where(function (Builder $q){
                 $q->whereNull('deleted_at')
                     ->orWhere('deleted_at','');
             })
-            ->get();
+            ->when(!empty($rec_subject_id),function (Builder $q) use ($rec_subject_id){
+                $q->where('rec_subject_id','like','%'.$rec_subject_id.'%');
+            })
+            ->when(!empty($name),function (Builder $q) use ($name){
+                $q->where('name','like','%'.$name.'%');
+            })
+            ->when(!empty($group),function (Builder $q) use ($group){
+                $q->where('group',$group);
+            })
+            ->when(!empty($label),function (Builder $q) use ($label){
+                $q->where('label',  'like','%'.$label.'%');
+            })
+            ->paginate(20);
     }
 
     /**

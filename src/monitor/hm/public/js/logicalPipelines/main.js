@@ -9,7 +9,21 @@ $(document).ready(function(){
         //加载编排数据
         getArrangeList(params['pipeline_id']);
     }
+
+    // 遍历所有的查询参数，并填充到表单中
+    fillForm('#form-logical-pipelines-search',params)
 })
+
+/**
+ * 搜索
+ */
+$(document).on("click",".logical-pipelines-search",function(){
+    var formData = $("#form-logical-pipelines-search").serialize();
+    var url = jump_link('/hm/logical-pipelines/index?') + formData; // 拼接URL
+    // 跳转
+    window.location.href = url;
+})
+
 /**
  * 最大化
  */
@@ -103,7 +117,7 @@ $(document).on("click",".arrangeItemCodeRun",function(){
     var type = "POST";
     var id = $(this).attr('data-id');
     var logical_block = editors['code-object-edit-'+id].getValue();;
-    
+
     $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
 
     $.ajax({

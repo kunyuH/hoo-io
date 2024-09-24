@@ -1,9 +1,17 @@
 $(function () {
+    /**
+     * 关闭所有弹窗
+     */
     $('.modalClose').click(function () {
         parent.layer.closeAll();
     });
 })
 
+/**
+ * 获取url中的参数
+ * @param url
+ * @returns {{}}
+ */
 function getUrlParams(url) {
     const searchParams = new URLSearchParams(url.search);
     const params = {};
@@ -11,6 +19,32 @@ function getUrlParams(url) {
         params[key] = value;
     }
     return params;
+}
+
+/**
+ * 填充表单信息
+ */
+function fillForm(formId, data) {
+    // 遍历所有的查询参数，并填充到表单中
+    $.each(params, function(key, value) {
+        var input = $(formId).find('[name="' + key + '"]');
+        if (input.is('input[type="text"]')) {
+            input.val(value);
+        } else if (input.is('select')) {
+            input.val(value); // 或者根据需要使用.append()来添加<option>
+        } else if (input.is('input[type="radio"]')) {
+            input.filter('[value="' + value + '"]').prop('checked', true);
+        } else if (input.is('input[type="checkbox"]')) {
+            input.filter('[value="' + value + '"]').prop('checked', true);
+        }
+    });
+}
+
+/**
+ * 表单信息重置为空
+ */
+function resetForm(formId) {
+    $(formId).find('input, textarea, select').val('').prop('selected', false);
 }
 
 /**
@@ -55,6 +89,6 @@ function edit_init(index){
 function editorSetDifaultCode(index){
     editors[index].setValue("<\?php\n\n" +
         "use hoo\\io\\monitor\\hm\\Services\\LogicalService;\n\n" +
-        "class Foo extends LogicalService{\n\n\tpublic function run()\n\t{ \n\t\t\n\t}\n}");
+        "class Foo extends LogicalService{\n\n\tpublic function handle()\n\t{ \n\t\t\n\t}\n}");
     editors[index].moveCursorToPosition({row: 0, column: 0});
 }

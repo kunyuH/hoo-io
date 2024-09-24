@@ -8,7 +8,34 @@ $cdn = get_cdn().'/hm';
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="float-right mb-3">
+                <form id="form-logical-pipelines-search">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="group" placeholder="group" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="rec_subject_id" placeholder="rec_subject_id" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="name" placeholder="name" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="label" placeholder="label" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="float-right">
+                        <a href="javascript:"
+                           class="btn btn-link btn-sm"
+                           onclick="resetForm('#form-logical-pipelines-search')"
+                        >重置</a>
+                        <a href="javascript:"
+                           class="btn btn-link btn-sm logical-pipelines-search"
+                        >查询</a>
+                    </div>
+                </form>
+                <div class="float-left mb-3">
                     <a href="javascript:"
                        type="button"
                        class="btn btn-outline-primary btn-sm ky-modal"
@@ -17,6 +44,7 @@ $cdn = get_cdn().'/hm';
                        data-height="600px"
                        data-href={{jump_link("/hm/logical-pipelines/save")}}
                     >create</a>
+                    <a target="_blank" href='{{jump_link("/hm/logical-pipelines/arrangex")}}' type="button" class="btn btn-link btn-sm">arrange</a>
                 </div>
                 <table class="table table-sm table-striped">
                     <thead>
@@ -30,20 +58,20 @@ $cdn = get_cdn().'/hm';
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($logicalPipelines as $pipeline)
+                    @foreach($logicalPipelines as $key=>$pipeline)
                         <tr>
-                            <th scope="row">{{$pipeline->id}}</th>
+                            <th scope="row">{{$key+1}}</th>
                             <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->rec_subject_id}}</td>
                             <td>{{$pipeline->name}}</td>
                             <td>{{$pipeline->label}}</td>
                             <td><a href="javascript:"
-                                   class="btn btn-outline-primary btn-sm RunLogicalPipeline"
+                                   class="btn btn-link btn-sm RunLogicalPipeline"
                                    data-href={{jump_link('/hm/logical-pipelines/run?id='.$pipeline->id)}}
-                                >Run</a>
+                                >run</a>
                                 <a href="javascript:"
                                    type="button"
-                                   class="btn btn-outline-primary btn-sm ky-modal"
+                                   class="btn btn-link btn-sm ky-modal"
                                    data-title="edit"
                                    data-width="800px"
                                    data-height="600px"
@@ -51,11 +79,11 @@ $cdn = get_cdn().'/hm';
                                 >edit</a>
                                 <a href="javascript:"
                                    type="button"
-                                   class="btn btn-outline-primary btn-sm logical-pipelines-arrange"
+                                   class="btn btn-link btn-sm logical-pipelines-arrange"
                                    data-id="{{$pipeline->id}}"
                                 >arrange</a>
                                 <a href="javascript:"
-                                   class="btn btn-danger btn-sm ky-req"
+                                   class="btn btn-link btn-sm ky-req"
                                    data-type="POST"
                                    data-confirm-ky="确定删除【{{$pipeline->name}}】么？"
                                    data-href={{jump_link('/hm/logical-pipelines/delete?id='.$pipeline->id)}}
@@ -65,6 +93,9 @@ $cdn = get_cdn().'/hm';
                     @endforeach
                     </tbody>
                 </table>
+                <div class="float-right">
+                    {{$logicalPipelines->links()}}
+                </div>
             </div>
         </div>
     </div>
@@ -96,5 +127,5 @@ $cdn = get_cdn().'/hm';
         </div>
     </div>
 </div>
-{{-- <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>--}}
-<script src="{{$cdn}}/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>
+ <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>
+{{--<script src="{{$cdn}}/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>--}}

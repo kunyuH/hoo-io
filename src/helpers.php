@@ -54,5 +54,41 @@ if (! function_exists('get_files')) {
         return $files;
     }
 }
+if (! function_exists('ho_uuid')) {
+    /**
+     * 生成UUID
+     * @param $prefix
+     * @return string
+     */
+    function ho_uuid($prefix = "")
+    {    
+        $str = md5(uniqid(mt_rand(), true));
+        $uuid = substr($str, 0, 8) . '-';
+        $uuid .= substr($str, 8, 4) . '-';
+        $uuid .= substr($str, 12, 4) . '-';
+        $uuid .= substr($str, 16, 4) . '-';
+        $uuid .= substr($str, 20, 12);
+
+        return $prefix . $uuid;
+    }
+}
+
+if (! function_exists('is_dictionary')) {
+    /**
+     * 判断是否是字典
+     * @param $array
+     * @return bool
+     */
+    function is_dictionary($array)
+    {
+        if (!is_array($array) || empty($array)) {
+            return false;
+        }
+        if (array_keys($array) !== range(0, count($array) - 1)) {
+            return true;
+        }
+        return false;
+    }
+}
 
 

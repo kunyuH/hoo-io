@@ -9,66 +9,47 @@ $cdn = get_cdn().'/hm';
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form id="form-logical-blocks-search">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <input type="text" name="group" placeholder="group" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="object_id" placeholder="object_id" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="name" placeholder="name" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="label" placeholder="label" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="float-right">
-                        <a href="javascript:"
-                           class="btn btn-link btn-sm"
-                           onclick="resetForm('#form-logical-blocks-search')"
-                        >重置</a>
-                        <a href="javascript:"
-                           class="btn btn-link btn-sm logical-blocks-search"
-                        >查询</a>
-                    </div>
-                </form>
-                <div class="float-left mb-3">
-                    <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">create</a>
-                </div>
-                <table class="table table-sm table-hover">
+                <table class="table table-sm table-striped">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">group</th>
-                        <th scope="col">object_id</th>
+                        <th scope="col">rec_subject_id</th>
                         <th scope="col">name</th>
                         <th scope="col">label</th>
                         <th scope="col">op</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($LogicalBlocks as $k=>$block)
+                    @foreach($LogicalBlocks as $block)
                         <tr>
-                            <th scope="row">{{$k+1}}</th>
+                            <th scope="row">{{$block->id}}</th>
                             <td>{{$block->group}}</td>
-                            <td>{{$block->object_id}}</td>
+                            <td>{{$block->rec_subject_id}}</td>
                             <td>{{$block->name}}</td>
                             <td>{{$block->label}}</td>
-                            <td>
+                            <td><a href="javascript:"
+                                   class="btn btn-outline-primary btn-sm RunLogicalPipeline"
+                                   data-href={{jump_link('/hm/logical-pipelines/run?id='.$block->id)}}
+                                >Run</a>
                                 <a href="javascript:"
                                    type="button"
-                                   class="btn btn-link btn-sm code-object-item-ky-req"
-                                   data-id="{{$block->id}}"
+                                   class="btn btn-outline-primary btn-sm ky-modal"
+                                   data-title="edit"
+                                   data-width="800px"
+                                   data-height="600px"
+                                   data-href={{jump_link("/hm/logical-pipelines/save?id=".$block->id)}}
                                 >edit</a>
                                 <a href="javascript:"
-                                   class="btn btn-link btn-sm ky-req"
+                                   type="button"
+                                   class="btn btn-outline-primary btn-sm logical-pipelines-arrange"
+                                   data-id="{{$block->id}}"
+                                >arrange</a>
+                                <a href="javascript:"
+                                   class="btn btn-danger btn-sm ky-req"
                                    data-type="POST"
                                    data-confirm-ky="确定删除【{{$block->name}}】么？"
-                                   data-href={{jump_link('/hm/logical-block/delete?id='.$block->id)}}
+                                   data-href={{jump_link('/hm/logical-pipelines/delete?id='.$block->id)}}
                                 >delete</a>
                             </td>
                         </tr>
@@ -81,7 +62,20 @@ $cdn = get_cdn().'/hm';
             </div>
         </div>
     </div>
-    <div class="col-12 mt-3">
+    <div class="col-2 mt-3">
+        <div class="card">
+            <div class="card-header">
+                logical block
+            </div>
+            <div class="card-body">
+                <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">新增</a>
+                <hr>
+                <div id="code-object-list">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-10 mt-3">
         <div class="card">
             <div class="card-body">
                 <form id="hoo-run-code">
@@ -89,10 +83,13 @@ $cdn = get_cdn().'/hm';
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="text" id="code-object-group" name="group" placeholder="group" class="form-control">
+                                <input type="text" id="code-object-object-id" name="object_id" placeholder="object_id" class="form-control">
                             </div>
                             <div class="col">
                                 <input type="text" id="code-object-name" name="name" placeholder="name" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" id="code-object-group" name="group" placeholder="group" class="form-control">
                             </div>
                             <div class="col">
                                 <input type="text" id="code-object-label" name="label" placeholder="label" class="form-control">
@@ -107,19 +104,23 @@ $cdn = get_cdn().'/hm';
                     </div>
                     <div class="float-left">
                         <a href="javascript:"
-                           class="btn btn-link btn-sm maxCode"
+                           class="btn btn-outline-primary btn-sm maxCode"
                         >最大化</a>
                     </div>
                     <div class="float-right">
                         <a href="javascript:"
                            data-from_id="hoo-run-code"
-                           class="btn btn-link btn-sm formRunCodeSubmit"
+                           class="btn btn-outline-primary btn-sm formRunCodeSubmit"
                            data-href={{jump_link('/hm/logical-block/run')}}
-                        >run</a>
+                        >Run</a>
                         <a href="javascript:"
-                           class="btn btn-link btn-sm formRunCodeSave"
+                           class="btn btn-outline-success btn-sm formRunCodeSave"
                            id="hm-code-object-save"
-                        >create</a>
+                        >Create</a>
+                        <a href="javascript:"
+                           class="btn btn-danger btn-sm formCodeDelete"
+                           id="hm-code-object-delete"
+                        >delete</a>
                     </div>
                 </form>
             </div>
@@ -165,23 +166,41 @@ $cdn = get_cdn().'/hm';
             //加载编排数据
             getDetail(params['id']);
         }
+    })
 
-        // 遍历所有的查询参数，并填充到表单中
-        fillForm('#form-logical-blocks-search',params)
+    //初始化编辑器
+    editor = ace.edit("code-object-edit");
+    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+    theme = "clouds"
+    theme = "twilight"
+    // theme = "ambiance"
+    // theme = "solarized_light"
+    language = "php"
+    // language = "php_laravel_blade"
+    editor.setTheme("ace/theme/" + theme);
+    editor.session.setMode("ace/mode/" + language);
+    //字体大小
+    editor.setFontSize(14);
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+    editor.highlightActiveLine = true;
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free")
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+    // 获取光标位置
+    var cursorPosition = editor.getCursorPosition();
 
-        //初始化新增 编辑表单
+    $(function(){
+        loadCodeObjectList();
         loadForm();
     })
-    /**
-     * 加载编辑器
-     * @type {string}
-     */
-    var edit_id = "code-object-edit"
-    edit_init(edit_id)
 
-    /**
-     * 最大化
-     */
     $(document).on("click",".maxCode",function(){
         layer.open({
             skin: 'hoo-layer-open',
@@ -213,23 +232,56 @@ $cdn = get_cdn().'/hm';
     });
 
     /**
-     * 搜索
-     */
-    $(document).on("click",".logical-blocks-search",function(){
-        var formData = $("#form-logical-blocks-search").serialize();
-        var url = jump_link('/hm/logical-block/index?') + formData; // 拼接URL
-        // 跳转
-        window.location.href = url;
-    })
-    /**
      * 表单初始化
      */
     function loadForm() {
+        $("#code-object-object-id").val('');
+        $("#code-object-name").val('');
+        $("#code-object-group").val('');
+        $("#code-object-label").val('');
+
+        $("#code-object-id").val('');
         // 改变按钮内容
-        $("#hm-code-object-save").html('create');
-        editorSetDifaultCode(edit_id)
-        // 表单置空
-        resetForm('#hoo-run-code');
+        $("#hm-code-object-save").html('Create');
+        editor.setValue("<\?php\n\n" +
+            "use hoo\\io\\monitor\\hm\\Services\\LogicalService;\n\n" +
+            "class Foo extends LogicalService{\n\n\tpublic function handle()\n\t{ \n\t\t\n\t}\n}");
+        editor.moveCursorToPosition(cursorPosition);
+        $("#code-object-text").val('');
+    }
+
+    /**
+     * logical block 列表加载
+     */
+    function loadCodeObjectList() {
+        $.ajax({
+            type:'get',
+            url:'{{jump_link("/hm/logical-block/list")}}',
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){},
+            success:function(e){
+                if(e.code==200){
+                    // 遍历 e.data
+                    var html = '';
+                    $.each(e.data,function(k,v){
+                        html += '' +
+                            '<a href="javascript:" type="button" ' +
+                            'class="btn btn-outline-primary btn-sm mt-1 mr-1 code-object-item-ky-req" ' +
+                            'data-id='+v.id+' ' +
+                            '>'+v.name+'</a>';
+                    })
+                    $('#code-object-list').html(html);
+                }else{
+                    $('#code-object-list').html('【'+e.message+'】<br><span>可能是run code模块未初始化，请点击' +
+                        '<a href="javascript:" ' +
+                        'class="ky-req" ' +
+                        'data-type="post" ' +
+                        'data-confirm-ky="确认要初始化run code模块吗？" ' +
+                        'data-params=\'{"value":"hm:dev runCodeInit","open_type":1,"type":0}\' ' +
+                        'data-href={{jump_link("/hm/run-command")}}>run code模块初始化</a> </span>');
+                }
+            },
+        });
     }
 
     /**
@@ -251,6 +303,19 @@ $cdn = get_cdn().'/hm';
         });
     })
 
+    // /**
+    //  * CodeMirror 实例
+    //  * @type {CodeMirror|*}
+    //  */
+    // var editor = CodeMirror.fromTextArea(document.getElementById("code-object-text"), {
+    //     lineNumbers: true,
+    //     matchBrackets: true,
+    //     mode: "application/x-httpd-php",
+    //     indentUnit: 4,
+    //     indentWithTabs: true,
+    //     theme: 'seti',
+    // });
+
     /**
      * 逻辑块运行
      */
@@ -258,7 +323,7 @@ $cdn = get_cdn().'/hm';
         var from_id = $(this).attr('data-from_id');
         var href = $(this).attr('data-href');
 
-        $("#code-object-text").val(editors[edit_id].getValue());
+        $("#code-object-text").val(editor.getValue());
 
         $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
         $("#"+from_id).ajaxSubmit({
@@ -299,7 +364,7 @@ $cdn = get_cdn().'/hm';
     function save(_this,calleBack=function(){}) {
         var from_id = 'hoo-run-code';
         var url = '{{jump_link('/hm/logical-block/save')}}';
-        $("#code-object-text").val(editors[edit_id].getValue());
+        $("#code-object-text").val(editor.getValue());
 
         $("#"+from_id).ajaxSubmit({
             type:"post",
@@ -313,9 +378,7 @@ $cdn = get_cdn().'/hm';
                 layer.close(index);
                 if(result.code == 200){
                     layer.msg(result.message, {icon: 6, time: 500}, function(){
-                        //刷新当前页
-                        layer.load(1);
-                        window.location.reload();
+                        loadCodeObjectList()
                     });
                     calleBack()
                 }else{
@@ -326,12 +389,53 @@ $cdn = get_cdn().'/hm';
     }
 
     /**
+     * 逻辑块删除
+     */
+    $(document).on("click",".formCodeDelete",function(){
+        deleted();
+    })
+
+    function deleted(){
+        var type = "POST";
+        var href = '{{jump_link('/hm/logical-block/delete')}}';
+        var id = $('#code-object-id').val()
+        if (id == ''){
+            layer.alert('请选择要删除的对象！', {icon: 5});
+            return false;
+        }
+
+        layer.confirm('确定要删除么', {
+            btn: ['删除', '取消'], //按钮
+            icon: 3
+        }, function () {
+            $.ajax({
+                type:type,
+                url:href,
+                data:{'id':id},
+                dataType:"json",//返回数据形式为json
+                beforeSend:function(e){
+                    layer.closeAll();
+                    index = layer.load(1);
+                },
+                success:function(e){
+                    layer.close(index);
+                    if(e.code==200){
+                        layer.msg(e.message, {icon: 6, time: 500}, function(){
+                            loadCodeObjectList()
+                            loadForm();
+                        });
+                    }else{
+                        layer.alert(e.message,{icon:5});
+                    }
+                },
+            });
+        });
+    }
+
+    /**
      * object详情获取
      */
-    $(document).on("click",".code-object-item-ky-req",function(event){
-        // 阻止事件冒泡，防止按钮点击事件被触发
-        event.stopPropagation()
-        // 在这里处理行点击的逻辑
+    $(document).on("click",".code-object-item-ky-req",function(){
         var id = $(this).attr('data-id');
         getDetail(id)
     })
@@ -351,12 +455,12 @@ $cdn = get_cdn().'/hm';
                 layer.close(index);
                 if(e.code==200){
                     $("#code-object-id").val(e.data.id);
+                    $("#code-object-object-id").val(e.data.object_id);
                     $("#code-object-name").val(e.data.name);
                     $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);
-                    editors[edit_id].setValue(e.data.logical_block);
-                    editors[edit_id].moveCursorToPosition({row: 0, column: 0});
-
+                    editor.setValue(e.data.logical_block);
+                    editor.moveCursorToPosition(cursorPosition);
                     $("#hm-code-object-save").html('update');
                 }else{
                     layer.alert(e.message,{icon:5});

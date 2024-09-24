@@ -18,9 +18,15 @@ class LogicalBlockController extends BaseController
      * run LogicalBlock首页
      * @return string
      */
-    public function index()
+    public function index(LogicalBlockRequest $request)
     {
-        return $this->v('LogicalBlock.index');
+        $object_id = $request->input('object_id');
+        $name = $request->input('name');
+        $group = $request->input('group');
+        $label = $request->input('label');
+        return $this->v('LogicalBlock.index',[
+            'LogicalBlocks'=>LogicalBlock::list($object_id,$name,$group,$label),
+        ]);
     }
 
     /**
@@ -50,13 +56,12 @@ class LogicalBlockController extends BaseController
     public function save(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
-        $object_id = $request->input('object_id');
         $name = $request->input('name');
         $group = $request->input('group');
         $label = $request->input('label');
         $remark = $request->input('remark');
         $logical_block = $request->input('logical_block');
-        LogicalBlock::save($object_id,$name,$group,$label,$logical_block,$remark,$id);
+        LogicalBlock::save($name,$group,$label,$logical_block,$remark,$id);
         return $this->resSuccess();
     }
 
@@ -68,6 +73,7 @@ class LogicalBlockController extends BaseController
     public function delete(LogicalBlockRequest $request)
     {
         $id = $request->input('id');
+
         LogicalBlock::delete($id);
         return $this->resSuccess();
     }

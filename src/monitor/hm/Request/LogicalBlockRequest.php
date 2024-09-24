@@ -15,7 +15,6 @@ class LogicalBlockRequest extends BaseRequest
         switch ($action_name) {
             case 'save:POST':
                 $rules = [
-                    'object_id' => 'bail|required',
                     'name' => 'bail|required',
                     'group' => 'bail|required',
                     'label' => 'bail|required',

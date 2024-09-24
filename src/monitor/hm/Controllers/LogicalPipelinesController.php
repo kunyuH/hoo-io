@@ -19,10 +19,14 @@ class LogicalPipelinesController extends BaseController
      * logical pipelines首页
      * @return string
      */
-    public function index()
+    public function index(LogicalPipelinesRequest $request)
     {
+        $rec_subject_id = $request->input('	rec_subject_id');
+        $name = $request->input('name');
+        $group = $request->input('group');
+        $label = $request->input('label');
         return $this->v('logicalPipelines.index',[
-            'logicalPipelines'=>Logical::list()
+            'logicalPipelines'=>Logical::list($rec_subject_id,$name,$group,$label)
         ]);
     }
 
@@ -86,6 +90,11 @@ class LogicalPipelinesController extends BaseController
             'arranges'=>Logical::arrangeList($request->input('id')),
             'pipeline'=>Logical::firstById($request->input('id')),
         ]);
+    }
+
+    public function arrangex(LogicalPipelinesRequest $request)
+    {
+        return $this->view('logicalPipelines.arrangex');
     }
 
     /**

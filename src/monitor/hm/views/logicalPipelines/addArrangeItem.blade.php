@@ -37,13 +37,13 @@ $cdn = get_cdn().'/hm';
             </div>
             <div class="float-right">
                 <a href="javascript:"
+                   class="btn btn-danger  modalClose"
+                >Close</a>
+                <a href="javascript:"
                    data-from_id="logical-pipeline-add-next"
                    class="btn btn-primary formSubmitAddArrangeItem"
                    data-href={{jump_link('/hm/logical-pipelines/add-arrange-item')}}
                 >Submit</a>
-                <a href="javascript:"
-                   class="btn btn-danger  modalClose"
-                >Close</a>
             </div>
         </form>
     </div>

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * **********************************基础信息更新*****************************************
  * 逻辑块列表
- * @method static list()
+ * @method static list($object_id,$name,$group,$label)
  * @var LogicalBlockService::list()
  *
  * 单个逻辑块查询【通过id】

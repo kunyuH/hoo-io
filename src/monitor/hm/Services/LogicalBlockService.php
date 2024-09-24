@@ -16,14 +16,26 @@ class LogicalBlockService extends BaseService
      * 逻辑块列表
      * @return Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function list()
+    public function list($object_id=null,$name=null,$group=null,$label=null)
     {
         return LogicalBlockModel::query()
             ->where(function (Builder $q){
                 $q->whereNull('deleted_at')
                     ->orWhere('deleted_at','');
             })
-            ->get();
+            ->when(!empty($object_id),function (Builder $q) use ($object_id){
+                $q->where('object_id','like','%'.$object_id.'%');
+            })
+            ->when(!empty($name),function (Builder $q) use ($name){
+                $q->where('name','like','%'.$name.'%');
+            })
+            ->when(!empty($group),function (Builder $q) use ($group){
+                $q->where('group',$group);
+            })
+            ->when(!empty($label),function (Builder $q) use ($label){
+                $q->where('label','like','%'.$label.'%');
+            })
+            ->paginate(10);
     }
 
     /**
@@ -48,7 +60,7 @@ class LogicalBlockService extends BaseService
      * @return void
      * @throws HooException
      */
-    public function save($object_id,$name,$group,$label,$logical_block,$remark='',$id=null)
+    public function save($name,$group,$label,$logical_block,$remark='',$id=null)
     {
         if(!empty($id)){
             if ($id == 1){
@@ -59,7 +71,7 @@ class LogicalBlockService extends BaseService
 
             # 检测是否存在重复
             if(LogicalBlockModel::query()
-                ->where('object_id',$object_id)
+                ->where('object_id',$old_data->object_id)
                 ->where('id','<>',$id)
                 ->where(function (Builder $q){
                     $q->whereNull('deleted_at')
@@ -67,7 +79,6 @@ class LogicalBlockService extends BaseService
                 })->count()){throw new HooException('object_id已存在！');}
 
             LogicalBlockModel::query()->where('id',$id)->update([
-                'object_id'=>$object_id,
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
@@ -82,16 +93,8 @@ class LogicalBlockService extends BaseService
                 'new_data'=>$this->firstById($id)
             ],JSON_UNESCAPED_UNICODE));
         }else{
-            # 检测是否存在重复
-            if(LogicalBlockModel::query()
-                ->where('object_id',$object_id)
-                ->where(function (Builder $q){
-                    $q->whereNull('deleted_at')
-                        ->orWhere('deleted_at','');
-                })->count()){throw new HooException('object_id已存在！');}
-
             LogicalBlockModel::query()->create([
-                'object_id'=>$object_id,
+                'object_id'=>ho_uuid(),
                 'name'=>$name,
                 'group'=>$group,
                 'label'=>$label,
@@ -142,6 +145,8 @@ class LogicalBlockService extends BaseService
     public function execByCode($logical_block,$name='',$resData=[])
     {
         $before_time = microtime(true);
+        # 字符串兼容
+        if(!is_array($resData)){$resData=[$resData];}
         $inputData = $resData;
 
         $error = null;
@@ -158,14 +163,17 @@ class LogicalBlockService extends BaseService
             include $tmpfname;
             unlink($tmpfname);
 
+            # 实例化
             $class = new \ReflectionClass($class_name);
-            $instance = $class->newInstanceArgs();
 
-            if(!empty($resData)){
-                $resData = $instance->run($resData);
-            }else{
-                $resData = $instance->run();
-            }
+            # 参数处理
+            # 1. 上游逻辑块未传递参数 则入参置空
+            # 2. 当前逻辑块不接收参数 则入参置空
+            # 3. 上游逻辑块传递参数，参数为数组类型，则按顺序传递参数
+            # 4. 上游逻辑块传递参数，参数为字典类型，则自动识别key，按照key传递参数，没有的自动补全默认数据
+            $resData = $this->parameter($resData,$class);
+            $resData = $class->newInstanceArgs()->run($resData);
+
 
         }catch (Throwable $e){
             if(file_exists($tmpfname)){
@@ -179,6 +187,61 @@ class LogicalBlockService extends BaseService
 
         return [$resData,$error];
     }
+
+    /**
+     * 参数处理
+     * 1. 上游逻辑块未传递参数，且 当前逻辑块不接收参数，则入参置空
+     * 2. 上游逻辑块未传递参数，且 当前逻辑块接收参数，
+     *  则入参按照当前逻辑块参数设置，没有默认值则默认null，有默认值则使用默认数据
+     * 3. 当前逻辑块不接收参数 则入参置空
+     * 4. 上游逻辑块传递参数，参数为字典类型，则自动识别key，按照key传递参数，没有的自动补全默认数据
+     * 5. 上游逻辑块传递参数，参数为数组类型，则按顺序传递参数  无需调整
+     * @param $resData
+     * @param $class
+     * @return void
+     */
+    private function parameter($resData,$class)
+    {
+        $data = [];
+        $parameters = $class->getMethod('handle')->getParameters();
+        if(empty($resData) && empty($parameters)){
+            $data = [];
+        }elseif (empty($resData) && !empty($parameters)){
+            foreach ($parameters as $parameter){
+                if(isset($resData[$parameter->name])){
+                    $data[] = $resData[$parameter->name];
+                }else{
+                    # 判断是否有默认值 true 有默认值  如果没有默认值 则默认为null
+                    if($parameter->isDefaultValueAvailable()){
+                        $data[] = $parameter->getDefaultValue();
+                    }else{
+                        $data[] = null;
+                    }
+                }
+            }
+        }elseif (empty($parameters)){
+            $data = [];
+        }elseif (is_dictionary($resData)){
+
+            foreach ($parameters as $parameter){
+                if(isset($resData[$parameter->name])){
+                    $data[] = $resData[$parameter->name];
+                }else{
+                    # 判断是否有默认值 true 有默认值  如果没有默认值 则默认为null
+                    if($parameter->isDefaultValueAvailable()){
+                        $data[] = $parameter->getDefaultValue();
+                    }else{
+                        $data[] = null;
+                    }
+                }
+            }
+        }else{
+            $data = $resData;
+        }
+
+        return $data;
+    }
+
 
     /**
      * 逻辑块运行【通过id】
