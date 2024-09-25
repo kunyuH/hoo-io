@@ -76,7 +76,7 @@ $cdn = get_cdn().'/hm';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$LogicalBlocks->links()}}
+                    {{$LogicalBlocks->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>

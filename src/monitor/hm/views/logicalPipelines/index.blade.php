@@ -94,7 +94,7 @@ $cdn = get_cdn().'/hm';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$logicalPipelines->links()}}
+                    {{$logicalPipelines->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>
@@ -127,5 +127,5 @@ $cdn = get_cdn().'/hm';
         </div>
     </div>
 </div>
- <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>
-{{--<script src="{{$cdn}}/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>--}}
+{{-- <script src="{{jump_link('/hm-r/js/logicalPipelines/main.js')}}" type="text/javascript" charset="utf-8"></script>--}}
+<script src="{{$cdn}}/js/logicalPipelines/main.js" type="text/javascript" charset="utf-8"></script>

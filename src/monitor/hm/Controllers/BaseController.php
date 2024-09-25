@@ -30,7 +30,6 @@ class BaseController extends Controller
         $view = str_replace('.','/',$view);
         $view = str_replace('::','/',$view);
 
-
         # 渲染视图
         return View::file(__DIR__ . "/../views/{$view}.blade.php",$data)->render();
     }
