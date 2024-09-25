@@ -24,8 +24,7 @@ class LogicalPipelinesService extends BaseService
     {
         return LogicalPipelinesModel::query()
             ->where(function (Builder $q){
-                $q->whereNull('deleted_at')
-                    ->orWhere('deleted_at','');
+                $q->whereNull('deleted_at');
             })
             ->when(!empty($rec_subject_id),function (Builder $q) use ($rec_subject_id){
                 $q->where('rec_subject_id','like','%'.$rec_subject_id.'%');

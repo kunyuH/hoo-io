@@ -20,8 +20,7 @@ class LogicalBlockService extends BaseService
     {
         return LogicalBlockModel::query()
             ->where(function (Builder $q){
-                $q->whereNull('deleted_at')
-                    ->orWhere('deleted_at','');
+                $q->whereNull('deleted_at');
             })
             ->when(!empty($object_id),function (Builder $q) use ($object_id){
                 $q->where('object_id','like','%'.$object_id.'%');
@@ -74,8 +73,7 @@ class LogicalBlockService extends BaseService
                 ->where('object_id',$old_data->object_id)
                 ->where('id','<>',$id)
                 ->where(function (Builder $q){
-                    $q->whereNull('deleted_at')
-                        ->orWhere('deleted_at','');
+                    $q->whereNull('deleted_at');
                 })->count()){throw new HooException('object_id已存在！');}
 
             LogicalBlockModel::query()->where('id',$id)->update([
