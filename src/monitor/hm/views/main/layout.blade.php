@@ -30,22 +30,15 @@ $cdn = get_cdn().'/hm';
                                       class="ky-modal"
                                       data-href={{jump_link("/log-viewer")}}
             >log-viewer</a></li>
-        <li class="layui-nav-item"><a href="javascript:"
-                                      data-title="log-viewer(laravel 6)"
-                                      data-width="1200px"
-                                      data-height="600px"
-                                      class="ky-modal"
-                                      data-href={{jump_link("/hm/logs")}}
-            >log-viewer(laravel 6)</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/log-viewer/index")}}>log-viewer(Arcanedev)</a></li>
         <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">
                 <dd><a target="_blank" href={{jump_link("/clockwork/app")}}>clockwork</a></dd>
                 <dd><a target="_blank" href={{jump_link("/log-viewer")}}>log-viewer</a></dd>
-                <dd><a target="_blank" href={{jump_link("/hm/logs")}}>log-viewer(laravel 6)</a></dd>
+                <dd><a target="_blank" href={{jump_link("/hm/log-viewer/index")}}>log-viewer(Arcanedev)</a></dd>
             </dl>
         </li>
-
         <li class="layui-nav-item"><a href="javascript:"
                                       data-type="post"
                                       data-confirm-ky="确认要退出吗？"

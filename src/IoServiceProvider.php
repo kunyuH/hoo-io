@@ -5,6 +5,8 @@ namespace hoo\io;
 use hoo\io\common\Command\DevCommand;
 use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
+use hoo\io\common\Middleware\HttpLogMid;
+use hoo\io\monitor\hm\Controllers\LogViewerController;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
@@ -65,17 +67,6 @@ class IoServiceProvider extends ServiceProvider
              */
             $this->registerCommands();
 
-            /**
-             * 判断laravel版本
-             * 低于9 才会加载aravelLogViewer模块
-             */
-            if (version_compare(app()->version(), '9.0.0', '<')) {
-                $serviceProvider = new \Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider($this->app);
-                $serviceProvider->register();
-                Route::middleware('hoo.auth')->group(function (){
-                    Route::get('hm/logs', '\hoo\io\monitor\LaravelLogView\Controllers\HooLogViewerController@index');
-                });
-            }
         }catch (Exception $e){}
     }
 
@@ -117,7 +108,6 @@ class IoServiceProvider extends ServiceProvider
      */
     public function registerAuth()
     {
-
         /**
          * 定义权限 是否登录
          */
@@ -155,6 +145,7 @@ class IoServiceProvider extends ServiceProvider
     {
         //注册中间件-默认运行
         $kernel = $this->app->make(Kernel::class);
+        $kernel->pushMiddleware(HttpLogMid::class);
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
         Route::aliasMiddleware('hoo.auth',HmAuth::class);
@@ -197,6 +188,11 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::get('run-command',[IndexController::class,'runCommand']);
                 Route::post('run-command',[IndexController::class,'runCommand']);
+
+                Route::prefix('log-viewer')->group(function (){
+                    Route::get('index',[LogViewerController::class,'index']);
+                    Route::post('show-log',[LogViewerController::class,'showLog']);
+                });
 
                 Route::prefix('logical-block')->group(function (){
                     Route::get('index',[LogicalBlockController::class,'index']);

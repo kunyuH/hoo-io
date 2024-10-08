@@ -61,7 +61,7 @@ if (! function_exists('ho_uuid')) {
      * @return string
      */
     function ho_uuid($prefix = "")
-    {    
+    {
         $str = md5(uniqid(mt_rand(), true));
         $uuid = substr($str, 0, 8) . '-';
         $uuid .= substr($str, 8, 4) . '-';
@@ -88,6 +88,42 @@ if (! function_exists('is_dictionary')) {
             return true;
         }
         return false;
+    }
+}
+if (! function_exists('ho_fnmatchs')) {
+    /**
+     * fnmatch 匹配
+     * @param $pattern
+     * @param $filename
+     * @return bool
+     */
+    function ho_fnmatchs($pattern, $filename)
+    {
+        if (is_string($filename)) {
+            return fnmatch($pattern, $filename);
+        } elseif (is_array($filename)) {
+            foreach ($filename as $v) {
+                if (fnmatch($pattern, $v)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+if (! function_exists('is_json')) {
+    /**
+     * 判断是否是json格式
+     * @param $str
+     * @return bool
+     */
+    function is_json($str)
+    {
+        // 判断返回字符串是否是json格式
+        if (is_null(json_decode($str, true))) {
+            return false;
+        }
+        return true;
     }
 }
 

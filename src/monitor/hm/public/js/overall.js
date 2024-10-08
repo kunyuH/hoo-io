@@ -94,13 +94,13 @@ $(document).on("click",".ky-req",function(event){
             btn: ['确定','取消'], //按钮
             icon: 3
         }, function(){
-            kyReq(type,href,params)
+            kyReq(type,href,params,$(this))
         });
     }else{
-        kyReq(type,href,params)
+        kyReq(type,href,params,$(this))
     }
 });
-function kyReq(type,href,params) {
+function kyReq(type,href,params,_this='') {
     $.ajax({
         type:type,
         url:href,
@@ -133,6 +133,18 @@ function kyReq(type,href,params) {
                             window.location.reload();
                         }
                     });
+                }else if(e.data.open_type == 3){
+                    var EditRule = e.data.redirect_uri;
+                    var EditTitle = _this.attr('data-title');
+                    var width = _this.attr('data-width');
+                    var height = _this.attr('data-height');
+                    if(!width){
+                        width = '800px';
+                    }
+                    if(!height){
+                        height = '500px';
+                    }
+                    open_layer(EditTitle,EditRule,width,height);
                 }else{
                     layer.msg(e.message, {icon: 6, time: 500}, function(){
                         //layer.load(1);//loading

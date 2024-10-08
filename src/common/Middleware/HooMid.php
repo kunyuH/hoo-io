@@ -3,10 +3,12 @@
 namespace hoo\io\common\Middleware;
 
 use Closure;
+use hoo\io\common\Support\Facade\HooSession;
+use hoo\io\monitor\ArcanedevLogViewer\ArcanedevLogViewerService;
+use hoo\io\monitor\clockwork\ClockworkService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 
 class HooMid
@@ -30,91 +32,45 @@ class HooMid
             $reqPath = $reqPath . '/';
         }
 
-        # 不包含
-        if (!$this->fnmatchs('clockwork/*',$reqPath) and
-            !$this->fnmatchs('__clockwork/*',$reqPath) and
-            !$this->fnmatchs('log-viewer/*',$reqPath)
-        ) {
-            Log::channel('debug')->log('info', "【请求参数展示】", [
-                '格式化展示'=>$request->input() ?? [],
-                'json展示'=>json_encode($request->input() ?? [], JSON_UNESCAPED_UNICODE),
-            ]);
-        }
-
         # clockwork
-        if($this->fnmatchs('clockwork/*',$reqPath) || $this->fnmatchs('__clockwork/*',$reqPath)) {
+        if(ho_fnmatchs('clockwork/*',$reqPath) || ho_fnmatchs('__clockwork/*',$reqPath)) {
             # 判断是否有权限
             if (!Gate::allows('hooAuth')){
                 header('HTTP/1.1 500 Server Error');
                 exit();
             }
 
-            if($this->fnmatchs('clockwork/app',$reqPath)){
+            if(ho_fnmatchs('clockwork/app',$reqPath)){
                 echo View::file(__DIR__ . '/../../monitor/clockwork/views/index.blade.php')->render();
                 exit();
             }
         }
 
         # log-viewer
-        if($this->fnmatchs('log-viewer/*',$reqPath)) {
+        if(ho_fnmatchs(config('log-viewer.route.attributes.prefix').'/*',$reqPath)) {
+            # 从session中提取用户进入的目录 之后设置log-viewer控件展示日志的根目录
+            $path = HooSession::get('log-viewer.storage-path');
+            if($path){
+                Config::set('log-viewer.storage-path', $path);
+            }
+
             # 判断是否有权限
             if (!Gate::allows('hooAuth')){
                 header('HTTP/1.1 500 Server Error');
                 exit();
             }
         }
+        $response = $next($request);
         /**
          * gupo 日志中心 改造的clockwork 展示异常处理 修复异常报错
          */
-        return $this->gupoClockErrorCorrect($request,$next($request));
-    }
-
-    /**
-     * gupo 日志中心 改造的clockwork 展示异常处理
-     * @param $Response
-     * @return Response|mixed
-     */
-    private function gupoClockErrorCorrect(Request $request, $Response)
-    {
-        # 添加getData方法 兼容【gupo 日志中心修改过的Clockwork】
-        if ($Response instanceof Response){
-            $Response->macro('getData',function(){
-                $object = new \stdClass();
-                $object->message = 'ok';
-                $object->data = [];
-                $object->code = 200;
-            });
-        }
+        $response = (new ClockworkService())->gupoClockErrorCorrect($request,$response);
 
         /**
-         * 出现错误 Error loading request metadata
-         * 路由 __clockwork
-         * only=clientMetrics%2CwebVitals
-         * 返回值为[]
+         * gupo 日志中心 改造 ArcanedevLogViewer 日志view页面 静态资源链接替换，防止无法访问
          */
-        if($this->fnmatchs('__clockwork/*',$request->path())
-            and $request->get('only') == 'clientMetrics,webVitals'
-            and empty($Response->getData())){
-            $Response = response()->json([
-                'clientMetrics' => [],
-                'webVitals' => []
-            ]);
-        }
+        $response = (new ArcanedevLogViewerService())->replaceStaticResourceLink($request,$response,$reqPath);
 
-        return $Response;
-    }
-
-    private function fnmatchs($pattern,$filename)
-    {
-        if(is_string($filename)){
-            return fnmatch($pattern,$filename);
-        }elseif(is_array($filename)){
-            foreach ($filename as $v){
-                if(fnmatch($pattern,$v)){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return $response;
     }
 }
