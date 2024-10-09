@@ -110,7 +110,7 @@ class HttpLogMid
             !ho_fnmatchs('__clockwork/*',$reqPath) and
             !ho_fnmatchs('log-viewer/*',$reqPath) and
             !ho_fnmatchs('hm-r/*',$reqPath) and
-            !ho_fnmatchs(config('log-viewer.route.attributes.prefix').'/*',$reqPath)
+            !ho_fnmatchs(config('log-viewer.route.attributes.prefix','log-viewer').'/*',$reqPath)
         ) {
             return true;
         }else{

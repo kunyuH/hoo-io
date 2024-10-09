@@ -12,7 +12,7 @@ class ArcanedevLogViewerService
     public function replaceStaticResourceLink(Request $request,$response,$reqPath)
     {
         # log-viewer
-        if(ho_fnmatchs(config('log-viewer.route.attributes.prefix').'/*',$reqPath)) {
+        if(ho_fnmatchs(config('log-viewer.route.attributes.prefix','log-viewer').'/*',$reqPath)) {
             $html = $response->getContent();
             # 字符串替换
             $html = str_replace('https://maxcdn.bootstrapcdn.com', get_cdn() . '/log-viewer', $html);

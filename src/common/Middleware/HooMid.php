@@ -47,7 +47,7 @@ class HooMid
         }
 
         # log-viewer
-        if(ho_fnmatchs(config('log-viewer.route.attributes.prefix').'/*',$reqPath)) {
+        if(ho_fnmatchs(config('log-viewer.route.attributes.prefix','log-viewer').'/*',$reqPath)) {
             # 从session中提取用户进入的目录 之后设置log-viewer控件展示日志的根目录
             $path = HooSession::get('log-viewer.storage-path');
             if($path){

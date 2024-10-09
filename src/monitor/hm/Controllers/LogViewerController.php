@@ -17,10 +17,10 @@ class LogViewerController extends BaseController
         $path = urldecode($path);
         # 设置当前日志根目录
         HooSession::put('log-viewer.storage-path',$path);
-        
+
         return $this->resSuccess([
             'open_type'=>3,
-            'redirect_uri'=>jump_link('/'.config('log-viewer.route.attributes.prefix')).'/logs',
+            'redirect_uri'=>jump_link('/'.config('log-viewer.route.attributes.prefix','log-viewer')).'/logs',
         ]);
     }
 }
