@@ -124,25 +124,44 @@ class DevCommand extends BaseCommand
             $this->info('hm_logical_pipelines_arrange 表创建成功');
         }
 
-        if (!Schema::hasTable('hm_http_log')) {
-            Schema::create('hm_http_log', function (Blueprint $table) {
+        if (!Schema::hasTable('hm_api_log')) {
+            Schema::create('hm_api_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('user_id')->nullable();
-                $table->string('domain');
-                $table->string('path');
-                $table->string('method');
+                $table->string('user_id',100)->nullable();
+                $table->string('domain',50);
+                $table->string('path',100);
+                $table->string('method',20);
                 $table->integer('run_time');
-                $table->string('user_agent');
+                $table->string('user_agent',100);
                 $table->longText('input')->nullable();
                 $table->longText('output')->nullable();
-                $table->string('status_code');
-                $table->string('ip');
+                $table->string('status_code',50);
+                $table->string('ip',50);
                 $table->dateTime('created_at')->nullable();
 
                 $table->index('user_id','idx_user_id');
                 $table->index('path','idx_path');
                 $table->index('created_at','idx_created_at');
                 $table->index('domain','idx_domain');
+                $table->index('method','idx_method');
+            });
+            $this->info('hm_api_log 表创建成功');
+        }
+
+        if (!Schema::hasTable('hm_http_log')) {
+            Schema::create('hm_http_log', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('path',200);
+                $table->string('method');
+                $table->longText('url');
+                $table->longText('options')->nullable();
+                $table->longText('response')->nullable();
+                $table->longText('err')->nullable();
+                $table->integer('run_time');
+                $table->dateTime('created_at')->nullable();
+
+                $table->index('path','idx_path');
+                $table->index('created_at','idx_created_at');
                 $table->index('method','idx_method');
             });
             $this->info('hm_http_log 表创建成功');

@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io\monitor\hm\Models;
+namespace hoo\io\common\Models;
 
 class HttpLogModel extends BaseModel
 {

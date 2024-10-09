@@ -3,16 +3,16 @@
 namespace hoo\io\common\Middleware;
 
 use Closure;
-use hoo\io\monitor\hm\Models\HttpLogModel;
+use hoo\io\common\Models\ApiLogModel;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
-class HttpLogMid
+class ApiLogMid
 {
     /**
-     * 请求中间件 记录接口日志
+     * 请求中间件 记录接口日志入参 出参日志
      * @param Request $request
      * @param Closure $next
      * @return mixed
@@ -61,9 +61,9 @@ class HttpLogMid
     {
 
         # 检验是否存在http日志表
-        if (Schema::hasTable('hm_http_log')) {
-            HttpLogModel::insert([
-                'user_id'=>$request->input(env('HTTP_LOG_USER_FILED','member_id'),''),
+        if (Schema::hasTable('hm_api_log') && env('HM_API_LOG',true)) {
+            ApiLogModel::insert([
+                'user_id'=>$request->input(env('HM_API_LOG_USER_FILED','member_id'),''),
                 'domain'=>$request->getHost().':'.$request->getPort(),
                 'path'=>$request->path(),
                 'method'=>$request->method(),

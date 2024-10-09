@@ -5,7 +5,7 @@ namespace hoo\io;
 use hoo\io\common\Command\DevCommand;
 use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
-use hoo\io\common\Middleware\HttpLogMid;
+use hoo\io\common\Middleware\ApiLogMid;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
@@ -145,7 +145,7 @@ class IoServiceProvider extends ServiceProvider
     {
         //注册中间件-默认运行
         $kernel = $this->app->make(Kernel::class);
-        $kernel->pushMiddleware(HttpLogMid::class);
+        $kernel->pushMiddleware(ApiLogMid::class);
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
         Route::aliasMiddleware('hoo.auth',HmAuth::class);

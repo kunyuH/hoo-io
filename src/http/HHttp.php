@@ -5,7 +5,9 @@ namespace hoo\io\http;
 
 use Cloudladder\Http\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use hoo\io\common\Models\HttpLogModel;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -80,12 +82,12 @@ class HHttp extends Client
      * @param $err
      * @return void
      */
-    protected function log($before_time, $after_time, $method, $uri, $options, $res, $err)
+    protected function log($before_time, $after_time, $method, $uri, $options, $resStr, $err)
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
         $res_json = '';
-        if ($this->isJson($res)) {
-            $res = json_decode($res, true);
+        if ($this->isJson($resStr)) {
+            $res = json_decode($resStr, true);
             $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
         }else{
             $res_json = $res;
@@ -119,7 +121,25 @@ class HHttp extends Client
             'err' => $err,
             '入参出参json展示' => $json_show
         ]);
+        # 检验是否存在http日志表
+        if (Schema::hasTable('hm_http_log') && env('HM_HTTP_LOG',true)) {
 
+            # 字符串长度超出 则不记录
+            if (strlen($resStr) > 5000) {
+                $resStr = 'response is too long';
+            }
+
+            HttpLogModel::insert([
+                'run_time'=>round($after_time - $before_time, 3) * 1000,
+                'path'=>parse_url($uri)['path']??'',
+                'url'=>$uri,
+                'method'=>$method,
+                'options'=>json_encode($options,JSON_UNESCAPED_UNICODE),
+                'response'=>$resStr,
+                'err'=>$err,
+                'created_at'=>date('Y-m-d H:i:s'),
+            ]);
+        }
     }
 
     /**
