@@ -6,6 +6,7 @@ namespace hoo\io\http;
 use Cloudladder\Http\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use hoo\io\common\Models\HttpLogModel;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Psr\Http\Message\ResponseInterface;
@@ -33,18 +34,18 @@ class HHttp extends Client
         try {
 
             try{
-                $res = $response->getBody()->getContents();
-            }catch (\Error $e){$res = '';}
+                $resStr = $response->getBody()->getContents();
+            }catch (\Error $e){$resStr = '';}
 
             // 记录请求日志
             $this->log(
                 $before_time, $after_time,
                 $method, $uri, $options,
-                $res,$err
+                $resStr,$err
             );
 
-        } catch (\Exception $e) {
-        }
+        } catch (\Throwable $e) {}
+
         // 重置响应主体流
         $response->getBody()->rewind();
         return $response;
@@ -77,8 +78,8 @@ class HHttp extends Client
      * 记录日志
      * @param $method
      * @param $uri
-     * @param $options
-     * @param $res
+     * @param $options //入参 array
+     * @param $resStr  //返回的原始数据
      * @param $err
      * @return void
      */
@@ -86,11 +87,11 @@ class HHttp extends Client
     {
         # 如果是json格式则格式化 保留中文和斜杠展示
         $res_json = '';
-        if ($this->isJson($resStr)) {
+        if (is_json($resStr)) {
             $res = json_decode($resStr, true);
             $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
         }else{
-            $res_json = $res;
+            $res_json = $resStr;
         }
 
 
@@ -110,17 +111,21 @@ class HHttp extends Client
         }
         $json_show['response'] = $res_json;
 
+        $runTrace = $this->getRunTrace();
+        $runPath = $this->getRunPath();
 
         # 记录日志 格式化记录数组
         Log::channel('debug')->log('info', "【H-HTTP】", [
             '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
+            'run_trace' => $runTrace,
             'url' => $uri,
             'method' => $method,
             'options' => $options,
-            'response' => $res,
+            'response' => $resStr,
             'err' => $err,
             '入参出参json展示' => $json_show
         ]);
+
         # 检验是否存在http日志表
         if (Schema::hasTable('hm_http_log') && env('HM_HTTP_LOG',true)) {
 
@@ -128,17 +133,21 @@ class HHttp extends Client
             if (strlen($resStr) > 5000) {
                 $resStr = 'response is too long';
             }
-
-            HttpLogModel::insert([
-                'run_time'=>round($after_time - $before_time, 3) * 1000,
-                'path'=>parse_url($uri)['path']??'',
-                'url'=>$uri,
-                'method'=>$method,
-                'options'=>json_encode($options,JSON_UNESCAPED_UNICODE),
-                'response'=>$resStr,
-                'err'=>$err,
-                'created_at'=>date('Y-m-d H:i:s'),
-            ]);
+            /**
+             * 源 有两种
+             * 1. 接口被请求运行【http；websock；RPC】
+             * 2. 控制台运行
+             */
+            HttpLogModel::log(round($after_time - $before_time, 3) * 1000,
+                parse_url($uri)['path']??'',
+                $uri,
+                $method,
+                json_encode($options,JSON_UNESCAPED_UNICODE),
+                $resStr,
+                $err,
+                $runTrace,
+                $runPath
+            );
         }
     }
 
@@ -154,5 +163,35 @@ class HHttp extends Client
             return false;
         }
         return true;
+    }
+
+    /**
+     * 获取发起http请求的代码位置
+     * @return string
+     */
+    private function getRunTrace()
+    {
+        # 调用的代码位置 并且只要相对位置
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4)[3];
+        # 获取当前应用所在根目录
+        $file = str_replace(base_path(), '', $trace['file']);
+        $traceStr = $file.':'.$trace['line'];
+
+        return $traceStr;
+    }
+
+    /**
+     * 获取发起http请求的路径 或 命令
+     * @return void
+     */
+    private function getRunPath()
+    {
+        $runPath = '';
+        if (App::runningInConsole()){
+            $runPath = implode(' ', $_SERVER['argv']??[]);
+        }else{
+            $runPath = request()->path();
+        }
+       return $runPath;
     }
 }

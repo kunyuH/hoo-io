@@ -2,6 +2,7 @@
 
 namespace hoo\io\common\Command;
 
+use hoo\io\http\HHttp;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
@@ -11,7 +12,7 @@ class DevCommand extends BaseCommand
 {
     # 支持不传递参数
     protected $signature = 'hm:dev {action} {args?*}';
-
+    //hm:dev test x
     // Command description
     protected $description = 'hm:dev';
 
@@ -28,6 +29,11 @@ class DevCommand extends BaseCommand
     {
         $this->info($a);
         $this->info('test');
+
+        $clien = new HHttp();
+        $resx = $clien->get('https://www.baidu.com');
+        $res = $resx->getBody()->getContents();
+        print_r($res);
     }
 
     /**
@@ -127,6 +133,7 @@ class DevCommand extends BaseCommand
         if (!Schema::hasTable('hm_api_log')) {
             Schema::create('hm_api_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
+                $table->string('app_name',100)->nullable();
                 $table->string('user_id',100)->nullable();
                 $table->string('domain',50);
                 $table->string('path',100);
@@ -151,16 +158,21 @@ class DevCommand extends BaseCommand
         if (!Schema::hasTable('hm_http_log')) {
             Schema::create('hm_http_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
+                $table->string('app_name',100)->nullable();
+                $table->string('uuid',50);
+                $table->longText('url');
                 $table->string('path',200);
                 $table->string('method');
-                $table->longText('url');
                 $table->longText('options')->nullable();
                 $table->longText('response')->nullable();
                 $table->longText('err')->nullable();
                 $table->integer('run_time');
+                $table->string('run_trace',255);
+                $table->string('run_path',200);
                 $table->dateTime('created_at')->nullable();
 
                 $table->index('path','idx_path');
+                $table->index('run_path','idx_run_path');
                 $table->index('created_at','idx_created_at');
                 $table->index('method','idx_method');
             });

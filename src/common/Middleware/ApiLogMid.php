@@ -63,6 +63,7 @@ class ApiLogMid
         # 检验是否存在http日志表
         if (Schema::hasTable('hm_api_log') && env('HM_API_LOG',true)) {
             ApiLogModel::insert([
+                'app_name'=>$_SERVER['APP_NAME']??'',
                 'user_id'=>$request->input(env('HM_API_LOG_USER_FILED','member_id'),''),
                 'domain'=>$request->getHost().':'.$request->getPort(),
                 'path'=>$request->path(),
