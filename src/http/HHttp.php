@@ -126,29 +126,16 @@ class HHttp extends Client
             '入参出参json展示' => $json_show
         ]);
 
-        # 检验是否存在http日志表
-        if (Schema::hasTable('hm_http_log') && env('HM_HTTP_LOG',true)) {
-
-            # 字符串长度超出 则不记录
-            if (strlen($resStr) > 5000) {
-                $resStr = 'response is too long';
-            }
-            /**
-             * 源 有两种
-             * 1. 接口被请求运行【http；websock；RPC】
-             * 2. 控制台运行
-             */
-            HttpLogModel::log(round($after_time - $before_time, 3) * 1000,
-                parse_url($uri)['path']??'',
-                $uri,
-                $method,
-                json_encode($options,JSON_UNESCAPED_UNICODE),
-                $resStr,
-                $err,
-                $runTrace,
-                $runPath
-            );
-        }
+        HttpLogModel::log(round($after_time - $before_time, 3) * 1000,
+            parse_url($uri)['path']??'',
+            $uri,
+            $method,
+            json_encode($options,JSON_UNESCAPED_UNICODE),
+            $resStr,
+            $err,
+            $runTrace,
+            $runPath
+        );
     }
 
     /**
