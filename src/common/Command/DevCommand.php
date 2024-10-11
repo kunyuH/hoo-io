@@ -135,15 +135,15 @@ class DevCommand extends BaseCommand
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
                 $table->string('user_id',100)->nullable();
-                $table->string('domain',50);
-                $table->string('path',100);
-                $table->string('method',20);
-                $table->integer('run_time');
-                $table->string('user_agent',100);
+                $table->string('domain',50)->nullable();
+                $table->string('path',100)->nullable();
+                $table->string('method',20)->nullable();
+                $table->integer('run_time')->nullable();
+                $table->longText('user_agent')->nullable();
                 $table->longText('input')->nullable();
                 $table->longText('output')->nullable();
-                $table->string('status_code',50);
-                $table->string('ip',50);
+                $table->string('status_code',50)->nullable();
+                $table->string('ip',50)->nullable();
                 $table->dateTime('created_at')->nullable();
 
                 $table->index('user_id','idx_user_id');
@@ -159,16 +159,16 @@ class DevCommand extends BaseCommand
             Schema::create('hm_http_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
-                $table->string('uuid',50);
-                $table->longText('url');
-                $table->string('path',200);
-                $table->string('method');
+                $table->string('uuid',50)->nullable();
+                $table->longText('url')->nullable();
+                $table->string('path',200)->nullable();
+                $table->string('method')->nullable();
                 $table->longText('options')->nullable();
                 $table->longText('response')->nullable();
                 $table->longText('err')->nullable();
-                $table->integer('run_time');
-                $table->string('run_trace',255);
-                $table->string('run_path',200);
+                $table->integer('run_time')->nullable();
+                $table->string('run_trace',255)->nullable();
+                $table->string('run_path',255)->nullable();
                 $table->dateTime('created_at')->nullable();
 
                 $table->index('path','idx_path');
