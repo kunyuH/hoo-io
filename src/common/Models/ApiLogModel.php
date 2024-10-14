@@ -2,6 +2,7 @@
 
 namespace hoo\io\common\Models;
 
+use hoo\io\common\Services\ContextService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class ApiLogModel extends BaseModel
             if (Schema::hasTable('hm_api_log') && env('HM_API_LOG',true)) {
                 self::insert([
                     'app_name'=>$_SERVER['APP_NAME']??'',
+                    'hoo_traceid'=>ContextService::getHooTraceId(),
                     'user_id'=>$request->input(env('HM_API_LOG_USER_FILED','member_id'),''),
                     'domain'=>$request->getHost().':'.$request->getPort(),
                     'path'=>$request->path(),

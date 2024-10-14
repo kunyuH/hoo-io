@@ -2,19 +2,12 @@
 
 namespace hoo\io\common\Models;
 
+use hoo\io\common\Services\ContextService;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class HttpLogModel extends BaseModel
 {
     protected $table = 'hm_http_log';
-
-    /**
-     * 针对此次请求的UUID
-     *
-     * @var bool
-     */
-    protected static  $requestUuid = '';
 
     /**
      * 记录程序访问的第三方接口请求日志
@@ -33,16 +26,13 @@ class HttpLogModel extends BaseModel
     {
         # 检验是否存在http日志表
         if (Schema::hasTable('hm_http_log') && env('HM_HTTP_LOG',true)) {
-            if(empty(self::$requestUuid)){
-                self::$requestUuid = Str::random(5);
-            }
             # 字符串长度超出 则不记录
             if (strlen($resStr) > 5000) {
                 $resStr = 'response is too long';
             }
             self::insert([
                 'app_name'=>$_SERVER['APP_NAME']??'',
-                'uuid'=>self::$requestUuid,
+                'hoo_traceid'=>ContextService::getHooTraceId(),
                 'run_time'=>$run_time,
                 'path'=>$path,
                 'url'=>$uri,

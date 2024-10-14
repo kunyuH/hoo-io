@@ -134,6 +134,7 @@ class DevCommand extends BaseCommand
             Schema::create('hm_api_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
+                $table->string('hoo_traceid',50)->nullable();
                 $table->string('user_id',100)->nullable();
                 $table->string('domain',50)->nullable();
                 $table->string('path',100)->nullable();
@@ -148,6 +149,7 @@ class DevCommand extends BaseCommand
 
                 $table->index('user_id','idx_user_id');
                 $table->index('path','idx_path');
+                $table->index('hoo_traceid','idx_hoo_traceid');
                 $table->index('created_at','idx_created_at');
                 $table->index('domain','idx_domain');
                 $table->index('method','idx_method');
@@ -159,7 +161,7 @@ class DevCommand extends BaseCommand
             Schema::create('hm_http_log', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
-                $table->string('uuid',50)->nullable();
+                $table->string('hoo_traceid',50)->nullable();
                 $table->longText('url')->nullable();
                 $table->string('path',200)->nullable();
                 $table->string('method')->nullable();
@@ -173,6 +175,7 @@ class DevCommand extends BaseCommand
 
                 $table->index('path','idx_path');
                 $table->index('run_path','idx_run_path');
+                $table->index('hoo_traceid','idx_hoo_traceid');
                 $table->index('created_at','idx_created_at');
                 $table->index('method','idx_method');
             });
