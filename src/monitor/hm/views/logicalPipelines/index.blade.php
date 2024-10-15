@@ -94,7 +94,7 @@ $cdn = get_cdn().'/hm';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$logicalPipelines->links('pagination::bootstrap-4')}}
+                    {{$logicalPipelines->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>

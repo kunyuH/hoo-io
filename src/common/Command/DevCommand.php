@@ -163,14 +163,14 @@ class DevCommand extends BaseCommand
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
                 $table->longText('url')->nullable();
-                $table->string('path',200)->nullable();
-                $table->string('method')->nullable();
+                $table->string('path',150)->nullable();
+                $table->string('method',50)->nullable();
                 $table->longText('options')->nullable();
                 $table->longText('response')->nullable();
                 $table->longText('err')->nullable();
                 $table->integer('run_time')->nullable();
                 $table->string('run_trace',255)->nullable();
-                $table->string('run_path',255)->nullable();
+                $table->string('run_path',150)->nullable();
                 $table->dateTime('created_at')->nullable();
 
                 $table->index('path','idx_path');

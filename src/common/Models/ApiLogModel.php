@@ -43,4 +43,13 @@ class ApiLogModel extends BaseModel
             }
         }catch (\Throwable $e){}
     }
+
+    /**
+     * 关联依赖服务日志表
+     * 一对多
+     */
+    public function HttpLog()
+    {
+        return $this->hasMany(HttpLogModel::class, 'hoo_traceid','hoo_traceid');
+    }
 }

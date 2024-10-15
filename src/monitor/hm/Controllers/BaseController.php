@@ -145,7 +145,7 @@ class BaseController extends Controller
         $str = str_replace('DONE','<span style="color: rgb(0, 187, 0);">DONE</span>',$str);
         # 方括号内加粗
         $str = preg_replace('/\[(.*?)\]/','<b>[$1]</b>',$str);
-
-        return $str;
+        
+        return mb_detect_encoding($str, 'UTF-8', true) === 'UTF-8'?$str:utf8_encode($str);
     }
 }

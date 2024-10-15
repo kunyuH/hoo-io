@@ -21,7 +21,7 @@ class LogicalPipelinesController extends BaseController
      */
     public function index(LogicalPipelinesRequest $request)
     {
-        $rec_subject_id = $request->input('	rec_subject_id');
+        $rec_subject_id = $request->input('rec_subject_id');
         $name = $request->input('name');
         $group = $request->input('group');
         $label = $request->input('label');

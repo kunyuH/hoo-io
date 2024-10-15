@@ -34,17 +34,17 @@ class HHttp extends Client
         try {
 
             try{
-                $resStr = $response->getBody()->getContents();
-            }catch (\Error $e){$resStr = '';}
+                $res = $response->getBody()->getContents();
+            }catch (\Error $e){$res = '';}
 
             // 记录请求日志
             $this->log(
                 $before_time, $after_time,
                 $method, $uri, $options,
-                $resStr,$err
+                $res,$err
             );
 
-        } catch (\Throwable $e) {}
+        } catch (\Throwable $e) {dd($e->getMessage());}
 
         // 重置响应主体流
         $response->getBody()->rewind();
@@ -79,21 +79,35 @@ class HHttp extends Client
      * @param $method
      * @param $uri
      * @param $options //入参 array
-     * @param $resStr  //返回的原始数据
+     * @param $res  //返回的原始数据
      * @param $err
      * @return void
      */
-    protected function log($before_time, $after_time, $method, $uri, $options, $resStr, $err)
+    protected function log($before_time, $after_time, $method, $uri, $options, $res, $err)
     {
-        # 如果是json格式则格式化 保留中文和斜杠展示
+        /**
+         * res 是原始接口返回 可能是json字符串 也可能是普通字符串
+         *
+         * res_arr
+         * res为json则 将res转换成数组并赋值给res_arr
+         * res非json则 直接将res值赋值给res_arr
+         * 使用场景【log记录 格式化展示】
+         *
+         * res_json
+         * res为json则 res_json=res 且将中文转义过
+         * res非json则 res_json=res
+         * 使用场景【用于log文本记录 用于复制字段的展示；用于记录到数据库】
+         *
+         */
+        $res_arr = null;
         $res_json = '';
-        if (is_json($resStr)) {
-            $res = json_decode($resStr, true);
-            $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
+        if (is_json($res)){
+            $res_arr = json_decode($res, true);
+            $res_json = json_encode($res_arr, JSON_UNESCAPED_UNICODE);
         }else{
-            $res_json = $resStr;
+            $res_arr = $res;
+            $res_json = $res;
         }
-
 
         $json_show['url'] = $uri;
         $json_show['method'] = $method;
@@ -121,7 +135,7 @@ class HHttp extends Client
             'url' => $uri,
             'method' => $method,
             'options' => $options,
-            'response' => $resStr,
+            'response' => $res_arr,
             'err' => $err,
             '入参出参json展示' => $json_show
         ]);
@@ -131,7 +145,7 @@ class HHttp extends Client
             $uri,
             $method,
             json_encode($options,JSON_UNESCAPED_UNICODE),
-            $resStr,
+            $res_json,
             $err,
             $runTrace,
             $runPath

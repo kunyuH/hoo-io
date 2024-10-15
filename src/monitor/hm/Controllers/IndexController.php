@@ -46,7 +46,7 @@ class IndexController extends BaseController
             return $this->resSuccess([
                 'open_type'=>$open_type,
                 'type'=>$type,
-            ],utf8_encode($this->execOutput($output)));
+            ],$this->execOutput($output));
 
         }else{
             return $this->view('main.modal-form',[

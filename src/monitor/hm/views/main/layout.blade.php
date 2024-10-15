@@ -11,7 +11,7 @@ $cdn = get_cdn().'/hm';
     <link rel="stylesheet" href="<?php echo $cdn?>/icons-1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
-<div class="container" style="margin-top: 15px">
+<div class="container-fluid" style="margin-top: 15px">
     <ul class="layui-nav">
         <li class="layui-nav-item"><a href={{jump_link("/hm/index")}}>首页</a></li>
         <li class="layui-nav-item"><a href={{jump_link("/hm/logical-block/index")}}>logical block</a></li>
