@@ -1,58 +1,8 @@
 <?php
 $cdn = get_cdn().'/hm';
-
-function getDir($path,$html='',$data=[])
-{
-    $logs = glob($path.'/*', GLOB_ONLYDIR);
-    foreach ($logs as $log) {
-        $html .= '<div style="margin-left: 20px">';
-        $html .= '<button type="button" class="btn btn-link ky-req"
-        data-type="post"
-        data-href="'.jump_link('/hm/log-viewer/show-log').'"
-        data-params=\'{"path":"'.urlencode($log).'"}\'
-        data-title="log-viewer"
-        data-width="1400px"
-        data-height="800px"
-        >
-        <i class="bi bi-folder"></i> '.basename($log).'('.count(glob($log.'/*.log')).')
-        </button>';
-
-        list($children,$html) = getDir($log,$html);
-        $data[] = [
-            'name' => basename($log),
-            'path' => $log,
-            'children' => $children
-        ];
-
-        $html .= '</div>';
-
-    }
-    return [$data,$html];
-}
-$log = storage_path('logs');
-$html = '<div style="margin-left: 20px">';
-$html .= '<button type="button" class="btn btn-link ky-req"
-        data-type="post"
-        data-href="'.jump_link('/hm/log-viewer/show-log').'"
-        data-params=\'{"path":"'.urlencode($log).'"}\'
-        data-title="log-viewer"
-        data-width="1400px"
-        data-height="800px"
-        >
-        <i class="bi bi-folder"></i> '.basename($log).'('.count(glob($log.'/*.log')).')
-        </button>';
-list($data,$html) = getDir($log,$html);
-$html .= '</div>';
 ?>
 
 <style>
-
-    /*.table-responsive {*/
-    /*    display: block;*/
-    /*    width: 100%;*/
-    /*    overflow-x: auto;*/
-    /*    -webkit-overflow-scrolling: touch;*/
-    /*}*/
     .table {
         table-layout: fixed;
         width: 100%; /* 确保表格宽度设置 */
@@ -63,7 +13,6 @@ $html .= '</div>';
         text-overflow:ellipsis;
         white-space: nowrap;
     }
-
     .table tr th:hover, .table-responsive > .table tr td:hover {
         overflow: visible;
         white-space: normal;
@@ -92,9 +41,6 @@ $html .= '</div>';
                                     </p>
                                 </div>
                             </div>
-                            <div class="card ml-3">
-                                <?php echo $html?>
-                            </div>
                     </div>
                 </div>
             </div>
@@ -104,7 +50,7 @@ $html .= '</div>';
     <div class="col-3 mt-3">
         <div class="card">
             <div class="card-header card-sm">
-                近7日path访问统计
+                近7日服务调用统计
             </div>
             <div class="card-body table-responsive" style="overflow-y: auto;height: 650px">
                 <table class="table table-striped">
@@ -116,11 +62,11 @@ $html .= '</div>';
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($apiLogStatisticsList as $apiLogStatistics)
+                    @foreach($hHttpLogStatisticsList as $hHttpLogStatistics)
                         <tr>
-                            <td>{{$apiLogStatistics->path}}</td>
-                            <td>{{$apiLogStatistics->count}}</td>
-                            <td>{{intval($apiLogStatistics->avg)}}</td>
+                            <td>{{$hHttpLogStatistics->path}}</td>
+                            <td>{{$hHttpLogStatistics->count}}</td>
+                            <td>{{intval($hHttpLogStatistics->avg)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -131,14 +77,11 @@ $html .= '</div>';
     <div class="col-9 mt-3">
         <div class="card">
             <div class="card-body table-responsive" style="height: 700px">
-                <form id="form-api-log-search">
+                <form id="form-hhttp-log-search">
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
                                 <input type="text" name="path" placeholder="path" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="user_id" placeholder="user_id" class="form-control">
                             </div>
                             <div class="col">
                                 <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
@@ -148,7 +91,7 @@ $html .= '</div>';
                     <div class="float-right">
                         <a href="javascript:"
                            class="btn btn-link btn-sm"
-                           onclick="resetForm('#form-api-log-search')"
+                           onclick="resetForm('#form-hhttp-log-search')"
                         >重置</a>
                         <a href="javascript:"
                            class="btn btn-link btn-sm api-log-search"
@@ -159,39 +102,35 @@ $html .= '</div>';
                     <thead>
                     <tr>
                         <th style="width: 155px;">date</th>
-                        <th>app_name</th>
-                        <th style="width: 70px;">user_id</th>
-                        <th style="width: 62px;">method</th>
-                        <th style="width: 245px;">path</th>
+                        <th style="width: 70px;">hoo_traceid</th>
+                        <th>method</th>
+                        <th>path</th>
+                        <th>options</th>
+                        <th>response</th>
+                        <th>err</th>
                         <th>run_time(ms)</th>
-                        <th>user_agent</th>
-                        <th>input</th>
-                        <th>output</th>
-                        <th>status_code</th>
-                        <th>ip</th>
-                        <th>依赖服务</th>
+{{--                        <th>run_trace</th>--}}
+{{--                        <th>run_path</th>--}}
+{{--                        <th>app_name</th>--}}
+                        <th>url</th>
                         <th>op</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($apiLogList as $apiLog)
+                    @foreach($hHttpLogList as $hHttpLog)
                         <tr>
-                            <td>{{$apiLog->created_at}}</td>
-                            <td>{{$apiLog->app_name}}</td>
-                            <td>{{$apiLog->user_id}}</td>
-                            <td>{{$apiLog->method}}</td>
-                            <td>{{$apiLog->path}}</td>
-                            <td>{{$apiLog->run_time}}</td>
-                            <td>{{$apiLog->user_agent}}</td>
-                            <td>{{$apiLog->input}}</td>
-                            <td>{{$apiLog->output}}</td>
-                            <td>{{$apiLog->status_code}}</td>
-                            <td>{{$apiLog->ip}}</td>
-                            <td>
-                                @foreach($apiLog->HttpLog as $HttpLog)
-                                    {{$apiLog->path}}<br>
-                                @endforeach
-                            </td>
+                            <td>{{$hHttpLog->created_at}}</td>
+                            <td>{{$hHttpLog->hoo_traceid}}</td>
+                            <td>{{$hHttpLog->method}}</td>
+                            <td>{{$hHttpLog->path}}</td>
+                            <td>{{$hHttpLog->options}}</td>
+                            <td>{{$hHttpLog->response}}</td>
+                            <td>{{$hHttpLog->err}}</td>
+                            <td>{{$hHttpLog->run_time}}</td>
+{{--                            <td>{{$hHttpLog->run_trace}}</td>--}}
+{{--                            <td>{{$hHttpLog->run_path}}</td>--}}
+{{--                            <td>{{$hHttpLog->app_name}}</td>--}}
+                            <td>{{$hHttpLog->url}}</td>
                             <td>
                                 <a href="javascript:"
                                    type="button"
@@ -199,7 +138,7 @@ $html .= '</div>';
                                    data-title="详情"
                                    data-width="800px"
                                    data-height="600px"
-                                   data-href={{jump_link("/hm/log-viewer/details?id=".$apiLog->id)}}
+                                   data-href={{jump_link("/hm/hhttp-log-viewer/details?id=".$hHttpLog->id)}}
                                 >详情</a>
                             </td>
                         </tr>
@@ -207,7 +146,7 @@ $html .= '</div>';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$apiLogList->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{$hHttpLogList->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>
@@ -224,14 +163,14 @@ $html .= '</div>';
         params = getUrlParams(new URL(url));
 
         // 遍历所有的查询参数，并填充到表单中
-        fillForm('#form-api-log-search',params)
+        fillForm('#form-hhttp-log-search',params)
     })
     /**
      * 搜索
      */
     $(document).on("click",".api-log-search",function(){
-        var formData = $("#form-api-log-search").serialize();
-        var url = jump_link('/hm/log-viewer/index?') + formData; // 拼接URL
+        var formData = $("#form-hhttp-log-search").serialize();
+        var url = jump_link('/hm/hhttp-log-viewer/index?') + formData; // 拼接URL
         // 跳转
         window.location.href = url;
     })

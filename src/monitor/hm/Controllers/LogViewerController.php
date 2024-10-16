@@ -14,6 +14,7 @@ class LogViewerController extends BaseController
     {
         $path = $request->input('path');
         $user_id = $request->input('user_id');
+        $hoo_traceid = $request->input('hoo_traceid');
 
         $apiLogList = ApiLogModel::query()
             ->with(['HttpLog'])
@@ -22,6 +23,9 @@ class LogViewerController extends BaseController
             })
             ->when(!empty($user_id),function (Builder $q) use ($user_id){
                 $q->where('user_id','=',$user_id);
+            })
+            ->when(!empty($hoo_traceid),function (Builder $q) use ($hoo_traceid){
+                $q->where('hoo_traceid','=',$hoo_traceid);
             })
             ->orderBy('id','desc')
             ->paginate(20);

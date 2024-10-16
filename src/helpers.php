@@ -119,6 +119,9 @@ if (! function_exists('is_json')) {
      */
     function is_json($str)
     {
+        if (!is_string($str)) {
+            return false;
+        }
         // 判断返回字符串是否是json格式
         if (is_null(json_decode($str, true))) {
             return false;
@@ -126,5 +129,4 @@ if (! function_exists('is_json')) {
         return true;
     }
 }
-
 

@@ -6,6 +6,7 @@ use hoo\io\common\Command\DevCommand;
 use hoo\io\common\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
+use hoo\io\monitor\hm\Controllers\HHttpViewerController;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
@@ -193,6 +194,11 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('index',[LogViewerController::class,'index']);
                     Route::get('details',[LogViewerController::class,'details']);
                     Route::post('show-log',[LogViewerController::class,'showLog']);
+                });
+
+                Route::prefix('hhttp-log-viewer')->group(function (){
+                    Route::get('index',[HHttpViewerController::class,'index']);
+                    Route::get('details',[HHttpViewerController::class,'details']);
                 });
 
                 Route::prefix('logical-block')->group(function (){

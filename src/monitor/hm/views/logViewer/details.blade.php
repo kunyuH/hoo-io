@@ -25,17 +25,19 @@
         <ul class="list-group mt-4 mb-4">
             @foreach($apiLog->HttpLog as $HttpLog)
                 <li class="list-group-item">
-                    <span class="api-log-field">url:</span> {{$HttpLog->url}}<br>
-                    <span class="api-log-field">method:</span> {{$HttpLog->method}}<br>
                     <span class="api-log-field">path:</span> {{$HttpLog->path}}<br>
-                    <span class="api-log-field">options:</span><pre>{{$HttpLog->options}}<pre>
+                    <span class="api-log-field">method:</span> {{$HttpLog->method}}<br>
+                    <span class="api-log-field">options:</span><pre>{{$HttpLog->options}}</pre>
                     <span class="api-log-field">response:</span><pre>{{$HttpLog->response}}</pre>
                     <span class="api-log-field">err:</span> {{$HttpLog->err}}<br>
+                    <span class="api-log-field">url:</span> {{$HttpLog->url}}<br>
                     <span class="api-log-field">run_time:</span> {{$HttpLog->run_time}}<br>
                     <span class="api-log-field">run_trace:</span> {{$HttpLog->run_trace}}<br>
                     <span class="api-log-field">run_path:</span> {{$HttpLog->run_path}}<br>
                     <span class="api-log-field">created_at:</span> {{$HttpLog->created_at}}<br>
+                    <span class="api-log-field">http_id:</span> {{$HttpLog->id}}<br>
                 </li>
             @endforeach
         </ul>
+    </li>
 </ul>

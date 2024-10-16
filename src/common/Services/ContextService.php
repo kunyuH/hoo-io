@@ -18,7 +18,7 @@ class ContextService extends BaseService
     public static function getHooTraceId()
     {
         if(empty(self::$hoo_traceid)){
-            self::$hoo_traceid = Str::random(5);
+            self::$hoo_traceid = ho_uuid();
         }
         return self::$hoo_traceid;
     }
