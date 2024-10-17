@@ -3,6 +3,7 @@
 namespace hoo\io\common\Models;
 
 use hoo\io\common\Services\ContextService;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
 class HttpLogModel extends BaseModel
@@ -25,9 +26,13 @@ class HttpLogModel extends BaseModel
     public static function log($run_time,$path,$uri,$method,$options,$resStr,$err,$runTrace,$runPath)
     {
         # 检验是否存在http日志表
-        if (Schema::hasTable('hm_http_log') && env('HM_HTTP_LOG',true)) {
+        if (Schema::hasTable('hm_http_log') && Config::get('hoo-io.HM_HTTP_LOG')) {
             # 字符串长度超出 则不记录
-            if (strlen($resStr) > 5000) {
+            if (strlen($options) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
+                $options = 'options is too long';
+            }
+            # 字符串长度超出 则不记录
+            if (strlen($resStr) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                 $resStr = 'response is too long';
             }
             self::insert([
@@ -47,3 +52,4 @@ class HttpLogModel extends BaseModel
         }
     }
 }
+

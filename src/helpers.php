@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
+
 if (! function_exists('jump_link')) {
     function jump_link($url)
     {
-        if(!empty(env('SERVICE_NAME'))){
-            return "/".env('SERVICE_NAME')."$url";
+        if(!empty(Config::get('hoo-io.SERVICE_NAME'))){
+            return "/".Config::get('hoo-io.SERVICE_NAME')."$url";
         }else{
             return $url;
         }

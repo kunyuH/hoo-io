@@ -20,6 +20,7 @@ use hoo\io\monitor\hm\Middleware\HmAuth;
 use hoo\io\monitor\hm\Services\LogicalPipelinesApiRunService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -53,6 +54,8 @@ class IoServiceProvider extends ServiceProvider
     public function register()
     {
         try{
+            $this->registerConfig();
+
             //注册 sql查询服务
             QueryBuilder::macro('getSqlQuery', function () {
                 return (new BuilderMacroSql())->getSqlQuery($this);
@@ -114,7 +117,7 @@ class IoServiceProvider extends ServiceProvider
          */
         Gate::define('hooAuth', function ($user = null) {
             # true 设置不开启 默认开启
-            if(empty(env('HOO_ENABLE',true))){
+            if(empty(Config::get('hoo-io.HOO_ENABLE'))){
                 return false;
             }
             if(!HooSession::get(SessionEnum::USER_INFO_KEY)){
@@ -165,6 +168,18 @@ class IoServiceProvider extends ServiceProvider
                 RunCodeCommand::class,
                 DevCommand::class,
             ]);
+        }
+    }
+
+    public function registerConfig()
+    {
+        $key = 'hoo-io';
+        $path = __DIR__."/config/{$key}.php";
+
+        if (! $this->app->configurationIsCached()) {
+            $this->app['config']->set($key, array_merge(
+                require $path, $this->app['config']->get($key, [])
+            ));
         }
     }
 

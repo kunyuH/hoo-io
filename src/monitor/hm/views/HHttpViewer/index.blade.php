@@ -86,6 +86,9 @@ $cdn = get_cdn().'/hm';
                             <div class="col">
                                 <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
                             </div>
+                            <div class="col">
+                                <input type="text" name="run_path" placeholder="run_path" class="form-control">
+                            </div>
                         </div>
                     </div>
                     <div class="float-right">
@@ -110,9 +113,9 @@ $cdn = get_cdn().'/hm';
                         <th>err</th>
                         <th>run_time(ms)</th>
 {{--                        <th>run_trace</th>--}}
-{{--                        <th>run_path</th>--}}
 {{--                        <th>app_name</th>--}}
                         <th>url</th>
+                        <th>run_path</th>
                         <th>op</th>
                     </tr>
                     </thead>
@@ -123,14 +126,14 @@ $cdn = get_cdn().'/hm';
                             <td>{{$hHttpLog->hoo_traceid}}</td>
                             <td>{{$hHttpLog->method}}</td>
                             <td>{{$hHttpLog->path}}</td>
-                            <td>{{$hHttpLog->options}}</td>
-                            <td>{{$hHttpLog->response}}</td>
+                            <td style="width: 200px">{{$hHttpLog->options}}</td>
+                            <td style="width: 200px">{{$hHttpLog->response}}</td>
                             <td>{{$hHttpLog->err}}</td>
                             <td>{{$hHttpLog->run_time}}</td>
 {{--                            <td>{{$hHttpLog->run_trace}}</td>--}}
-{{--                            <td>{{$hHttpLog->run_path}}</td>--}}
 {{--                            <td>{{$hHttpLog->app_name}}</td>--}}
                             <td>{{$hHttpLog->url}}</td>
+                            <td>{{$hHttpLog->run_path}}</td>
                             <td>
                                 <a href="javascript:"
                                    type="button"
@@ -146,7 +149,7 @@ $cdn = get_cdn().'/hm';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$hHttpLogList->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{$hHttpLogList->withPath(jump_link('/hm/hhttp-log-viewer/index'))->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>

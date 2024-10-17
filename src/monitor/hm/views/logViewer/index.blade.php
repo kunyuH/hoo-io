@@ -159,16 +159,16 @@ $html .= '</div>';
                     <thead>
                     <tr>
                         <th style="width: 155px;">date</th>
-                        <th>app_name</th>
+{{--                        <th>app_name</th>--}}
                         <th style="width: 70px;">user_id</th>
                         <th style="width: 62px;">method</th>
-                        <th style="width: 245px;">path</th>
+                        <th style="width: 200px;">path</th>
                         <th>run_time(ms)</th>
                         <th>user_agent</th>
-                        <th>input</th>
-                        <th>output</th>
+                        <th style="width: 200px;">input</th>
+                        <th style="width: 200px;">output</th>
                         <th>status_code</th>
-                        <th>ip</th>
+{{--                        <th>ip</th>--}}
                         <th>依赖服务</th>
                         <th>op</th>
                     </tr>
@@ -177,7 +177,7 @@ $html .= '</div>';
                     @foreach($apiLogList as $apiLog)
                         <tr>
                             <td>{{$apiLog->created_at}}</td>
-                            <td>{{$apiLog->app_name}}</td>
+{{--                            <td>{{$apiLog->app_name}}</td>--}}
                             <td>{{$apiLog->user_id}}</td>
                             <td>{{$apiLog->method}}</td>
                             <td>{{$apiLog->path}}</td>
@@ -186,7 +186,7 @@ $html .= '</div>';
                             <td>{{$apiLog->input}}</td>
                             <td>{{$apiLog->output}}</td>
                             <td>{{$apiLog->status_code}}</td>
-                            <td>{{$apiLog->ip}}</td>
+{{--                            <td>{{$apiLog->ip}}</td>--}}
                             <td>
                                 @foreach($apiLog->HttpLog as $HttpLog)
                                     {{$apiLog->path}}<br>
@@ -207,7 +207,7 @@ $html .= '</div>';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$apiLogList->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{$apiLogList->withPath(jump_link('/hm/log-viewer/index'))->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>

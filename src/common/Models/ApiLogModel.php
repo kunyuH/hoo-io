@@ -4,6 +4,7 @@ namespace hoo\io\common\Models;
 
 use hoo\io\common\Services\ContextService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,11 +25,19 @@ class ApiLogModel extends BaseModel
     {
         try{
             # 检验是否存在http日志表
-            if (Schema::hasTable('hm_api_log') && env('HM_API_LOG',true)) {
+            if (Schema::hasTable('hm_api_log') && Config::get('hoo-io.HM_API_LOG')) {
+                # 字符串长度超出 则不记录
+                if (strlen($input) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
+                    $input = 'input is too long';
+                }
+                # 字符串长度超出 则不记录
+                if (strlen($output) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
+                    $output = 'output is too long';
+                }
                 self::insert([
                     'app_name'=>$_SERVER['APP_NAME']??'',
                     'hoo_traceid'=>ContextService::getHooTraceId(),
-                    'user_id'=>$request->input(env('HM_API_LOG_USER_FILED','member_id'),''),
+                    'user_id'=>$request->input(Config::get('hoo-io.HM_API_LOG_USER_FILED'),''),
                     'domain'=>$request->getHost().':'.$request->getPort(),
                     'path'=>$request->path(),
                     'method'=>$request->method(),

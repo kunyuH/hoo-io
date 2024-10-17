@@ -15,6 +15,7 @@ class HHttpViewerController extends BaseController
     {
         $path = $request->input('path');
         $hoo_traceid = $request->input('hoo_traceid');
+        $run_path = $request->input('run_path');
 
         $hHttpLogList = HttpLogModel::query()
 //            ->with(['HttpLog'])
@@ -23,6 +24,9 @@ class HHttpViewerController extends BaseController
             })
             ->when(!empty($hoo_traceid),function (Builder $q) use ($hoo_traceid){
                 $q->where('hoo_traceid','=',$hoo_traceid);
+            })
+            ->when(!empty($run_path),function (Builder $q) use ($run_path){
+                $q->where('run_path','=',$run_path);
             })
             ->orderBy('id','desc')
             ->paginate(20);

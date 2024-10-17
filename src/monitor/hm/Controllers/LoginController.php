@@ -6,6 +6,7 @@ use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Request\HmLoginRequest;
 use Illuminate\Http\JsonResponse;
 use hoo\io\common\Support\Facade\HooSession;
+use Illuminate\Support\Facades\Config;
 
 class LoginController extends BaseController
 {
@@ -30,9 +31,9 @@ class LoginController extends BaseController
     {
         $name = $request->input('name');
         $password = $request->input('password');
-
+        
         # 验证账密
-        if($name != env('HOO_NAME') || $password != env('HOO_PASSWORD')){
+        if($name != Config::get('hoo-io.HOO_NAME') || $password != Config::get('hoo-io.HOO_PASSWORD')){
             return $this->resError([],'用户名或密码错误!');
         }
 
