@@ -5,7 +5,7 @@ use hoo\io\common\Models\ApiLogModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\monitor\hm\Request\LogViewerRequest;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class LogViewerController extends BaseController
@@ -33,36 +33,50 @@ class LogViewerController extends BaseController
         # 获取7天前时间
         $sevenDaysAgo = date('Y-m-d H:i:s',strtotime('-7 days'));
 
-        # 获取近7日path访问统计
-        $apiLogStatisticsList = ApiLogModel::query()
-            ->select('path',
-                DB::raw('count(*) as count'),
-                DB::raw('avg(run_time) as avg'))
-//            ->when(!empty($path),function (Builder $q) use ($path){
-//                $q->where('path','=',$path);
-//            })
-//            ->when(!empty($user_id),function (Builder $q) use ($user_id){
-//                $q->where('user_id','=',$user_id);
-//            })
-            ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
-            ->groupBy('path')
-            ->orderBy('count','desc')
-            ->get();
-
-        # 获取近日天访问量
-        $sevenVisits = ApiLogModel::query()
-            ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
-            ->count();
+        # 获取近7日天访问量
+        $apiSevenVisits = Cache::remember('apiSevenVisits',60*60, function () use ($sevenDaysAgo){
+            return ApiLogModel::query()
+                ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
+                ->count();
+        });
         # 获取近7日平均性能
-        $sevenAveragePer = ApiLogModel::query()
-            ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
-            ->avg('run_time');
+        $apiSevenAveragePer = Cache::remember('apiSevenAveragePer',60*60, function () use ($sevenDaysAgo){
+            return ApiLogModel::query()
+                ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
+                ->avg('run_time');
+        });
 
         return $this->v('logViewer.index',[
-            'sevenVisits'=>$sevenVisits,
-            'sevenAveragePer'=>$sevenAveragePer,
-            'apiLogStatisticsList'=>$apiLogStatisticsList,
+            'sevenVisits'=>$apiSevenVisits,
+            'sevenAveragePer'=>$apiSevenAveragePer,
             'apiLogList'=>$apiLogList,
+        ]);
+    }
+
+    /**
+     * 根据path统计
+     * @param LogViewerRequest $request
+     * @return string
+     */
+    public function serviceStatisticsItem(LogViewerRequest $request)
+    {
+        # 获取7天前时间
+        $sevenDaysAgo = date('Y-m-d H:i:s',strtotime('-7 days'));
+
+        # 获取近7日path访问统计
+        $apiLogStatisticsList = Cache::remember('apiLogStatisticsList',60*60, function () use ($sevenDaysAgo){
+            return  ApiLogModel::query()
+                ->select('path',
+                    DB::raw('count(*) as count'),
+                    DB::raw('avg(run_time) as avg'))
+                ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
+                ->groupBy('path')
+                ->orderBy('count','desc')
+                ->get();
+        });
+
+        return $this->modal('logViewer.serviceStatisticsItem',[
+            'apiLogStatisticsList'=>$apiLogStatisticsList,
         ]);
     }
 

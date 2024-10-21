@@ -31,50 +31,33 @@ $cdn = get_cdn().'/hm';
                 </div>
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body d-flex">
-
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">近7日服务可用性</h5>
-                                    <p class="card-text mb-2">
-                                        访问次数：{{$sevenVisits}}<br>
-                                        平均性能：{{intval($sevenAveragePer)}}<span style="font-weight: 500">ms</span>
-                                    </p>
-                                </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">近7日服务可用性</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
+                                <p class="card-text mb-2">
+                                    访问次数：{{$sevenVisits}}<br>
+                                    平均性能：{{intval($sevenAveragePer)}}<span style="font-weight: 500">ms</span>
+                                </p>
                             </div>
+                        </div>
+                        <div class="card ml-3">
+                            <div class="card-body">
+                                <a href="javascript:"
+                                   data-title="近7日服务调用统计"
+                                   data-width="1200px"
+                                   data-height="600px"
+                                   class="btn btn-outline-primary btn-sm ky-modal"
+                                   data-href={{jump_link("/hm/hhttp-log-viewer/service-statistics-item")}}
+                                >近7日服务调用统计(每小时更新)</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="col-3 mt-3">
-        <div class="card">
-            <div class="card-header card-sm">
-                近7日服务调用统计
-            </div>
-            <div class="card-body table-responsive" style="overflow-y: auto;height: 650px">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th style="width: 155px;">path</th>
-                        <th style="width: 65px;">count</th>
-                        <th>平均耗时(ms)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($hHttpLogStatisticsList as $hHttpLogStatistics)
-                        <tr>
-                            <td>{{$hHttpLogStatistics->path}}</td>
-                            <td>{{$hHttpLogStatistics->count}}</td>
-                            <td>{{intval($hHttpLogStatistics->avg)}}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-9 mt-3">
+    <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body table-responsive" style="height: 700px">
                 <form id="form-hhttp-log-search">
@@ -108,12 +91,9 @@ $cdn = get_cdn().'/hm';
                         <th style="width: 70px;">hoo_traceid</th>
                         <th>method</th>
                         <th>path</th>
-                        <th>options</th>
-                        <th>response</th>
-                        <th>err</th>
+                        <th style="width: 400px">options</th>
+                        <th style="width: 400px">response</th>
                         <th>run_time(ms)</th>
-{{--                        <th>run_trace</th>--}}
-{{--                        <th>app_name</th>--}}
                         <th>url</th>
                         <th>run_path</th>
                         <th>op</th>
@@ -126,12 +106,9 @@ $cdn = get_cdn().'/hm';
                             <td>{{$hHttpLog->hoo_traceid}}</td>
                             <td>{{$hHttpLog->method}}</td>
                             <td>{{$hHttpLog->path}}</td>
-                            <td style="width: 200px">{{$hHttpLog->options}}</td>
-                            <td style="width: 200px">{{$hHttpLog->response}}</td>
-                            <td>{{$hHttpLog->err}}</td>
+                            <td>{{$hHttpLog->options}}</td>
+                            <td>{{$hHttpLog->response}}</td>
                             <td>{{$hHttpLog->run_time}}</td>
-{{--                            <td>{{$hHttpLog->run_trace}}</td>--}}
-{{--                            <td>{{$hHttpLog->app_name}}</td>--}}
                             <td>{{$hHttpLog->url}}</td>
                             <td>{{$hHttpLog->run_path}}</td>
                             <td>
@@ -167,6 +144,8 @@ $cdn = get_cdn().'/hm';
 
         // 遍历所有的查询参数，并填充到表单中
         fillForm('#form-hhttp-log-search',params)
+
+        // loadHHttpLogStatisticsList()
     })
     /**
      * 搜索
@@ -177,4 +156,25 @@ $cdn = get_cdn().'/hm';
         // 跳转
         window.location.href = url;
     })
+
+    /**
+     * 加载近7日服务调用统计
+     */
+    function loadHHttpLogStatisticsList() {
+        // $('#hHttpLogStatisticsList').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
+        // console.log('xxx')
+        $.ajax({
+            type:'get',
+            url:"{{jump_link("/hm/hhttp-log-viewer/service-statistics-item")}}",
+            // dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                $('#hHttpLogStatisticsList').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
+            },
+            success:function(e){
+                // console.log('zzzz')
+                // console.log(e)
+                $("#hHttpLogStatisticsList").html(e);
+            },
+        });
+    }
 </script>

@@ -208,12 +208,14 @@ class IoServiceProvider extends ServiceProvider
                 Route::prefix('log-viewer')->group(function (){
                     Route::get('index',[LogViewerController::class,'index']);
                     Route::get('details',[LogViewerController::class,'details']);
+                    Route::get('service-statistics-item',[LogViewerController::class,'serviceStatisticsItem']);
                     Route::post('show-log',[LogViewerController::class,'showLog']);
                 });
 
                 Route::prefix('hhttp-log-viewer')->group(function (){
                     Route::get('index',[HHttpViewerController::class,'index']);
                     Route::get('details',[HHttpViewerController::class,'details']);
+                    Route::get('service-statistics-item',[HHttpViewerController::class,'serviceStatisticsItem']);
                 });
 
                 Route::prefix('logical-block')->group(function (){

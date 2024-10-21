@@ -83,15 +83,27 @@ $html .= '</div>';
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body d-flex">
 
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">近7日服务可用性</h5>
-                                    <p class="card-text mb-2">
-                                        访问次数：{{$sevenVisits}}<br>
-                                        平均性能：{{intval($sevenAveragePer)}}<span style="font-weight: 500">ms</span>
-                                    </p>
-                                </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">近7日服务可用性</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
+                                <p class="card-text mb-2">
+                                    访问次数：{{$sevenVisits}}<br>
+                                    平均性能：{{intval($sevenAveragePer)}}<span style="font-weight: 500">ms</span>
+                                </p>
                             </div>
+                        </div>
+                        <div class="card ml-3">
+                            <div class="card-body">
+                                <a href="javascript:"
+                                   data-title="近7日path访问统计"
+                                   data-width="1200px"
+                                   data-height="600px"
+                                   class="btn btn-outline-primary btn-sm ky-modal"
+                                   data-href={{jump_link("/hm/log-viewer/service-statistics-item")}}
+                                >近7日服务调用统计(每小时更新)</a>
+                            </div>
+                        </div>
                             <div class="card ml-3">
                                 <?php echo $html?>
                             </div>
@@ -100,35 +112,7 @@ $html .= '</div>';
             </div>
         </div>
     </div>
-
-    <div class="col-3 mt-3">
-        <div class="card">
-            <div class="card-header card-sm">
-                近7日path访问统计
-            </div>
-            <div class="card-body table-responsive" style="overflow-y: auto;height: 650px">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th style="width: 155px;">path</th>
-                        <th style="width: 65px;">count</th>
-                        <th>平均耗时(ms)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($apiLogStatisticsList as $apiLogStatistics)
-                        <tr>
-                            <td>{{$apiLogStatistics->path}}</td>
-                            <td>{{$apiLogStatistics->count}}</td>
-                            <td>{{intval($apiLogStatistics->avg)}}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-9 mt-3">
+    <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body table-responsive" style="height: 700px">
                 <form id="form-api-log-search">
@@ -165,8 +149,8 @@ $html .= '</div>';
                         <th style="width: 200px;">path</th>
                         <th>run_time(ms)</th>
                         <th>user_agent</th>
-                        <th style="width: 200px;">input</th>
-                        <th style="width: 200px;">output</th>
+                        <th style="width: 400px;">input</th>
+                        <th style="width: 400px;">output</th>
                         <th>status_code</th>
 {{--                        <th>ip</th>--}}
                         <th>依赖服务</th>
@@ -189,7 +173,7 @@ $html .= '</div>';
 {{--                            <td>{{$apiLog->ip}}</td>--}}
                             <td>
                                 @foreach($apiLog->HttpLog as $HttpLog)
-                                    {{$apiLog->path}}<br>
+                                    {{$HttpLog->path}}<br>
                                 @endforeach
                             </td>
                             <td>
