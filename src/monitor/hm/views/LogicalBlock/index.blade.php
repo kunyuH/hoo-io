@@ -76,7 +76,7 @@ $cdn = get_cdn().'/hm';
                     </tbody>
                 </table>
                 <div class="float-right">
-                    {{$LogicalBlocks->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{$LogicalBlocks->withPath(jump_link('/hm/logical-block/index'))->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>
@@ -261,11 +261,24 @@ $cdn = get_cdn().'/hm';
         $("#code-object-text").val(editors[edit_id].getValue());
 
         $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
-        $("#"+from_id).ajaxSubmit({
-            type:"post",
+
+        // 获取from表单数据 并转为json格式
+        var formData = $("#"+from_id).serializeArray();
+        // 遍历
+        formData = formData.reduce(function(obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+
+        // 对数据进行加密   encrypt - 加密方法
+        formData['logical_block'] = sm4.encrypt(formData['logical_block'])
+
+        $.ajax({
+            type:'post',
             url:href,
-            // dataType: 'json' ,
-            success: function (result) {
+            data:formData,
+            dataType:"json",//返回数据形式为json
+            success:function(result){
                 //如果返回的是json 则转为字符串
                 if(typeof result == 'object'){
                     result = JSON.stringify(result)
@@ -298,13 +311,26 @@ $cdn = get_cdn().'/hm';
 
     function save(_this,calleBack=function(){}) {
         var from_id = 'hoo-run-code';
-        var url = '{{jump_link('/hm/logical-block/save')}}';
+        var href = '{{jump_link('/hm/logical-block/save')}}';
+
         $("#code-object-text").val(editors[edit_id].getValue());
 
-        $("#"+from_id).ajaxSubmit({
-            type:"post",
-            url:url,
-            dataType: 'json' ,
+        // 获取from表单数据 并转为json格式
+        var formData = $("#"+from_id).serializeArray();
+        // 遍历
+        formData = formData.reduce(function(obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+
+        // 对数据进行加密   encrypt - 加密方法
+        formData['logical_block'] = sm4.encrypt(formData['logical_block'])
+
+        $.ajax({
+            type:'post',
+            url:href,
+            data:formData,
+            dataType:"json",//返回数据形式为json
             beforeSend:function(e){
                 layer.closeAll();
                 index = layer.load(1);
@@ -354,7 +380,10 @@ $cdn = get_cdn().'/hm';
                     $("#code-object-name").val(e.data.name);
                     $("#code-object-group").val(e.data.group);
                     $("#code-object-label").val(e.data.label);
-                    editors[edit_id].setValue(e.data.logical_block);
+
+                    logical_block = sm4.decrypt(e.data.logical_block)
+
+                    editors[edit_id].setValue(logical_block);
                     editors[edit_id].moveCursorToPosition({row: 0, column: 0});
 
                     $("#hm-code-object-save").html('update');

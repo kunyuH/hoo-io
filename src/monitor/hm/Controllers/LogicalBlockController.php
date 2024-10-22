@@ -2,14 +2,10 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
-use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Models\LogsModel;
-use hoo\io\monitor\hm\Support\Facades\Logical;
+use hoo\io\common\Services\CryptoService;
 use hoo\io\monitor\hm\Request\LogicalBlockRequest;
-use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Schema\Blueprint;
 
 
 class LogicalBlockController extends BaseController
@@ -45,7 +41,13 @@ class LogicalBlockController extends BaseController
      */
     public function detail(LogicalBlockRequest $request)
     {
-        return $this->resSuccess(LogicalBlock::firstById($request->input('id')));
+        $logicalBlockInfo = LogicalBlock::firstById($request->input('id'));
+        if(!empty($logicalBlockInfo))
+        {
+            $logicalBlockInfo['logical_block'] = CryptoService::sm4Encrypt($logicalBlockInfo['logical_block']);
+        }
+
+        return $this->resSuccess($logicalBlockInfo);
     }
 
     /**
@@ -61,6 +63,9 @@ class LogicalBlockController extends BaseController
         $label = $request->input('label');
         $remark = $request->input('remark');
         $logical_block = $request->input('logical_block');
+
+        $logical_block = CryptoService::sm4Decrypt($logical_block);
+
         LogicalBlock::save($name,$group,$label,$logical_block,$remark,$id);
         return $this->resSuccess();
     }
@@ -88,6 +93,7 @@ class LogicalBlockController extends BaseController
         if($request->isMethod('POST')) {
             $logical_block = $request->input('logical_block');
 
+            $logical_block = CryptoService::sm4Decrypt($logical_block);
             // 记录日志
             LogsModel::log(__FUNCTION__.':运行代码',$logical_block);
 

@@ -69,15 +69,15 @@ class DevCommand extends BaseCommand
                 'group' => 'system',
                 'label' => '',
                 'logical_block' => "<?php phpinfo();",
-                ]);
+            ]);
         }
         if (!Schema::hasTable('hm_logs')) {
             Schema::create('hm_logs', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('name');
-                $table->string('label_a')->nullable();
-                $table->string('label_b')->nullable();
-                $table->string('label_c')->nullable();
+                $table->string('name',100);
+                $table->string('label_a',100)->nullable();
+                $table->string('label_b',100)->nullable();
+                $table->string('label_c',100)->nullable();
                 $table->longText('content')->nullable();
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();
