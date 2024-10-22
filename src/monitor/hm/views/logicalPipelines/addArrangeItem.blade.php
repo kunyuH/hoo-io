@@ -77,15 +77,29 @@ $cdn = get_cdn().'/hm';
 
     $(document).on("click",".formSubmitAddArrangeItem",function(){
         var from_id = $(this).attr('data-from_id');
-        var url = $(this).attr('data-href');
+        var href = $(this).attr('data-href');
 
         $("#add-arrange-item-logical-block-txt").val(editors['add-arrange-item-logical-block'].getValue());
 
-        layer.load(1); //loading
-        $("#"+from_id).ajaxSubmit({
+
+        // 获取from表单数据 并转为json格式
+        var formData = $("#"+from_id).serializeArray();
+        // 遍历
+        formData = formData.reduce(function(obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+        // 对数据进行加密   encrypt - 加密方法
+        formData['logical_block'] = sm4.encrypt(formData['logical_block'])
+
+        $.ajax({
             type:"post",
-            url:url,
-            dataType: 'json' ,
+            url:href,
+            data:formData,
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                layer.load(1); //loading
+            },
             success: function (result) {
                 layer.closeAll('loading'); //关闭loading
                 if(result.code == 200){

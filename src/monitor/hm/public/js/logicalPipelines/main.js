@@ -120,11 +120,14 @@ $(document).on("click",".arrangeItemCodeRun",function(){
 
     $('#run-code-output').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
 
+    // 对数据进行加密   encrypt - 加密方法
+    logical_block = sm4.encrypt(logical_block)
+
     $.ajax({
         type:type,
         url:href,
         data:{logical_block:logical_block},
-        // dataType:"json",//返回数据形式为json
+        dataType:"json",//返回数据形式为json
         success:function(result){
             //如果返回的是json 则转为字符串
             if(typeof result == 'object'){
@@ -212,10 +215,22 @@ function save(_this,calleBack=function(){}) {
 
     $("#code-object-txt-"+id).val(editors['code-object-edit-'+id].getValue());
 
-    $("#"+from_id).ajaxSubmit({
-        type:"post",
+    // 获取from表单数据 并转为json格式
+    var formData = $("#"+from_id).serializeArray();
+    // 遍历
+    formData = formData.reduce(function(obj, item) {
+        obj[item.name] = item.value;
+        return obj;
+    }, {});
+
+    // 对数据进行加密   encrypt - 加密方法
+    formData['logical_block'] = sm4.encrypt(formData['logical_block'])
+
+    $.ajax({
+        type:'post',
         url:href,
-        dataType: 'json' ,
+        data:formData,
+        dataType:"json",//返回数据形式为json
         beforeSend:function(e){
             layer.closeAll();
             index = layer.load(1);

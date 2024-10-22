@@ -53,9 +53,9 @@ $cdn = get_cdn().'/hm';
 
     <script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
     <script src="<?php echo $cdn?>/js/overall.js"></script>
+    <script src="<?php echo $cdn?>/js/base64js.min.js"></script>
+    <script src="<?php echo $cdn?>/js/sm4js.js"></script>
     <script src="<?php echo $cdn?>/js/main.js"></script>
-     <script src="{{jump_link('/hm-r/js/base64js.min.js')}}" type="text/javascript" charset="utf-8"></script>
-     <script src="{{jump_link('/hm-r/js/sm4js.js')}}" type="text/javascript" charset="utf-8"></script>
 
     <style>
         .star::after{
@@ -67,19 +67,6 @@ $cdn = get_cdn().'/hm';
         var jump_link = function (url) {
             return '{{jump_link("")}}' + url;
         }
-        let key = 'bzlaxbrww2nkczqb'
-        let sm4Config = {
-            key: key, // 密钥
-            mode: 'ecb', // 加密的方式有两种，ecb和cbc两种
-            cipherType: 'base64'
-        }
-        let sm4 = new Sm4js(sm4Config)
-        // // 对数据进行加密   encrypt - 加密方法
-        // let encrypted = sm4.encrypt(formData['logical_block'])
-        //
-        // console.log(encrypted)
-        // 对数据进行解密   decrypt - 解密方法
-        // let decrypted = sm4.decrypt(encrypted)
     </script>
 
     <?php echo $content ?>

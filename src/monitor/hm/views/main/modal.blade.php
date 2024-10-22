@@ -20,6 +20,8 @@ $cdn = get_cdn().'/hm';
 
 <script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
 <script src="<?php echo $cdn?>/js/overall.js"></script>
+<script src="<?php echo $cdn?>/js/base64js.min.js"></script>
+<script src="<?php echo $cdn?>/js/sm4js.js"></script>
 <script src="<?php echo $cdn?>/js/main.js"></script>
 <script>
     var jump_link = function (url) {

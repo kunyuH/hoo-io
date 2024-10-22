@@ -3,14 +3,10 @@
 namespace hoo\io\monitor\hm\Controllers;
 
 use hoo\io\common\Exceptions\HooException;
+use hoo\io\common\Services\CryptoService;
 use hoo\io\monitor\hm\Support\Facades\Logical;
-use hoo\io\monitor\hm\Models\LogicalBlockModel;
-use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
-use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
-use hoo\io\common\Models\LogsModel;
 use hoo\io\monitor\hm\Request\LogicalPipelinesRequest;
 use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
-use Illuminate\Database\Eloquent\Builder;
 
 
 class LogicalPipelinesController extends BaseController
@@ -107,6 +103,9 @@ class LogicalPipelinesController extends BaseController
         $arrange_id = $request->input('arrange_id');
         $logical_block = $request->input('logical_block');
         $name = $request->input('name');
+        // 解密
+        $logical_block = CryptoService::sm4Decrypt($logical_block);
+        
         Logical::arrangeEdit($arrange_id,$logical_block,$name);
         return $this->resSuccess();
     }
@@ -127,6 +126,9 @@ class LogicalPipelinesController extends BaseController
             $logical_block_id = $request->input('logical_block_id');
             $logical_block = $request->input('logical_block');
             $name = $request->input('name');
+
+            // 解密
+            $logical_block = CryptoService::sm4Decrypt($logical_block);
 
             Logical::arrangeAddItem($pipeline_id,$arrange_id,$type,$logical_block_id,$logical_block,$name,$op);
 

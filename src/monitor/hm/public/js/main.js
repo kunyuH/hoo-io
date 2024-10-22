@@ -92,3 +92,17 @@ function editorSetDifaultCode(index){
         "class Foo extends LogicalService{\n\n\tpublic function handle()\n\t{ \n\t\t\n\t}\n}");
     editors[index].moveCursorToPosition({row: 0, column: 0});
 }
+
+let key = 'bzlaxbrww2nkczqb'
+let sm4Config = {
+    key: key, // 密钥
+    mode: 'ecb', // 加密的方式有两种，ecb和cbc两种
+    cipherType: 'base64'
+}
+var sm4 = new Sm4js(sm4Config)
+// // 对数据进行加密   encrypt - 加密方法
+// let encrypted = sm4.encrypt(formData['logical_block'])
+//
+// console.log(encrypted)
+// 对数据进行解密   decrypt - 解密方法
+// let decrypted = sm4.decrypt(encrypted)

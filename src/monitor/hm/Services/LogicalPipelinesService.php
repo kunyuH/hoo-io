@@ -225,17 +225,21 @@ class LogicalPipelinesService extends BaseService
             #上一条 逻辑线项id
             $before_id = $arrange_id;
 
-            # 添加一条 逻辑线项
-            $new_id = LogicalPipelinesArrangeModel::query()->insertGetId([
+            $data = [
                 'logical_pipeline_id'=>$pipeline_id,
-                'logical_block_id'=>$logical_block_id,
                 'logical_block'=>$logical_block,
                 'name'=>$name,
                 'next_id'=>0,
                 'type'=>$type,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
-            ]);
+            ];
+            if(!empty($logical_block_id)){
+                $data['logical_block_id'] = $logical_block_id;
+            }
+
+            # 添加一条 逻辑线项
+            $new_id = LogicalPipelinesArrangeModel::query()->insertGetId($data);
 
             # 下一条 逻辑线项id
             $after_id = LogicalPipelinesArrangeModel::find($arrange_id)->next_id??0;
@@ -267,17 +271,22 @@ class LogicalPipelinesService extends BaseService
              * 2.修改上一条 逻辑线项 的next_id 为新增的项id
              * 3.修改新增的项的next_id 为当前项的id
              */
-            # 添加一条 逻辑线项
-            $new_id = LogicalPipelinesArrangeModel::query()->insertGetId([
+
+            $data = [
                 'logical_pipeline_id'=>$pipeline_id,
-                'logical_block_id'=>$logical_block_id,
                 'logical_block'=>$logical_block,
                 'name'=>$name,
                 'next_id'=>0,
                 'type'=>$type,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'updated_at'=>date('Y-m-d H:i:s')
-            ]);
+            ];
+            if(!empty($logical_block_id)){
+                $data['logical_block_id'] = $logical_block_id;
+            }
+
+            # 添加一条 逻辑线项
+            $new_id = LogicalPipelinesArrangeModel::query()->insertGetId($data);
 
             # 修改上一条 逻辑线项 的next_id 为新增的项id
             LogicalPipelinesArrangeModel::query()
