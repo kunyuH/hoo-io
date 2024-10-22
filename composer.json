@@ -25,7 +25,7 @@
     "guzzlehttp/guzzle": "^7.4",
     "ext-json": "*",
     "cloudladder/http": "^1.2",
-    "lpilp/guomi": "dev-main"
+    "lpilp/guomi": "^1.0"
   },
   "extra": {
     "laravel": {
