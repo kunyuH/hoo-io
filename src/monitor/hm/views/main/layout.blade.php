@@ -32,6 +32,7 @@ $cdn = get_cdn().'/hm';
             >log-viewer</a></li>
         <li class="layui-nav-item"><a href={{jump_link("/hm/log-viewer/index")}}>log-viewer(Arcanedev)</a></li>
         <li class="layui-nav-item"><a href={{jump_link("/hm/hhttp-log-viewer/index")}}>依赖服务监控(HHTTP)</a></li>
+        <li class="layui-nav-item"><a href={{jump_link("/hm/sql-log-viewer/index")}}>依赖服务监控(DATABASE)</a></li>
         <li class="layui-nav-item">
             <a href="javascript:">其他</a>
             <dl class="layui-nav-child">

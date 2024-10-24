@@ -64,10 +64,10 @@ $cdn = get_cdn().'/hm';
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="text" name="path" placeholder="path" class="form-control">
+                                <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
+                                <input type="text" name="path" placeholder="path" class="form-control">
                             </div>
                             <div class="col">
                                 <input type="text" name="run_path" placeholder="run_path" class="form-control">
@@ -145,7 +145,6 @@ $cdn = get_cdn().'/hm';
         // 遍历所有的查询参数，并填充到表单中
         fillForm('#form-hhttp-log-search',params)
 
-        // loadHHttpLogStatisticsList()
     })
     /**
      * 搜索
@@ -157,24 +156,4 @@ $cdn = get_cdn().'/hm';
         window.location.href = url;
     })
 
-    /**
-     * 加载近7日服务调用统计
-     */
-    function loadHHttpLogStatisticsList() {
-        // $('#hHttpLogStatisticsList').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
-        // console.log('xxx')
-        $.ajax({
-            type:'get',
-            url:"{{jump_link("/hm/hhttp-log-viewer/service-statistics-item")}}",
-            // dataType:"json",//返回数据形式为json
-            beforeSend:function(e){
-                $('#hHttpLogStatisticsList').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
-            },
-            success:function(e){
-                // console.log('zzzz')
-                // console.log(e)
-                $("#hHttpLogStatisticsList").html(e);
-            },
-        });
-    }
 </script>

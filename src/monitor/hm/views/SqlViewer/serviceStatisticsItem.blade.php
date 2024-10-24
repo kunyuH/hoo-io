@@ -21,17 +21,17 @@
 <table class="table table-striped table-responsive">
     <thead>
     <tr>
-        <th>path</th>
+        <th>database</th>
         <th>count</th>
         <th>平均耗时(ms)</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($hHttpLogStatisticsList as $hHttpLogStatistics)
+    @foreach($logStatisticsList as $sqlLogStatistics)
         <tr>
-            <td>{{$hHttpLogStatistics->path}}</td>
-            <td>{{$hHttpLogStatistics->count}}</td>
-            <td>{{intval($hHttpLogStatistics->avg)}}</td>
+            <td>{{$sqlLogStatistics->database}}</td>
+            <td>{{$sqlLogStatistics->count}}</td>
+            <td>{{intval($sqlLogStatistics->avg)}}</td>
         </tr>
     @endforeach
     </tbody>

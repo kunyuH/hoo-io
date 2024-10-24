@@ -21,7 +21,7 @@
     <li class="list-group-item"><span class="api-log-field">ip:</span> {{$apiLog->ip}}</li>
     <li class="list-group-item"><span class="api-log-field">created_at:</span> {{$apiLog->created_at}}</li>
     <li class="list-group-item">
-        <span class="api-log-field">依赖服务:</span>
+        <span class="api-log-field">依赖HTTP服务:</span>
         <ul class="list-group mt-4 mb-4">
             @foreach($apiLog->HttpLog as $HttpLog)
                 <li class="list-group-item">
@@ -36,6 +36,21 @@
                     <span class="api-log-field">run_path:</span> {{$HttpLog->run_path}}<br>
                     <span class="api-log-field">created_at:</span> {{$HttpLog->created_at}}<br>
                     <span class="api-log-field">http_id:</span> {{$HttpLog->id}}<br>
+                </li>
+            @endforeach
+        </ul>
+        <span class="api-log-field">依赖DATABASE服务:</span>
+        <ul class="list-group mt-4 mb-4">
+            @foreach($apiLog->SqlLog as $SqlLog)
+                <li class="list-group-item">
+                    <span class="api-log-field">sql:</span><pre>{{$SqlLog->sql}}</pre>
+                    <span class="api-log-field">database:</span> {{$SqlLog->database}}<br>
+                    <span class="api-log-field">connection_name:</span> {{$SqlLog->connection_name}}<br>
+                    <span class="api-log-field">run_time:</span> {{$SqlLog->run_time}}<br>
+                    <span class="api-log-field">run_trace:</span> {{$SqlLog->run_trace}}<br>
+                    <span class="api-log-field">run_path:</span> {{$SqlLog->run_path}}<br>
+                    <span class="api-log-field">created_at:</span> {{$SqlLog->created_at}}<br>
+                    <span class="api-log-field">sql_id:</span> {{$SqlLog->id}}<br>
                 </li>
             @endforeach
         </ul>

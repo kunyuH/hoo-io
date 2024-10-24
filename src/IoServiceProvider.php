@@ -8,6 +8,7 @@ use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
 use hoo\io\monitor\hm\Controllers\HHttpViewerController;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
+use hoo\io\monitor\hm\Controllers\SqlViewerController;
 use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\database\services\BuilderMacroSql;
@@ -216,6 +217,12 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('index',[HHttpViewerController::class,'index']);
                     Route::get('details',[HHttpViewerController::class,'details']);
                     Route::get('service-statistics-item',[HHttpViewerController::class,'serviceStatisticsItem']);
+                });
+
+                Route::prefix('sql-log-viewer')->group(function (){
+                    Route::get('index',[SqlViewerController::class,'index']);
+                    Route::get('details',[SqlViewerController::class,'details']);
+                    Route::get('service-statistics-item',[SqlViewerController::class,'serviceStatisticsItem']);
                 });
 
                 Route::prefix('logical-block')->group(function (){

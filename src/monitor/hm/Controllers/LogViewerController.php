@@ -85,7 +85,7 @@ class LogViewerController extends BaseController
         $id = $request->input('id');
 
         $apiLog = ApiLogModel::query()
-            ->with(['HttpLog'])
+            ->with(['HttpLog','SqlLog'])
             ->where('id','=',$id)
             ->first();
 

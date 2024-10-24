@@ -145,6 +145,9 @@ if (! function_exists('get_run_trace')) {
         $vendorPath = base_path('vendor');
         foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $trace) {
             if(strpos($trace['file']??'',$vendorPath) === false){
+               if(!isset($trace['file']) or !isset($trace['line'])){
+                   continue;
+               }
                 # 获取当前应用所在根目录
                 $file = str_replace(base_path(), '', $trace['file']);
                 $run_trace = $file.':'.$trace['line'];
