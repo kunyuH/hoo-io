@@ -22,4 +22,23 @@ class ContextService extends BaseService
         }
         return self::$hoo_traceid;
     }
+
+    /**
+     * 用于存储运行中执行的sql信息
+     * @var array
+     */
+    public static $sql_log = [];
+    public static function setSqlLog($sqlLog){
+        # 暂存区保护 防止内存溢出
+        # 超出1000个记录后不再写入
+        if(count(self::$sql_log) < 1000){
+            self::$sql_log[] = $sqlLog;
+        }
+    }
+    public static function getSqlLog(){
+        return self::$sql_log;
+    }
+    public static function clearSqlLog(){
+        self::$sql_log = [];
+    }
 }

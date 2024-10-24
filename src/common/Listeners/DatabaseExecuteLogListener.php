@@ -59,16 +59,14 @@ final class DatabaseExecuteLogListener
                     $executeSql = $this->normalHandle($query);
             }
 
-            # 排除自己
+            # 先暂存  请求完成后统一记录
             (new SqlLogModel())->log($query->time ?? 0,
                 $query->connection->getDatabaseName(),
                 $query->connectionName,
                 $executeSql
                 );
 
-        } catch (\Throwable $e) {
-            var_dump(dd($e));
-        }
+        } catch (\Throwable $e) {}
     }
 
     /**
