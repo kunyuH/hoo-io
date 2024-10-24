@@ -30,7 +30,8 @@
   "extra": {
     "laravel": {
       "providers": [
-        "hoo\\io\\IoServiceProvider"
+        "hoo\\io\\IoServiceProvider",
+        "hoo\\io\\IoEventServiceProvider"
       ]
     }
   }
