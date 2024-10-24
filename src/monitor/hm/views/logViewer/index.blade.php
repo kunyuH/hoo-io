@@ -88,8 +88,8 @@ $html .= '</div>';
                                 <h5 class="card-title">近7日服务可用性</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
                                 <p class="card-text mb-2">
-                                    访问次数：{{$sevenVisits}}<br>
-                                    平均性能：{{intval($sevenAveragePer)}}<span style="font-weight: 500">ms</span>
+                                    访问次数：{{$sevenVisits->count}}<br>
+                                    平均性能：{{intval($sevenVisits->avg)}}<span style="font-weight: 500">ms</span>
                                 </p>
                             </div>
                         </div>

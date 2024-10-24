@@ -33,22 +33,19 @@ class LogViewerController extends BaseController
         # 获取7天前时间
         $sevenDaysAgo = date('Y-m-d H:i:s',strtotime('-7 days'));
 
-        # 获取近7日天访问量
+        # 获取近7日天访问量 与 平均性能
         $apiSevenVisits = Cache::remember('apiSevenVisits',60*60, function () use ($sevenDaysAgo){
             return ApiLogModel::query()
+                ->select(
+                    DB::raw('count(*) as count'),
+                    DB::raw('avg(run_time) as avg')
+                )
                 ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
-                ->count();
-        });
-        # 获取近7日平均性能
-        $apiSevenAveragePer = Cache::remember('apiSevenAveragePer',60*60, function () use ($sevenDaysAgo){
-            return ApiLogModel::query()
-                ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
-                ->avg('run_time');
+                ->first();
         });
 
         return $this->v('logViewer.index',[
             'sevenVisits'=>$apiSevenVisits,
-            'sevenAveragePer'=>$apiSevenAveragePer,
             'apiLogList'=>$apiLogList,
         ]);
     }
