@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
 if (! function_exists('jump_link')) {
@@ -131,4 +132,58 @@ if (! function_exists('is_json')) {
         return true;
     }
 }
+if (! function_exists('get_run_trace')) {
+    /**
+     * 获取代码调用位置【vendor目录内的调用会被忽略】
+     * 用于内部依赖第三方接口 或 数据库 调用时 调用时代码位置
+     * @return string
+     */
+    function get_run_trace()
+    {
+        $run_trace = '';
+        # 获取vendor 位置
+        $vendorPath = base_path('vendor');
+        foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $trace) {
+            if(strpos($trace['file']??'',$vendorPath) === false){
+                # 获取当前应用所在根目录
+                $file = str_replace(base_path(), '', $trace['file']);
+                $run_trace = $file.':'.$trace['line'];
+                break;
+            }
+        }
+        return $run_trace;
+    }
+}
+if (! function_exists('get_run_path')) {
+    /**
+     * 获取发起http请求 或 执行sql的路径 或 命令
+     * @return string
+     */
+    function get_run_path()
+    {
+        $runPath = '';
+        if (App::runningInConsole()){
+            $runPath = implode(' ', $_SERVER['argv']??[]);
+        }else{
+            $runPath = request()->path();
+        }
+        return $runPath;
+    }
+}
+if (! function_exists('in_string')) {
+    /**
+     * 判断字符串中是否包含某几个字符
+     * @return string
+     */
+    function in_string($chars=[],$string)
+    {
+        foreach ($chars as $char) {
+            if (strpos($string, $char) !== false) {
+                return true; // 如果找到了字符集中的字符，返回true
+            }
+        }
+        return false; // 如果没有找到字符集中的字符，返回false
+    }
+}
+
 

@@ -21,11 +21,11 @@ class ApiLogModel extends BaseModel
      * @param $run_time
      * @return void
      */
-    public static function log(Request $request, Response $response, $input, $output, $run_time)
+    public function log(Request $request, Response $response, $input, $output, $run_time)
     {
         try{
             # 检验是否存在http日志表
-            if (Schema::hasTable('hm_api_log') && Config::get('hoo-io.HM_API_LOG')) {
+            if (Schema::hasTable($this->getTableName()) && Config::get('hoo-io.HM_API_LOG')) {
                 # 字符串长度超出 则不记录
                 if (strlen($input) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                     $input = 'input is too long';

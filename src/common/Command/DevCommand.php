@@ -182,6 +182,29 @@ class DevCommand extends BaseCommand
             $this->info('hm_http_log 表创建成功');
         }
 
+        if (!Schema::hasTable('hm_sql_log')) {
+            Schema::create('hm_sql_log', function (Blueprint $table) {
+                # bin
+                $table->bigIncrements('id');
+                $table->string('app_name',100)->nullable();
+                $table->string('hoo_traceid',50)->nullable();
+                $table->string('database',100)->nullable();
+                $table->string('connection_name',100)->nullable();
+                $table->longText('sql')->nullable();
+                $table->integer('run_time')->nullable();
+                $table->string('run_trace',255)->nullable();
+                $table->string('run_path',150)->nullable();
+                $table->dateTime('created_at')->nullable();
+
+                $table->index('hoo_traceid','idx_hoo_traceid');
+                $table->index('database','idx_database');
+                $table->index('connection_name','idx_connection_name');
+                $table->index('run_path','idx_run_path');
+                $table->index('created_at','idx_created_at');
+            });
+            $this->info('hm_sql_log 表创建成功');
+        }
+
         $this->info('操作成功');
     }
 }

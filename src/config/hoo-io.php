@@ -23,7 +23,9 @@ return [
     'HM_API_LOG_USER_FILED'=>env('HM_API_LOG_USER_FILED', 'member_id'),
 
     'HM_HTTP_LOG'=>env('HM_HTTP_LOG', true),
-    
+
+    'HM_SQL_LOG'=>env('HM_SQL_LOG', true),
+
     # 长度限制
     'HM_API_HTTP_LOG_LENGTH'=>env('HM_API_HTTP_LOG_LENGTH', 5000),
     

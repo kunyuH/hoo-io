@@ -125,13 +125,11 @@ class HHttp extends Client
         }
         $json_show['response'] = $res_json;
 
-        $runTrace = $this->getRunTrace();
-        $runPath = $this->getRunPath();
 
         # 记录日志 格式化记录数组
         Log::channel('debug')->log('info', "【H-HTTP】", [
             '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-            'run_trace' => $runTrace,
+            'run_trace' => get_run_trace(),
             'url' => $uri,
             'method' => $method,
             'options' => $options,
@@ -140,15 +138,13 @@ class HHttp extends Client
             '入参出参json展示' => $json_show
         ]);
 
-        HttpLogModel::log(round($after_time - $before_time, 3) * 1000,
+        (new HttpLogModel())->log(round($after_time - $before_time, 3) * 1000,
             parse_url($uri)['path']??'',
             $uri,
             $method,
             json_encode($options,JSON_UNESCAPED_UNICODE),
             $res_json,
-            $err,
-            $runTrace,
-            $runPath
+            $err
         );
     }
 
@@ -164,35 +160,5 @@ class HHttp extends Client
             return false;
         }
         return true;
-    }
-
-    /**
-     * 获取发起http请求的代码位置
-     * @return string
-     */
-    private function getRunTrace()
-    {
-        # 调用的代码位置 并且只要相对位置
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4)[3];
-        # 获取当前应用所在根目录
-        $file = str_replace(base_path(), '', $trace['file']);
-        $traceStr = $file.':'.$trace['line'];
-
-        return $traceStr;
-    }
-
-    /**
-     * 获取发起http请求的路径 或 命令
-     * @return void
-     */
-    private function getRunPath()
-    {
-        $runPath = '';
-        if (App::runningInConsole()){
-            $runPath = implode(' ', $_SERVER['argv']??[]);
-        }else{
-            $runPath = request()->path();
-        }
-       return $runPath;
     }
 }

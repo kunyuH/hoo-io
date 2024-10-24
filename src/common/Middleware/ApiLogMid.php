@@ -38,7 +38,7 @@ class ApiLogMid
             ]);
         }
         if ($this->via($request->path())) {
-            ApiLogModel::log($request, $response,
+            (new ApiLogModel())->log($request, $response,
                 json_encode($input,JSON_UNESCAPED_UNICODE),
                 json_encode($output,JSON_UNESCAPED_UNICODE),
                 $t2-$t1);

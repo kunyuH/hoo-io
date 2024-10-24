@@ -13,4 +13,16 @@ class BaseModel extends Model
      */
     protected $guarded = [];
 
+    /**
+     * 获取完整表名
+     * @return array|string|string[]
+     */
+    protected function getTableName()
+    {
+        # 获取表名称
+        $table = $this->getTable();
+        # 获取表前缀
+        $prefix = $this->getConnection()->getTablePrefix();
+        return str_replace($prefix, '', $table);
+    }
 }
