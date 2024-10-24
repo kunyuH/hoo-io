@@ -11,8 +11,8 @@
     <li class="list-group-item"><span class="hhttp-log-field">hoo_traceid:</span> {{$hHttpLogList->hoo_traceid}}</li>
     <li class="list-group-item"><span class="hhttp-log-field">path:</span> {{$hHttpLogList->path}}</li>
     <li class="list-group-item"><span class="hhttp-log-field">method:</span> {{$hHttpLogList->method}}</li>
-    <li class="list-group-item"><span class="hhttp-log-field">options:</span><pre>{{$hHttpLogList->options}}</pre></li>
-    <li class="list-group-item"><span class="hhttp-log-field">response:</span><pre>{{$hHttpLogList->response}}</pre></li>
+    <li class="list-group-item"><span class="hhttp-log-field">options:</span><pre class="json-show">{{$hHttpLogList->options}}</pre></li>
+    <li class="list-group-item"><span class="hhttp-log-field">response:</span><pre class="json-show">{{$hHttpLogList->response}}</pre></li>
     <li class="list-group-item"><span class="hhttp-log-field">err:</span> {{$hHttpLogList->err}}</li>
     <li class="list-group-item"><span class="hhttp-log-field">url:</span> {{$hHttpLogList->url}}</li>
     <li class="list-group-item"><span class="hhttp-log-field">run_time:</span> {{$hHttpLogList->run_time}}</li>

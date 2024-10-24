@@ -15,8 +15,8 @@
     <li class="list-group-item"><span class="api-log-field">path:</span> {{$apiLog->path}}</li>
     <li class="list-group-item"><span class="api-log-field">run_time:</span> {{$apiLog->run_time}}</li>
     <li class="list-group-item"><span class="api-log-field">user_agent:</span> {{$apiLog->user_agent}}</li>
-    <li class="list-group-item"><span class="api-log-field">input:</span><pre>{{$apiLog->input}}</pre></li>
-    <li class="list-group-item"><span class="api-log-field">output:</span><pre>{{$apiLog->output}}</pre></li>
+    <li class="list-group-item"><span class="api-log-field">input:</span><pre class="json-show">{{$apiLog->input}}</pre></li>
+    <li class="list-group-item"><span class="api-log-field">output:</span><pre class="json-show">{{$apiLog->output}}</pre></li>
     <li class="list-group-item"><span class="api-log-field">status_code:</span> {{$apiLog->status_code}}</li>
     <li class="list-group-item"><span class="api-log-field">ip:</span> {{$apiLog->ip}}</li>
     <li class="list-group-item"><span class="api-log-field">created_at:</span> {{$apiLog->created_at}}</li>
@@ -27,8 +27,8 @@
                 <li class="list-group-item">
                     <span class="api-log-field">path:</span> {{$HttpLog->path}}<br>
                     <span class="api-log-field">method:</span> {{$HttpLog->method}}<br>
-                    <span class="api-log-field">options:</span><pre>{{$HttpLog->options}}</pre>
-                    <span class="api-log-field">response:</span><pre>{{$HttpLog->response}}</pre>
+                    <span class="api-log-field">options:</span><pre class="json-show">{{$HttpLog->options}}</pre>
+                    <span class="api-log-field">response:</span><pre class="json-show">{{$HttpLog->response}}</pre>
                     <span class="api-log-field">err:</span> {{$HttpLog->err}}<br>
                     <span class="api-log-field">url:</span> {{$HttpLog->url}}<br>
                     <span class="api-log-field">run_time:</span> {{$HttpLog->run_time}}<br>
