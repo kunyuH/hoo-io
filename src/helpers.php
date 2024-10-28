@@ -189,4 +189,23 @@ if (! function_exists('in_string')) {
     }
 }
 
+if (! function_exists('get_chinese_weekday')) {
+    /**
+     * 根据日期展示是星期几
+     * @param $date
+     * @return string
+     */
+    function get_chinese_weekday($date) {
+        # 如果长度超过10 则截取前10位
+        if(strlen($date) > 10){
+            $date = substr($date,0,10);
+        }
+        $weekdayNumber = date('w', strtotime($date));
+        $weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+        return '星期' . $weekdays[$weekdayNumber];
+    }
+}
+
+
+
 
