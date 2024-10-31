@@ -66,8 +66,9 @@ class LogicalBlockController extends BaseController
 
         $logical_block = CryptoService::sm4Decrypt($logical_block);
 
-        LogicalBlock::save($name,$group,$label,$logical_block,$remark,$id);
-        return $this->resSuccess();
+        $id = LogicalBlock::save($name,$group,$label,$logical_block,$remark,$id);
+
+        return $this->resSuccess(['id'=>$id]);
     }
 
     /**

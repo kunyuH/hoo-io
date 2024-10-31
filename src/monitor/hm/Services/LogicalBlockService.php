@@ -91,7 +91,7 @@ class LogicalBlockService extends BaseService
                 'new_data'=>$this->firstById($id)
             ],JSON_UNESCAPED_UNICODE));
         }else{
-            LogicalBlockModel::query()->create([
+            $id = LogicalBlockModel::query()->insertGetId([
                 'object_id'=>ho_uuid(),
                 'name'=>$name,
                 'group'=>$group,
@@ -107,6 +107,7 @@ class LogicalBlockService extends BaseService
                 'new_data'=>$this->firstById($id)
             ],JSON_UNESCAPED_UNICODE));
         }
+        return $id;
     }
 
     /**

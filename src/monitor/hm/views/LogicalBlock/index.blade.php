@@ -119,7 +119,7 @@ $cdn = get_cdn().'/hm';
                         <a href="javascript:"
                            class="btn btn-link btn-sm formRunCodeSave"
                            id="hm-code-object-save"
-                        >create</a>
+                        >save</a>
                     </div>
                 </form>
             </div>
@@ -225,8 +225,6 @@ $cdn = get_cdn().'/hm';
      * 表单初始化
      */
     function loadForm() {
-        // 改变按钮内容
-        $("#hm-code-object-save").html('create');
         editorSetDifaultCode(edit_id)
         // 表单置空
         resetForm('#hoo-run-code');
@@ -236,15 +234,12 @@ $cdn = get_cdn().'/hm';
      * 新增
      */
     $(document).on("click","#hm-code-create",function(){
-        layer.confirm('点击新增后，当前逻辑块会丢失，请先确认是否已保存！', {
+        layer.confirm('创建前，请先确认当前内容是否已保存！', {
             icon:0,
             closeBtn: 0,
-            btn: ['保存','无需保存'] //按钮
+            btn: ['取消','无需保存'] //按钮
         }, function(){
-            save(function () {
-                layer.closeAll();
-                loadForm()
-            })
+            layer.closeAll();
         }, function(){
             layer.closeAll();
             loadForm()
@@ -339,9 +334,29 @@ $cdn = get_cdn().'/hm';
                 layer.close(index);
                 if(result.code == 200){
                     layer.msg(result.message, {icon: 6, time: 500}, function(){
+                        // layer.load(1);
                         //刷新当前页
-                        layer.load(1);
-                        window.location.reload();
+                        id = result.data.id
+                        // 在当前链接增加id参数 并刷新 如果链接上已经有id参数 则覆盖
+                        var url = window.location.href;
+                        params = getUrlParams(new URL(url));
+                        params['id'] = id
+                        // 按照?分割字符串
+                        var rote = window.location.href.split('?')[0];
+                        // 将参数和路由转换为url
+                        jump_url = rote + '?' + $.param(params);
+                        
+                        window.location.href = jump_url;
+
+                        // // 将当前页面 网址框内路由调整成新路由
+                        // window.history.pushState({}, 0, jump_url);
+                        //
+                        // // inpiut 赋值
+                        // $("#code-object-id").val(result.data.id);
+                        // // 如果发送的数据中没有id 则认为这是一个新增的请求 需要刷新页面
+                        // if(formData['id'] == ''){
+                        //     window.location.href = jump_url;
+                        // }
                     });
                     calleBack()
                 }else{
@@ -386,7 +401,6 @@ $cdn = get_cdn().'/hm';
                     editors[edit_id].setValue(logical_block);
                     editors[edit_id].moveCursorToPosition({row: 0, column: 0});
 
-                    $("#hm-code-object-save").html('update');
                 }else{
                     layer.alert(e.message,{icon:5});
                 }
