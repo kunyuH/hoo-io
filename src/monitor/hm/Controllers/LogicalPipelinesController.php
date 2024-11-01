@@ -105,7 +105,7 @@ class LogicalPipelinesController extends BaseController
         $name = $request->input('name');
         // 解密
         $logical_block = CryptoService::sm4Decrypt($logical_block);
-        
+
         Logical::arrangeEdit($arrange_id,$logical_block,$name);
         return $this->resSuccess();
     }

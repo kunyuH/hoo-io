@@ -6,24 +6,24 @@ $cdn = get_cdn().'/hm';
 
 
 <div class="row">
-    <div class="col-12">
+    <div class="col pr-2">
         <div class="card">
             <div class="card-body">
                 <form id="form-logical-blocks-search">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <input type="text" name="group" placeholder="group" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="object_id" placeholder="object_id" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="name" placeholder="name" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="text" name="label" placeholder="label" class="form-control">
-                            </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <input type="text" name="group" placeholder="group" class="form-control">
+                        </div>
+                        <div class="col">
+                            <input type="text" name="object_id" placeholder="object_id" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <input type="text" name="name" placeholder="name" class="form-control">
+                        </div>
+                        <div class="col">
+                            <input type="text" name="label" placeholder="label" class="form-control">
                         </div>
                     </div>
                     <div class="float-right">
@@ -43,9 +43,9 @@ $cdn = get_cdn().'/hm';
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">group</th>
-                        <th scope="col">object_id</th>
+{{--                        <th scope="col">object_id</th>--}}
                         <th scope="col">name</th>
+                        <th scope="col">group</th>
                         <th scope="col">label</th>
                         <th scope="col">op</th>
                     </tr>
@@ -54,9 +54,13 @@ $cdn = get_cdn().'/hm';
                     @foreach($LogicalBlocks as $k=>$block)
                         <tr>
                             <th scope="row">{{$k+1}}</th>
+{{--                            <td>{{$block->object_id}}</td>--}}
+                            <td><a href="javascript:"
+                                   type="button"
+                                   class="btn btn-link btn-sm code-object-item-ky-req"
+                                   data-id="{{$block->id}}"
+                                >{{$block->name}}</a></td>
                             <td>{{$block->group}}</td>
-                            <td>{{$block->object_id}}</td>
-                            <td>{{$block->name}}</td>
                             <td>{{$block->label}}</td>
                             <td>
                                 <a href="javascript:"
@@ -81,7 +85,7 @@ $cdn = get_cdn().'/hm';
             </div>
         </div>
     </div>
-    <div class="col-12 mt-3">
+    <div class="col pl-2">
         <div class="card">
             <div class="card-body">
                 <form id="hoo-run-code">
@@ -345,7 +349,7 @@ $cdn = get_cdn().'/hm';
                         var rote = window.location.href.split('?')[0];
                         // 将参数和路由转换为url
                         jump_url = rote + '?' + $.param(params);
-                        
+
                         window.location.href = jump_url;
 
                         // // 将当前页面 网址框内路由调整成新路由
