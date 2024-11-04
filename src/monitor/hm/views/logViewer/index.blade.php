@@ -82,8 +82,15 @@ $html .= '</div>';
                 </div>
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body d-flex">
-
                         <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">磁盘占用情况</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
+                                <p class="card-text mb-2" id="disk-usage">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card ml-3">
                             <div class="card-body">
                                 <h5 class="card-title">近7日服务可用性</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
@@ -109,7 +116,14 @@ $html .= '</div>';
                                    data-height="600px"
                                    class="btn btn-outline-primary btn-sm ky-modal"
                                    data-href={{jump_link("/hm/log-viewer/service-statistics-item")}}
-                                >近7日服务调用统计(每小时更新)</a>
+                                >近7日服务调用统计(每小时更新)</a><br>
+                                <a href="javascript:"
+                                   data-title="API带宽明细"
+                                   data-width="1200px"
+                                   data-height="600px"
+                                   class="btn btn-outline-primary btn-sm ky-modal mt-2"
+                                   data-href={{jump_link("/hm/log-viewer/bandwidth-statistics-item")}}
+                                >API带宽明细</a>
                             </div>
                         </div>
                             <div class="card ml-3">
@@ -217,7 +231,34 @@ $html .= '</div>';
 
         // 遍历所有的查询参数，并填充到表单中
         fillForm('#form-api-log-search',params)
+
+        // 加载磁盘占用情况
+        loadDiskUsage()
     })
+
+    /**
+     * 加载磁盘占用情况
+     */
+    function loadDiskUsage() {
+        $.ajax({
+            type:'get',
+            url:jump_link('/hm/log-viewer/disk-usage'),
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                $("#disk-usage").html('加载中...');
+            },
+            success:function(result){
+                $("#disk-usage").html('');
+                // 遍历
+                for (var key in result.data) {
+                    $("#disk-usage").append(key+'：<span class="badge">'+result['data'][key][0]['Size_MB']+'</span><span style="font-weight: 500">MB</span><br>');
+                }
+            },
+            error: function(xhr, status, error) {
+                $("#disk-usage").html('加载失败！');
+            }
+        });
+    }
     /**
      * 搜索
      */

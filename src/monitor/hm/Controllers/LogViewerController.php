@@ -2,6 +2,8 @@
 namespace hoo\io\monitor\hm\Controllers;
 
 use hoo\io\common\Models\ApiLogModel;
+use hoo\io\common\Models\HttpLogModel;
+use hoo\io\common\Models\SqlLogModel;
 use hoo\io\common\Support\Facade\HooSession;
 use hoo\io\monitor\hm\Request\LogViewerRequest;
 use Illuminate\Database\Eloquent\Builder;
@@ -93,6 +95,57 @@ class LogViewerController extends BaseController
     }
 
     /**
+     * api带宽情况
+     * @param LogViewerRequest $request
+     * @return string
+     */
+    public function bandwidthStatisticsItem(LogViewerRequest $request)
+    {
+        $orderBy = $request->input('orderBy','out_byte');
+
+        $path = $request->input('path');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        if(empty($startDate)){
+            # 获取7天前时间
+            $startDate = date('Y-m-d',strtotime('-7 days'));
+        }
+        if(empty($endDate)){
+            $endDate = date('Y-m-d');
+        }
+
+        $apiLogList = ApiLogModel::query()
+            ->select(
+                'path',
+                DB::raw('count(*) as count'),
+                DB::raw('ROUND(avg(CHAR_LENGTH(input)),2) as in_byte'),
+                DB::raw('ROUND(avg(CHAR_LENGTH(output)),2) as out_byte')
+            )
+            ->when(!empty($path),function (Builder $q) use ($path){
+                $q->where('path','=',$path);
+            })
+            ->when(!empty($startDate),function (Builder $q) use ($startDate){
+                $startDate = $startDate.' 00:00:00';
+                $q->where('created_at','>=',$startDate);
+            })
+            ->when(!empty($endDate),function (Builder $q) use ($endDate){
+                $endDate = $endDate.' 23:59:59';
+                $q->where('created_at','<=',$endDate);
+            })
+            # 按照日期分组
+            ->groupBy('path')
+            ->orderBy($orderBy,'desc')
+            ->paginate(20);
+
+        return $this->modal('logViewer.bandwidthStatisticsItem',[
+            'apiLogList'=>$apiLogList,
+            'path'=>$path,
+            'startDate'=>$startDate,
+            'endDate'=>$endDate,
+            'orderBy'=>$orderBy,
+        ]);
+    }
+    /**
      * 根据path统计
      * @param LogViewerRequest $request
      * @return string
@@ -144,5 +197,40 @@ class LogViewerController extends BaseController
             'open_type'=>3,
             'redirect_uri'=>jump_link('/'.config('log-viewer.route.attributes.prefix','log-viewer')).'/logs',
         ]);
+    }
+
+    /**
+     * 日志磁盘占用情况
+     * @param LogViewerRequest $request
+     * @return void
+     */
+    public function diskUsage(LogViewerRequest $request)
+    {
+        # 查看磁盘占用情况
+        $diskUsage = Cache::remember('diskUsage',60*60, function () {
+            $api_log_table_name = (new ApiLogModel())->getTableName();
+            $hhttp_log_table_name = (new HttpLogModel())->getTableName();
+            $database_log_table_name = (new SqlLogModel())->getTableName();
+            $sql = "SELECT
+                        TABLE_SCHEMA as `Database`,
+                        TABLE_NAME as `Table`,
+                        ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024, 2) AS `Size_MB`
+                    FROM
+                        information_schema.TABLES
+                    WHERE
+                         TABLE_NAME in ('{$api_log_table_name}','{$hhttp_log_table_name}','{$database_log_table_name}')
+                    ORDER BY Table desc
+                    ";
+
+            $diskUsage = DB::connection()->select($sql);
+            $diskUsage = collect($diskUsage)->map(function ($item) {
+                $item->Size_MB = number_format($item->Size_MB, 2);
+                return $item;
+            });
+            # 数据按照Table分组
+            $diskUsage = $diskUsage->groupBy('Table');
+            return $diskUsage;
+        });
+        return $this->resSuccess($diskUsage);
     }
 }

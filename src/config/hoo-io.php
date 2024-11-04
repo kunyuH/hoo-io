@@ -5,11 +5,11 @@ return [
     'APP_ENV'=>env('APP_ENV', ''), //是否启用hoo.io
 
     #--------------------hoo_hm--------------------------
-    'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io
+    'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io  默认启用
     'HOO_NAME'=>env('HOO_NAME'),
     'HOO_PASSWORD'=>env('HOO_PASSWORD'),
-
-
+    'HOO_LOGIN_RETRY'=>env('HOO_LOGIN_RETRY',5), //登录重试次数 默认5次
+    
     'SERVICE_NAME'=>env('SERVICE_NAME', ''),
     /**
      * 因为插件部分功能依赖CLOCKWORK插件 而页面访问链接需要资源前缀
@@ -28,7 +28,7 @@ return [
 
     # 长度限制
     'HM_API_HTTP_LOG_LENGTH'=>env('HM_API_HTTP_LOG_LENGTH', 5000),
-    
+
     #-------------------------------------------------------
 
 

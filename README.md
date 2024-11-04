@@ -67,6 +67,8 @@ HOO_ENABLE=true
 HOO_NAME=
 # 登录密码
 HOO_PASSWORD=
+# 登录重试次数 默认5次
+HOO_LOGIN_RETRY=
 # 服务前缀
 SERVICE_NAME=
 # 资源前缀 用于日志查看器资源加载 需要带/开头

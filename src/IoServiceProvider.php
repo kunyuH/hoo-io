@@ -212,6 +212,8 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('service-statistics-item',[LogViewerController::class,'serviceStatisticsItem']);
                     Route::post('show-log',[LogViewerController::class,'showLog']);
                     Route::get('seven-visits-item',[LogViewerController::class,'sevenVisitsItem']);
+                    Route::get('disk-usage',[LogViewerController::class,'diskUsage']);
+                    Route::get('bandwidth-statistics-item',[LogViewerController::class,'bandwidthStatisticsItem']);
                 });
 
                 Route::prefix('hhttp-log-viewer')->group(function (){
