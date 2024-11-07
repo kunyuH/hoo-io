@@ -82,7 +82,33 @@ function edit_init(index){
         enableLiveAutocompletion: true
     });
 
+    // 为编辑器添加键盘绑定，监听Ctrl+D
+    editor.commands.addCommand({
+        name: 'duplicateLine',
+        bindKey: {
+            win: 'Ctrl-D',
+            mac: 'Command-D',
+            sender: 'editor|cli'
+        },
+        exec: function(editor) {
+            // 获取当前行的位置
+            var cursorPosition = editor.getCursorPosition();
+            var currentLine = cursorPosition.row;
+
+            // 获取当前行的内容
+            var lineContent = editor.session.getLine(currentLine);
+
+            // 在下一行插入当前行的内容
+            editor.session.insert({row: currentLine + 1, column: 0}, lineContent + '\n');
+
+            // 将光标移动到新插入行的末尾
+            editor.moveCursorTo(currentLine + 1, lineContent.length);
+        }
+    });
+
+
     editors[index] = editor;
+
 }
 
 /**

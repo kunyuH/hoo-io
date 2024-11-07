@@ -88,11 +88,6 @@ class LogicalPipelinesController extends BaseController
         ]);
     }
 
-    public function arrangex(LogicalPipelinesRequest $request)
-    {
-        return $this->view('logicalPipelines.arrangex');
-    }
-
     /**
      * 编辑编排
      * @param LogicalPipelinesRequest $request

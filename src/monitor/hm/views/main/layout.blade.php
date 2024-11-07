@@ -58,16 +58,51 @@ $cdn = get_cdn().'/hm';
     <script src="<?php echo $cdn?>/js/sm4js.js"></script>
     <script src="<?php echo $cdn?>/js/main.js"></script>
 
+{{--     <script src="{{jump_link('/hm-r/js/main.js')}}" type="text/javascript" charset="utf-8"></script>--}}
     <style>
         .star::after{
             content:" *";
             color:red
+        }
+        .table{
+            font-size: .875rem;
+        }
+        .table td{
+            line-height: 1.5;
         }
     </style>
     <script>
         var jump_link = function (url) {
             return '{{jump_link("")}}' + url;
         }
+
+        /**
+         * 根据参数，跳转到当前页面，继承当前页面已有的参数
+         */
+        var jump_page = function (params) {
+            // 在当前链接增加id参数 并刷新 如果链接上已经有id参数 则覆盖
+            var url = window.location.href;
+            url_params = getUrlParams(new URL(url));
+            // 合并两个数组
+            var url_params = Object.assign(url_params, params);
+
+            // 按照?分割字符串
+            var rote = window.location.href.split('?')[0];
+            // 将参数和路由转换为url
+            jump_url = rote + '?' + $.param(url_params);
+
+            window.location.href = jump_url;
+        }
+
+        var copyToClipboard = function(text) {
+            var tempInput = document.createElement("input");
+            document.body.appendChild(tempInput);
+            tempInput.value = text;
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+        }
+
     </script>
 
     <?php echo $content ?>

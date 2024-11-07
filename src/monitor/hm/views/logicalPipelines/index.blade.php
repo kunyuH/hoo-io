@@ -5,7 +5,7 @@ $cdn = get_cdn().'/hm';
 <script src="<?php echo $cdn?>/ace-builds-master/src/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col">
         <div class="card">
             <div class="card-body">
                 <form id="form-logical-pipelines-search">
@@ -44,15 +44,14 @@ $cdn = get_cdn().'/hm';
                        data-height="600px"
                        data-href={{jump_link("/hm/logical-pipelines/save")}}
                     >create</a>
-                    <a target="_blank" href='{{jump_link("/hm/logical-pipelines/arrangex")}}' type="button" class="btn btn-link btn-sm">arrange</a>
                 </div>
                 <table class="table table-sm table-striped">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">name</th>
                         <th scope="col">group</th>
                         <th scope="col">rec_subject_id</th>
-                        <th scope="col">name</th>
                         <th scope="col">label</th>
                         <th scope="col">op</th>
                     </tr>
@@ -61,10 +60,14 @@ $cdn = get_cdn().'/hm';
                     @foreach($logicalPipelines as $key=>$pipeline)
                         <tr>
                             <th scope="row">{{$key+1}}</th>
+                            <td><a href="javascript:"
+                                   type="button"
+                                   class="btn btn-link btn-sm logical-pipelines-arrange"
+                                   data-id="{{$pipeline->id}}"
+                                >{{$pipeline->name}}</a></td>
+                            <td>{{$pipeline->label}}</td>
                             <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->rec_subject_id}}</td>
-                            <td>{{$pipeline->name}}</td>
-                            <td>{{$pipeline->label}}</td>
                             <td><a href="javascript:"
                                    class="btn btn-link btn-sm RunLogicalPipeline"
                                    data-href={{jump_link('/hm/logical-pipelines/run?id='.$pipeline->id)}}
@@ -99,7 +102,7 @@ $cdn = get_cdn().'/hm';
             </div>
         </div>
     </div>
-    <div class="col-6 mt-3">
+    <div class="col">
         <div class="accordion" id="accordionExample">
             <div class="card">
                 <div class="card-header card-sm" id="headingOne">
@@ -118,7 +121,7 @@ $cdn = get_cdn().'/hm';
             </div>
         </div>
     </div>
-    <div class="col-6 mt-3">
+    <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body">
                 <pre id="run-code-output" style="min-height: 500px">

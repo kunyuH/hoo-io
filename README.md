@@ -53,9 +53,8 @@ CLOCKWORK_AUTHENTICATION_PASSWORD=
 - 配置收集的数据清理脚本
 - \App\Console\Kernel::schedule方法中增加
 ```php
-    // 本定时任务的作用是清理过期日志文件
-    // 具体时间配置见env配置步骤中的CLOCKWORK_STORAGE_EXPIRATION项 默认7天
-    $schedule->command(ClockworkCleanCommand::class)->hourly();
+    # 应用hoo自定义的定时
+    (new \hoo\io\common\Console\Kernel())->schedule($schedule);
 ```
 
 ### HM监控模块

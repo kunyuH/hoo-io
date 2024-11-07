@@ -12,17 +12,26 @@ $cdn = get_cdn().'/hm';
                 <form id="form-logical-blocks-search">
                     <div class="form-group row">
                         <div class="col">
-                            <input type="text" name="group" placeholder="group" class="form-control">
-                        </div>
-                        <div class="col">
-                            <input type="text" name="object_id" placeholder="object_id" class="form-control">
+                            <a href="javascript:jump_page({'group':''})" style="text-decoration: none;"><span class="badge
+                            @if(request()->input('group') == '') badge-info @endif
+                            ">全部</span></a>
+                            @foreach($GroupList as $group)
+                                <a href="javascript:jump_page({'group':'{{$group->group}}'})" style="text-decoration: none;">
+                                    <span class="badge
+                                        @if(request()->input('group') == $group->group) badge-info @endif
+                                    ">{{$group->group}}</span>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <input type="text" name="object_id" placeholder="object_id" class="form-control">
+                        </div>
+                        <div class="col pl-0">
                             <input type="text" name="name" placeholder="name" class="form-control">
                         </div>
-                        <div class="col">
+                        <div class="col pl-0">
                             <input type="text" name="label" placeholder="label" class="form-control">
                         </div>
                     </div>
@@ -37,7 +46,15 @@ $cdn = get_cdn().'/hm';
                     </div>
                 </form>
                 <div class="float-left mb-3">
-                    <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">create</a>
+                    <a href="javascript:" type="button" class="btn btn-outline-primary btn-sm" id="hm-code-create">新增</a>
+                    <a href="javascript:"
+                       type="button"
+                       class="btn btn-outline-primary btn-sm ky-modal"
+                       data-title="粘贴逻辑块"
+                       data-width="800px"
+                       data-height="600px"
+                       data-href={{jump_link("/hm/logical-block/paste")}}
+                    >粘贴逻辑块</a>
                 </div>
                 <table class="table table-sm table-hover">
                     <thead>
@@ -47,7 +64,7 @@ $cdn = get_cdn().'/hm';
                         <th scope="col">name</th>
                         <th scope="col">group</th>
                         <th scope="col">label</th>
-                        <th scope="col">op</th>
+                        <th scope="col">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,24 +73,28 @@ $cdn = get_cdn().'/hm';
                             <th scope="row">{{$k+1}}</th>
 {{--                            <td>{{$block->object_id}}</td>--}}
                             <td><a href="javascript:"
-                                   type="button"
-                                   class="btn btn-link btn-sm code-object-item-ky-req"
+                                   class="code-object-item-ky-req"
                                    data-id="{{$block->id}}"
                                 >{{$block->name}}</a></td>
                             <td>{{$block->group}}</td>
                             <td>{{$block->label}}</td>
                             <td>
                                 <a href="javascript:"
-                                   type="button"
-                                   class="btn btn-link btn-sm code-object-item-ky-req"
+                                   class="copy-logical-block"
                                    data-id="{{$block->id}}"
-                                >edit</a>
+                                >复制逻辑块</a>
                                 <a href="javascript:"
-                                   class="btn btn-link btn-sm ky-req"
+                                   class="ky-req ml-2"
+                                   data-href="{{jump_link('/hm/logical-block/copy-new?id='.$block->id)}}"
+                                   data-confirm-ky="确定复制【{{$block->name}}】么？"
                                    data-type="POST"
+                                >复制</a>
+                                <a href="javascript:"
+                                   class="ky-req ml-2"
                                    data-confirm-ky="确定删除【{{$block->name}}】么？"
+                                   data-type="POST"
                                    data-href={{jump_link('/hm/logical-block/delete?id='.$block->id)}}
-                                >delete</a>
+                                >删除</a>
                             </td>
                         </tr>
                     @endforeach
@@ -113,17 +134,17 @@ $cdn = get_cdn().'/hm';
                         <a href="javascript:"
                            class="btn btn-link btn-sm maxCode"
                         >最大化</a>
+                        <a href="javascript:"
+                           class="btn btn-link btn-sm formRunCodeSave"
+                           id="hm-code-object-save"
+                        >保存</a>
                     </div>
                     <div class="float-right">
                         <a href="javascript:"
                            data-from_id="hoo-run-code"
-                           class="btn btn-link btn-sm formRunCodeSubmit"
+                           class="btn btn-outline-primary btn-sm formRunCodeSubmit"
                            data-href={{jump_link('/hm/logical-block/run')}}
                         >run</a>
-                        <a href="javascript:"
-                           class="btn btn-link btn-sm formRunCodeSave"
-                           id="hm-code-object-save"
-                        >save</a>
                     </div>
                 </form>
             </div>
@@ -220,11 +241,13 @@ $cdn = get_cdn().'/hm';
      * 搜索
      */
     $(document).on("click",".logical-blocks-search",function(){
-        var formData = $("#form-logical-blocks-search").serialize();
-        var url = jump_link('/hm/logical-block/index?') + formData; // 拼接URL
-        // 跳转
-        window.location.href = url;
+        var formData = $("#form-logical-blocks-search").serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+        jump_page(formData)
     })
+
     /**
      * 表单初始化
      */
@@ -249,6 +272,34 @@ $cdn = get_cdn().'/hm';
             loadForm()
         });
     })
+
+    /**
+     * 复制logical-block
+     */
+    $(document).on("click",".copy-logical-block",function(){
+        id = $(this).attr('data-id')
+        $.ajax({
+            type:'get',
+            url:jump_link('/hm/logical-block/copy?id='+id),
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+
+            },
+            success:function(result){
+                if(result.code == 200){
+                    // 放入剪切板
+                    copyToClipboard(result.data.logical_block)
+                    layer.msg('复制成功')
+                }else {
+                    layer.msg('复制失败！'+result.message, {icon: 0})
+                }
+            },
+            error: function(xhr, status, error) {
+
+            }
+        });
+    })
+
 
     /**
      * 逻辑块运行
@@ -340,17 +391,21 @@ $cdn = get_cdn().'/hm';
                     layer.msg(result.message, {icon: 6, time: 500}, function(){
                         // layer.load(1);
                         //刷新当前页
-                        id = result.data.id
-                        // 在当前链接增加id参数 并刷新 如果链接上已经有id参数 则覆盖
-                        var url = window.location.href;
-                        params = getUrlParams(new URL(url));
-                        params['id'] = id
-                        // 按照?分割字符串
-                        var rote = window.location.href.split('?')[0];
-                        // 将参数和路由转换为url
-                        jump_url = rote + '?' + $.param(params);
+                        // id = result.data.id
+                        // // 在当前链接增加id参数 并刷新 如果链接上已经有id参数 则覆盖
+                        // var url = window.location.href;
+                        // params = getUrlParams(new URL(url));
+                        // params['id'] = id
+                        // // 按照?分割字符串
+                        // var rote = window.location.href.split('?')[0];
+                        // // 将参数和路由转换为url
+                        // jump_url = rote + '?' + $.param(params);
+                        //
+                        // window.location.href = jump_url;
 
-                        window.location.href = jump_url;
+                        jump_page({
+                            'id':result.data.id
+                        })
 
                         // // 将当前页面 网址框内路由调整成新路由
                         // window.history.pushState({}, 0, jump_url);

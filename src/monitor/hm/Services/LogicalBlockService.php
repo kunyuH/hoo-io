@@ -38,6 +38,22 @@ class LogicalBlockService extends BaseService
     }
 
     /**
+     * 分组列表
+     * @return void
+     */
+    public function groupList()
+    {
+        return LogicalBlockModel::query()
+            ->select('group')
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at');
+            })
+            ->groupBy('group')
+            ->orderBy('group')
+            ->get();
+    }
+
+    /**
      * 单个逻辑块查询【通过id】
      * @param $id
      * @return Builder|Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
@@ -48,8 +64,46 @@ class LogicalBlockService extends BaseService
     }
 
     /**
-     * 逻辑块保存
+     * 单个逻辑块查询【通过object_id】
      * @param $object_id
+     * @return Builder|Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     */
+    public function firstByObjectId($object_id)
+    {
+        return LogicalBlockModel::query()->where('object_id',$object_id)->first();
+    }
+
+    /**
+     * 复制当前逻辑块 新增一个【通过id】
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|\Illuminate\Support\HigherOrderCollectionProxy|mixed|null
+     */
+    public function copyNew($id)
+    {
+        $info = $this->firstById($id)->toArray();
+        if(empty($info)){
+            throw new HooException('未找到逻辑块');
+        };
+
+        unset($info['id']);
+        $info['name'] = $info['name'].'_副本';
+        $info['object_id'] = ho_uuid();
+        $info['created_at'] = date('Y-m-d H:i:s');
+        $info['updated_at'] = date('Y-m-d H:i:s');
+
+        $id = LogicalBlockModel::query()->insertGetId($info);
+
+        // 记录日志
+        LogsModel::log(__FUNCTION__.':hm_logical_block-新增',json_encode([
+            'old_data'=>[],
+            'new_data'=>$this->firstById($id)
+        ],JSON_UNESCAPED_UNICODE));
+
+        return $id;
+    }
+
+    /**
+     * 逻辑块保存
      * @param $name
      * @param $group
      * @param $label
@@ -62,10 +116,6 @@ class LogicalBlockService extends BaseService
     public function save($name,$group,$label,$logical_block,$remark='',$id=null)
     {
         if(!empty($id)){
-            if ($id == 1){
-                throw new HooException('系统默认，不能修改！');
-            }
-
             $old_data = $this->firstById($id);
 
             # 检测是否存在重复
@@ -111,6 +161,52 @@ class LogicalBlockService extends BaseService
     }
 
     /**
+     * 逻辑块保存 (根据object_id) 应用在跨系统复制中
+     * @param $name
+     * @param $group
+     * @param $label
+     * @param $logical_block
+     * @param $remark
+     * @param $object_id
+     * @return mixed
+     * @throws HooException
+     */
+    public function saveByobjectId($name,$group,$label,$logical_block,$remark,$object_id)
+    {
+        if(empty($object_id)){
+            throw new HooException('object_id不能为空！');
+        }
+
+        $old_data = $this->firstByObjectId($object_id);
+
+        # 检测是否存在重复
+        if(LogicalBlockModel::query()
+            ->where('object_id',$object_id)
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at');
+            })->count()){throw new HooException("object_id：{$old_data->object_id}已存在！如需复制请先删除当前object_id再复制");}
+
+        $id = LogicalBlockModel::query()->insertGetId([
+            'object_id'=>$object_id,
+            'name'=>$name,
+            'group'=>$group,
+            'label'=>$label,
+            'remark'=>$remark,
+            'logical_block'=>$logical_block,
+            'created_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s')
+        ]);
+
+        // 记录日志
+        LogsModel::log(__FUNCTION__.':hm_logical_block-新增',json_encode([
+            'old_data'=>$old_data,
+            'new_data'=>$this->firstById($id)
+        ],JSON_UNESCAPED_UNICODE));
+
+        return $id;
+    }
+
+    /**
      * 逻辑块删除
      * @param $id
      * @return void
@@ -118,10 +214,6 @@ class LogicalBlockService extends BaseService
      */
     public function delete($id)
     {
-        if ($id == 1){
-            throw new HooException('系统默认，不能修改！');
-        }
-
         LogicalBlockModel::query()->where('id',$id)->update([
             'deleted_at'=>date('Y-m-d H:i:s'),
             'updated_at'=>date('Y-m-d H:i:s')

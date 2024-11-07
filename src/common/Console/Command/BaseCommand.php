@@ -1,6 +1,6 @@
 <?php
 
-namespace hoo\io\common\Command;
+namespace hoo\io\common\Console\Command;
 
 use Illuminate\Console\Command;
 

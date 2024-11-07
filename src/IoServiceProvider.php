@@ -2,8 +2,8 @@
 
 namespace hoo\io;
 
-use hoo\io\common\Command\DevCommand;
-use hoo\io\common\Command\RunCodeCommand;
+use hoo\io\common\Console\Command\DevCommand;
+use hoo\io\common\Console\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
 use hoo\io\monitor\hm\Controllers\HHttpViewerController;
@@ -164,6 +164,13 @@ class IoServiceProvider extends ServiceProvider
     {
         //注册命令
         if ($this->app->runningInConsole()){
+//            # 将自定义的Console\Kernel 绑定到 artisan schedule:run
+//            # 无侵入实现在自定义的Console\Kernel 内定义定时
+//            $this->app->singleton(
+//                \Illuminate\Contracts\Console\Kernel::class,
+//                \hoo\io\common\Console\Kernel::class
+//            );
+
             $this->commands([
                 //命令
                 RunCodeCommand::class,
@@ -235,6 +242,10 @@ class IoServiceProvider extends ServiceProvider
                     Route::post('save',[LogicalBlockController::class,'save']);
                     Route::post('delete',[LogicalBlockController::class,'delete']);
                     Route::post('run',[LogicalBlockController::class,'run']);
+                    Route::post('copy-new',[LogicalBlockController::class,'copyNew']);
+                    Route::get('copy',[LogicalBlockController::class,'copy']);
+                    Route::get('paste',[LogicalBlockController::class,'paste']);
+                    Route::post('paste',[LogicalBlockController::class,'paste']);
                 });
 
                 Route::prefix('logical-pipelines')->group(function (){
@@ -244,7 +255,6 @@ class IoServiceProvider extends ServiceProvider
                     Route::post('delete',[LogicalPipelinesController::class,'delete']);
                     Route::post('run',[LogicalPipelinesController::class,'run']);
                     Route::get('arrange',[LogicalPipelinesController::class,'arrange']);
-                    Route::get('arrangex',[LogicalPipelinesController::class,'arrangex']);
                     Route::get('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('add-arrange-item',[LogicalPipelinesController::class,'addArrangeItem']);
                     Route::post('delete-arrange',[LogicalPipelinesController::class,'arrangeDelete']);

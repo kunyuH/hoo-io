@@ -115,9 +115,6 @@ class LogicalPipelinesService extends BaseService
      */
     public function delete($id)
     {
-        if ($id == 1){
-            throw new HooException('系统默认，不能删除！');
-        }
         LogicalPipelinesModel::query()->where('id',$id)->update([
             'deleted_at'=>date('Y-m-d H:i:s'),
             'updated_at'=>date('Y-m-d H:i:s')

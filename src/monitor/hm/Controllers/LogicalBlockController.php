@@ -2,6 +2,7 @@
 
 namespace hoo\io\monitor\hm\Controllers;
 
+use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Models\LogsModel;
 use hoo\io\common\Services\CryptoService;
 use hoo\io\monitor\hm\Request\LogicalBlockRequest;
@@ -20,8 +21,10 @@ class LogicalBlockController extends BaseController
         $name = $request->input('name');
         $group = $request->input('group');
         $label = $request->input('label');
+
         return $this->v('LogicalBlock.index',[
             'LogicalBlocks'=>LogicalBlock::list($object_id,$name,$group,$label),
+            'GroupList'=>LogicalBlock::groupList()
         ]);
     }
 
@@ -69,6 +72,74 @@ class LogicalBlockController extends BaseController
         $id = LogicalBlock::save($name,$group,$label,$logical_block,$remark,$id);
 
         return $this->resSuccess(['id'=>$id]);
+    }
+
+    /**
+     * 复制当前逻辑块 新增一个
+     * @param LogicalBlockRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function copyNew(LogicalBlockRequest $request)
+    {
+        $id = LogicalBlock::copyNew($request->input('id'));
+
+        return $this->resSuccess([]);
+    }
+
+    /**
+     * 获取需要复制的逻辑块内容【加密】
+     * @param LogicalBlockRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function copy(LogicalBlockRequest $request)
+    {
+        $logicalBlockInfo = LogicalBlock::firstById($request->input('id'));
+        if(!empty($logicalBlockInfo))
+        {
+            $logicalBlockInfo['logical_block'] = CryptoService::sm4Encrypt($logicalBlockInfo['logical_block']);
+        }
+        return $this->resSuccess([
+            'logical_block'=>CryptoService::sm4Encrypt(json_encode($logicalBlockInfo))
+        ]);
+    }
+
+    /**
+     * 粘贴的逻辑块保存
+     * @param LogicalBlockRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function paste(LogicalBlockRequest $request)
+    {
+        if($request->isMethod('POST')) {
+            $logical_block_info = $request->input('logical_block');
+            $logical_block_info = CryptoService::sm4Decrypt($logical_block_info);
+
+            $logical_block_info = json_decode($logical_block_info,true);
+
+            $name = $logical_block_info['name'];
+            $group = $logical_block_info['group'];
+            $label = $logical_block_info['label'];
+            $logical_block = CryptoService::sm4Decrypt($logical_block_info['logical_block']);
+
+            $remark = $logical_block_info['remark'];
+            $object_id = $logical_block_info['object_id'];
+
+            if(empty($object_id)){
+                throw new HooException('object_id不能为空');
+            }
+
+            $id = LogicalBlock::saveByobjectId($name,$group,$label,$logical_block,$remark,$object_id);
+
+            return $this->resSuccess([
+                'type'=>2,
+                'id'=>$id
+            ]);
+        }else{
+            return $this->modal('LogicalBlock.paste');
+        }
     }
 
     /**

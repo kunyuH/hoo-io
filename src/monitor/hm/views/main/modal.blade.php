@@ -33,6 +33,12 @@ $cdn = get_cdn().'/hm';
         content:" *";
         color:red
     }
+    .table{
+        font-size: .875rem;
+    }
+    .table td{
+        line-height: 1.5;
+    }
 </style>
 <div class="container">
     <?php echo $content ?>

@@ -21,7 +21,22 @@ class LogicalBlockRequest extends BaseRequest
                     'logical_block' => 'bail|required',
                 ];
                 break;
+            case 'paste:POST':
+                $rules = [
+                    'logical_block' => 'bail|required',
+                ];
+                break;
             case 'detail:GET':
+                $rules = [
+                    'id' => 'bail|required',
+                ];
+                break;
+            case 'copyNew:POST':
+                $rules = [
+                    'id' => 'bail|required',
+                ];
+                break;
+            case 'copy:GET':
                 $rules = [
                     'id' => 'bail|required',
                 ];
