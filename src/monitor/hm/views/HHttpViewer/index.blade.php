@@ -38,6 +38,14 @@ $cdn = get_cdn().'/hm';
                                 <p class="card-text mb-2">
                                     访问次数：{{$sevenVisits->count}}<br>
                                     平均性能：{{intval($sevenVisits->avg)}}<span style="font-weight: 500">ms</span>
+                                    <br>
+                                    <a href="javascript:"
+                                       data-title="API性能趋势明细"
+                                       data-width="800px"
+                                       data-height="600px"
+                                       class="ky-modal"
+                                       data-href={{jump_link("/hm/hhttp-log-viewer/seven-visits-item")}}
+                                    >每日HHTTP性能趋势明细</a>
                                 </p>
                             </div>
                         </div>

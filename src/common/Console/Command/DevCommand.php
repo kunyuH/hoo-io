@@ -18,7 +18,7 @@ class DevCommand extends BaseCommand
 
     // Execute the console command
     public function handle()
-    {dd(1);
+    {
         $args = $this->argument();
         $arg = $args['args']??[];
 

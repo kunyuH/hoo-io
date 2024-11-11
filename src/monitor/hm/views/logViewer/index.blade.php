@@ -104,7 +104,7 @@ $html .= '</div>';
                                         data-height="600px"
                                         class="ky-modal"
                                         data-href={{jump_link("/hm/log-viewer/seven-visits-item")}}
-                                    >API性能趋势明细</a>
+                                    >每日API性能趋势明细</a>
                                 </p>
                             </div>
                         </div>

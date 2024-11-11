@@ -3,6 +3,7 @@
 namespace hoo\io;
 
 use hoo\io\common\Console\Command\DevCommand;
+use hoo\io\common\Console\Command\LogClean;
 use hoo\io\common\Console\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
@@ -175,6 +176,7 @@ class IoServiceProvider extends ServiceProvider
                 //命令
                 RunCodeCommand::class,
                 DevCommand::class,
+                LogClean::class,
             ]);
         }
     }
@@ -226,7 +228,8 @@ class IoServiceProvider extends ServiceProvider
                 Route::prefix('hhttp-log-viewer')->group(function (){
                     Route::get('index',[HHttpViewerController::class,'index']);
                     Route::get('details',[HHttpViewerController::class,'details']);
-                    Route::get('service-statistics-item',[HHttpViewerController::class,'serviceStatisticsItem']);
+                    Route::get('service-statistics-item',[HHttpViewerController::class,'serviceStatisticsItem']);Route::get('seven-visits-item',[LogViewerController::class,'sevenVisitsItem']);
+                    Route::get('seven-visits-item',[HHttpViewerController::class,'sevenVisitsItem']);
                 });
 
                 Route::prefix('sql-log-viewer')->group(function (){

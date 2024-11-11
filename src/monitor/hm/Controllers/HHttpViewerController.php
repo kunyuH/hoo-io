@@ -76,13 +76,54 @@ class HHttpViewerController extends BaseController
         ]);
     }
 
+    public function sevenVisitsItem(HhttpLogViewerRequest $request)
+    {
+        $path = $request->input('path');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        if(empty($startDate)){
+            # 获取7天前时间
+            $startDate = date('Y-m-d',strtotime('-7 days'));
+        }
+        if(empty($endDate)){
+            $endDate = date('Y-m-d');
+        }
+
+        $hhttpLogList = HttpLogModel::query()
+            ->select(
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
+                DB::raw('count(1) as count'),
+                DB::raw('avg(run_time) as avg')
+            )
+            ->when(!empty($path),function (Builder $q) use ($path){
+                $q->where('path','=',$path);
+            })
+            ->when(!empty($startDate),function (Builder $q) use ($startDate){
+                $startDate = $startDate.' 00:00:00';
+                $q->where('created_at','>=',$startDate);
+            })
+            ->when(!empty($endDate),function (Builder $q) use ($endDate){
+                $endDate = $endDate.' 23:59:59';
+                $q->where('created_at','<=',$endDate);
+            })
+            ->orderBy('date','desc')
+            # 按照日期分组
+            ->groupBy( DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))
+            ->paginate(20);
+
+        return $this->modal('HHttpViewer.sevenVisitsItem',[
+            'hhttpLogList'=>$hhttpLogList,
+            'startDate'=>$startDate,
+            'endDate'=>$endDate,
+        ]);
+    }
+
 
     public function details(HhttpLogViewerRequest $request)
     {
         $id = $request->input('id');
 
         $hHttpLogList = HttpLogModel::query()
-//            ->with(['HttpLog'])
             ->where('id', '=', $id)
             ->first();
 

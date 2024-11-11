@@ -2,6 +2,7 @@
 
 namespace hoo\io;
 
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Database\Events\QueryExecuted;
 use hoo\io\common\Listeners\DatabaseExecuteLogListener;
 use hoo\io\common\Listeners\LogRequestHandledListener;
@@ -23,9 +24,11 @@ class IoEventServiceProvider extends ServiceProvider
         # 监听请求结束事件
         RequestHandled::class => [
             LogRequestHandledListener::class
-        ]
+        ],
         # 监听命令执行后事件
-        # Artisan\Console\Events\CommandFinished::class => [
+        CommandFinished::class => [
+            LogRequestHandledListener::class
+        ]
     ];
 
     /**
