@@ -3,6 +3,7 @@
 namespace hoo\io\common\Models;
 
 use hoo\io\common\Services\ContextService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
@@ -27,6 +28,11 @@ class SqlLogModel extends BaseModel
             (new ApiLogModel())->getTableName()
         ],$sql)) {
 
+            # true 未开启sql日志记录
+            if(!$this->isRecord()){
+                return;
+            }
+            
             # 字符串长度超出 则不记录
             if (strlen($sql) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                 $sql = 'sql is too long';
@@ -52,8 +58,12 @@ class SqlLogModel extends BaseModel
      */
     public function logSave()
     {
+        # true 未开启sql日志记录
+        if(!$this->isRecord()){
+            return;
+        }
         # 检验是否存在http日志表
-        if (Schema::hasTable($this->getTableName()) && Config::get('hoo-io.HM_SQL_LOG')) {
+        if (Schema::hasTable($this->getTableName())) {
             $sql_log = ContextService::getSqlLog();
             if ($sql_log){
                 self::insert($sql_log);
@@ -61,6 +71,29 @@ class SqlLogModel extends BaseModel
                 ContextService::clearSqlLog();
             }
         }
+    }
+
+    /**
+     * 是否记录sql日志
+     * @return bool
+     */
+    private function isRecord()
+    {
+        # true 已开启HHTTP日志记录
+        if(Config::get('hoo-io.HM_SQL_LOG')){
+            # true 命令行情况下
+            if(App::runningInConsole()){
+                # true 命令行开启HHTTP日志记录
+                if(Config::get('hoo-io.HM_SQL_COMMAND_LOG')){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return true;
+            }
+        }
+        return false;
     }
 }
 

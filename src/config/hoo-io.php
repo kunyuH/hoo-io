@@ -23,10 +23,16 @@ return [
     'HM_API_LOG'=>env('HM_API_LOG', true),
     # 默认api日志中user_id 提取 request 对象内的属性
     'HM_API_LOG_USER_FILED'=>env('HM_API_LOG_USER_FILED', 'member_id'),
+
     # hhttp日志开关 是否记录
     'HM_HTTP_LOG'=>env('HM_HTTP_LOG', true),
+    # hhttp日志开关 跑命令时的hhttp日志是否记录
+    'HM_COMMAND_HTTP_LOG'=>env('HM_COMMAND_HTTP_LOG', false),
+
     # sql日志开关 是否记录
     'HM_SQL_LOG'=>env('HM_SQL_LOG', true),
+    # sql日志开关 跑命令时的sql是否记录
+    'HM_SQL_COMMAND_LOG'=>env('HM_SQL_COMMAND_LOG', false),
 
     # 长度限制
     'HM_API_HTTP_LOG_LENGTH'=>env('HM_API_HTTP_LOG_LENGTH', 5000),

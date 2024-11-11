@@ -5,6 +5,7 @@ namespace hoo\io\common\Models;
 use hoo\io\common\Services\ContextService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\App;
 
 class HttpLogModel extends BaseModel
 {
@@ -23,8 +24,13 @@ class HttpLogModel extends BaseModel
      */
     public function log($run_time,$path,$uri,$method,$options,$resStr,$err)
     {
+        # true 未开启HHTTP日志记录
+        if(!$this->isRecord()){
+            return;
+        }
+
         # 检验是否存在http日志表
-        if (Schema::hasTable($this->getTableName()) && Config::get('hoo-io.HM_HTTP_LOG')) {
+        if (Schema::hasTable($this->getTableName())) {
             # 字符串长度超出 则不记录
             if (strlen($options) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                 $options = 'options is too long';
@@ -48,6 +54,29 @@ class HttpLogModel extends BaseModel
                 'created_at'=>date('Y-m-d H:i:s'),
             ]);
         }
+    }
+
+    /**
+     * 是否记录http日志
+     * @return bool
+     */
+    private function isRecord()
+    {
+        # true 已开启HHTTP日志记录
+        if(Config::get('hoo-io.HM_HTTP_LOG')){
+            # true 命令行情况下
+            if(App::runningInConsole()){
+                # true 命令行开启HHTTP日志记录
+                if(Config::get('hoo-io.HM_COMMAND_HTTP_LOG')){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return true;
+            }
+        }
+        return false;
     }
 }
 

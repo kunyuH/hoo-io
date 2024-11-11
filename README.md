@@ -91,13 +91,25 @@ HM_API_LOG_USER_FILED='member_id'
 
 # 记录程序访问第三方http api 时是否记录日志到数据库 默认记录到数据库（前提条件是数据库中存在日志表）
 HM_API_LOG=true
+# hhttp日志开关 跑命令时的hhttp日志是否记录 默认false
+HM_COMMAND_HTTP_LOG=false
 
 
 # 记录程序访问数据库 时是否记录日志到数据库 默认记录到数据库（前提条件是数据库中存在日志表）
 HM_SQL_LOG=true
+# sql日志开关 跑命令时的sql是否记录  默认false
+HM_SQL_COMMAND_LOG=false
 
-# 入参出参 字符长度限制 如果超出就不再记录 防止数据库短期容量暴涨
+# 入参出参 字符长度限制 如果超出就不再记录 防止数据库短期容量暴涨 默认5000
 HM_API_HTTP_LOG_LENGTH=10000
+
+# 日志清理设置
+# api日志清理多久之前的日志 默认 60天前的
+HM_API_LOG_CLEAN=60,
+# hhttp日志清理多久之前的日志 默认 60天前的
+HM_HPPT_LOG_CLEAN=60,
+# sql日志清理多久之前的日志 默认 60天前的
+HM_SQL_LOG_CLEAN=60,
 #-------------------------------------------------------
 ```
 
