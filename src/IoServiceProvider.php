@@ -47,9 +47,23 @@ class IoServiceProvider extends ServiceProvider
             $this->registerMiddleware();
 
             /**
-             * 动态注册路由
+             * 注册 hm  监控 路由
              */
-            $this->registerRoutes();
+            $this->registerWebRoutes();
+
+            /**
+             * 注册命令
+             */
+            $this->registerCommands();
+
+            # 在所有服务提供者 boot 完成后执行【用于覆盖之前注册的路由 已动态注册路由为第一优先级】
+            app()->booted(function () {
+                /**
+                 * 动态注册路由
+                 */
+                $this->registerRoutes();
+            });
+
         }catch (\Exception $e){}
     }
 
@@ -63,19 +77,13 @@ class IoServiceProvider extends ServiceProvider
                 return (new BuilderMacroSql())->getSqlQuery($this);
             });
 
-            /**
-             * 注册 hm  监控 路由
-             */
-            $this->registerWebRoutes();
-
-            /**
-             * 注册命令
-             */
-            $this->registerCommands();
-
         }catch (Exception $e){}
     }
 
+    /**
+     * 动态注册路由【逻辑线】
+     * @return void
+     */
     public function registerRoutes()
     {
         # 检查表是否存在
@@ -90,15 +98,17 @@ class IoServiceProvider extends ServiceProvider
                 Route::prefix($pipeline->group)->group(function () use ($pipeline){
 
                     $pipeline->setting = json_decode($pipeline->setting,true);
+                    $method = $pipeline->setting['method'] ?? 'get';
+
                     $middleware = $pipeline->setting['middleware']??'';
                     if($middleware){
-                        Route::middleware($middleware)->group(function () use ($pipeline){
-                            Route::{$pipeline->setting['method']??'get'}($pipeline->rec_subject_id, function () use ($pipeline){
+                        Route::middleware($middleware)->group(function () use ($method, $pipeline){
+                            Route::{$method}($pipeline->rec_subject_id, function () use ($pipeline){
                                 return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
                             });
                         });
                     }else{
-                        Route::{$pipeline->setting['method']??'get'}($pipeline->rec_subject_id, function () use ($pipeline){
+                        Route::{$method}($pipeline->rec_subject_id, function () use ($pipeline){
                             return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
                         });
                     }

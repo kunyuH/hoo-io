@@ -61,32 +61,29 @@ $cdn = get_cdn().'/hm';
                         <tr>
                             <th scope="row">{{$key+1}}</th>
                             <td><a href="javascript:"
-                                   type="button"
-                                   class="btn btn-link btn-sm logical-pipelines-arrange"
+                                   class="logical-pipelines-arrange"
                                    data-id="{{$pipeline->id}}"
                                 >{{$pipeline->name}}</a></td>
                             <td>{{$pipeline->label}}</td>
                             <td>{{$pipeline->group}}</td>
                             <td>{{$pipeline->rec_subject_id}}</td>
                             <td><a href="javascript:"
-                                   class="btn btn-link btn-sm RunLogicalPipeline"
+                                   class="RunLogicalPipeline"
                                    data-href={{jump_link('/hm/logical-pipelines/run?id='.$pipeline->id)}}
                                 >run</a>
                                 <a href="javascript:"
-                                   type="button"
-                                   class="btn btn-link btn-sm ky-modal"
+                                   class="ky-modal ml-2"
                                    data-title="edit"
                                    data-width="800px"
                                    data-height="600px"
                                    data-href={{jump_link("/hm/logical-pipelines/save?id=".$pipeline->id)}}
                                 >edit</a>
                                 <a href="javascript:"
-                                   type="button"
-                                   class="btn btn-link btn-sm logical-pipelines-arrange"
+                                   class="logical-pipelines-arrange ml-2"
                                    data-id="{{$pipeline->id}}"
                                 >arrange</a>
                                 <a href="javascript:"
-                                   class="btn btn-link btn-sm ky-req"
+                                   class="ky-req ml-2"
                                    data-type="POST"
                                    data-confirm-ky="确定删除【{{$pipeline->name}}】么？"
                                    data-href={{jump_link('/hm/logical-pipelines/delete?id='.$pipeline->id)}}
