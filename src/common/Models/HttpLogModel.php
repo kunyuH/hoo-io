@@ -30,7 +30,7 @@ class HttpLogModel extends BaseModel
         }
 
         # 检验是否存在http日志表
-        if (Schema::hasTable($this->getTableName())) {
+        if (Schema::hasTable($this->getTable())) {
             # 字符串长度超出 则不记录
             if (strlen($options) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                 $options = 'options is too long';

@@ -2,9 +2,9 @@
 
 namespace hoo\io\monitor\hm\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use hoo\io\common\Models\BaseModel as CommonBaseModel;
 
-class BaseModel extends Model
+class BaseModel extends CommonBaseModel
 {
     /**
      * The attributes that are mass assignable.

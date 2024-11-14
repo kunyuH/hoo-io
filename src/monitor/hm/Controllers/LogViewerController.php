@@ -207,6 +207,7 @@ class LogViewerController extends BaseController
     public function diskUsage(LogViewerRequest $request)
     {
         # 查看磁盘占用情况
+        Cache::forget('diskUsage');
         $diskUsage = Cache::remember('diskUsage',60*60, function () {
             $api_log_table_name = (new ApiLogModel())->getTableName();
             $hhttp_log_table_name = (new HttpLogModel())->getTableName();
@@ -219,7 +220,7 @@ class LogViewerController extends BaseController
                         information_schema.TABLES
                     WHERE
                          TABLE_NAME in ('{$api_log_table_name}','{$hhttp_log_table_name}','{$database_log_table_name}')
-                    ORDER BY Table desc
+                    ORDER BY `Table` desc
                     ";
 
             $diskUsage = DB::connection()->select($sql);

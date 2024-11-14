@@ -19,10 +19,6 @@ class BaseModel extends Model
      */
     public function getTableName()
     {
-        # 获取表名称
-        $table = $this->getTable();
-        # 获取表前缀
-        $prefix = $this->getConnection()->getTablePrefix();
-        return str_replace($prefix, '', $table);
+        return  $this->getConnection()->getTablePrefix().$this->getTable();
     }
 }

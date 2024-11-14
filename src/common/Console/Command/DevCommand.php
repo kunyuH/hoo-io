@@ -2,10 +2,15 @@
 
 namespace hoo\io\common\Console\Command;
 
+use hoo\io\common\Models\ApiLogModel;
+use hoo\io\common\Models\HttpLogModel;
+use hoo\io\common\Models\LogsModel;
+use hoo\io\common\Models\SqlLogModel;
 use hoo\io\http\HHttp;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
+use hoo\io\monitor\hm\Models\LogicalPipelinesArrangeModel;
+use hoo\io\monitor\hm\Models\LogicalPipelinesModel;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class DevCommand extends BaseCommand
@@ -43,8 +48,9 @@ class DevCommand extends BaseCommand
     public function logicalPipelinesInit()
     {
         # 检查表是否存在
-        if (!Schema::hasTable('hm_logical_block')) {
-            Schema::create('hm_logical_block', function (Blueprint $table) {
+        $LogicalBlock = new LogicalBlockModel();
+        if (!Schema::hasTable($LogicalBlock->getTable())) {
+            Schema::create($LogicalBlock->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id');
                 // 字段不为空 不加索引
                 $table->string('object_id',50);
@@ -61,18 +67,11 @@ class DevCommand extends BaseCommand
                 $table->index('name','idx_name');
                 $table->index('group','idx_group');
             });
-            $this->info('hm_logical_block 表创建成功');
-            # 放入一个示例
-            LogicalBlockModel::query()->create([
-                'object_id' => 'phpinfo',
-                'name' => '示例-phpinfo',
-                'group' => 'system',
-                'label' => '',
-                'logical_block' => "<?php phpinfo();",
-            ]);
+            $this->info($LogicalBlock->getTableName().'表创建成功');
         }
-        if (!Schema::hasTable('hm_logs')) {
-            Schema::create('hm_logs', function (Blueprint $table) {
+        $Logs = new LogsModel();
+        if (!Schema::hasTable($Logs->getTable())) {
+            Schema::create($Logs->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name',100);
                 $table->string('label_a',100)->nullable();
@@ -87,11 +86,11 @@ class DevCommand extends BaseCommand
                 $table->index('label_b','idx_label_b');
                 $table->index('label_c','idx_label_c');
             });
-            $this->info('hm_logs 表创建成功');
+            $this->info($Logs->getTableName().'表创建成功');
         }
-
-        if (!Schema::hasTable('hm_logical_pipelines')) {
-            Schema::create('hm_logical_pipelines', function (Blueprint $table) {
+        $LogicalPipelines = new LogicalPipelinesModel();
+        if (!Schema::hasTable($LogicalPipelines->getTable())) {
+            Schema::create($LogicalPipelines->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id');
                 $table->string('rec_subject_id',50);
                 $table->string('name',50);
@@ -107,11 +106,11 @@ class DevCommand extends BaseCommand
                 $table->index('name','idx_name');
                 $table->index('group','idx_group');
             });
-            $this->info('hm_logical_pipelines 表创建成功');
+            $this->info($LogicalPipelines->getTableName().'表创建成功');
         }
-
-        if (!Schema::hasTable('hm_logical_pipelines_arrange')) {
-            Schema::create('hm_logical_pipelines_arrange', function (Blueprint $table) {
+        $LogicalPipelinesArrange = new LogicalPipelinesArrangeModel();
+        if (!Schema::hasTable($LogicalPipelinesArrange->getTable())) {
+            Schema::create($LogicalPipelinesArrange->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id');
                 $table->integer('logical_pipeline_id');
                 $table->integer('logical_block_id')->nullable();
@@ -127,11 +126,11 @@ class DevCommand extends BaseCommand
                 $table->index('next_id','idx_next_id');
                 $table->index('type','idx_type');
             });
-            $this->info('hm_logical_pipelines_arrange 表创建成功');
+            $this->info($LogicalPipelinesArrange->getTableName().' 表创建成功');
         }
-
-        if (!Schema::hasTable('hm_api_log')) {
-            Schema::create('hm_api_log', function (Blueprint $table) {
+        $ApiLog = new ApiLogModel();
+        if (!Schema::hasTable($ApiLog->getTable())) {
+            Schema::create($ApiLog->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
@@ -156,9 +155,9 @@ class DevCommand extends BaseCommand
             });
             $this->info('hm_api_log 表创建成功');
         }
-
-        if (!Schema::hasTable('hm_http_log')) {
-            Schema::create('hm_http_log', function (Blueprint $table) {
+        $HttpLog = new HttpLogModel();
+        if (!Schema::hasTable($HttpLog->getTable())) {
+            Schema::create($HttpLog->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
@@ -179,11 +178,11 @@ class DevCommand extends BaseCommand
                 $table->index('created_at','idx_created_at');
                 $table->index('method','idx_method');
             });
-            $this->info('hm_http_log 表创建成功');
+            $this->info($HttpLog->getTableName().' 表创建成功');
         }
-
-        if (!Schema::hasTable('hm_sql_log')) {
-            Schema::create('hm_sql_log', function (Blueprint $table) {
+        $SqlLog = new SqlLogModel();
+        if (!Schema::hasTable($SqlLog->getTable())) {
+            Schema::create($SqlLog->getTable(), function (Blueprint $table) {
                 # bin
                 $table->bigIncrements('id');
                 $table->string('app_name',100)->nullable();
@@ -202,7 +201,7 @@ class DevCommand extends BaseCommand
                 $table->index('run_path','idx_run_path');
                 $table->index('created_at','idx_created_at');
             });
-            $this->info('hm_sql_log 表创建成功');
+            $this->info($SqlLog->getTableName().' 表创建成功');
         }
 
         $this->info('操作成功');

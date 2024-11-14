@@ -63,7 +63,7 @@ class SqlLogModel extends BaseModel
             return;
         }
         # 检验是否存在http日志表
-        if (Schema::hasTable($this->getTableName())) {
+        if (Schema::hasTable($this->getTable())) {
             $sql_log = ContextService::getSqlLog();
             if ($sql_log){
                 self::insert($sql_log);

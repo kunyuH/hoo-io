@@ -87,7 +87,7 @@ class IoServiceProvider extends ServiceProvider
     public function registerRoutes()
     {
         # 检查表是否存在
-        if (Schema::hasTable('hm_logical_pipelines')) {
+        if (Schema::hasTable((new LogicalPipelinesModel())->getTable())) {
             $pipelines = LogicalPipelinesModel::query()
                 ->where(function (Builder $q){
                     $q->whereNull('deleted_at')
