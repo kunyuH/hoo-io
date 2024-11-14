@@ -86,35 +86,37 @@ class IoServiceProvider extends ServiceProvider
      */
     public function registerRoutes()
     {
-        # 检查表是否存在
-        if (Schema::hasTable((new LogicalPipelinesModel())->getTable())) {
-            $pipelines = LogicalPipelinesModel::query()
-                ->where(function (Builder $q){
-                    $q->whereNull('deleted_at')
-                        ->orWhere('deleted_at','');
-                })
-                ->get();
-            foreach ($pipelines as $pipeline){
-                Route::prefix($pipeline->group)->group(function () use ($pipeline){
+        try{
+            # 检查表是否存在 
+            if (Schema::hasTable((new LogicalPipelinesModel())->getTable())) {
+                $pipelines = LogicalPipelinesModel::query()
+                    ->where(function (Builder $q){
+                        $q->whereNull('deleted_at')
+                            ->orWhere('deleted_at','');
+                    })
+                    ->get();
+                foreach ($pipelines as $pipeline){
+                    Route::prefix($pipeline->group)->group(function () use ($pipeline){
 
-                    $pipeline->setting = json_decode($pipeline->setting,true);
-                    $method = $pipeline->setting['method'] ?? 'get';
+                        $pipeline->setting = json_decode($pipeline->setting,true);
+                        $method = $pipeline->setting['method'] ?? 'get';
 
-                    $middleware = $pipeline->setting['middleware']??'';
-                    if($middleware){
-                        Route::middleware($middleware)->group(function () use ($method, $pipeline){
+                        $middleware = $pipeline->setting['middleware']??'';
+                        if($middleware){
+                            Route::middleware($middleware)->group(function () use ($method, $pipeline){
+                                Route::{$method}($pipeline->rec_subject_id, function () use ($pipeline){
+                                    return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
+                                });
+                            });
+                        }else{
                             Route::{$method}($pipeline->rec_subject_id, function () use ($pipeline){
                                 return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
                             });
-                        });
-                    }else{
-                        Route::{$method}($pipeline->rec_subject_id, function () use ($pipeline){
-                            return (new LogicalPipelinesApiRunService())->run(Request(),$pipeline);
-                        });
-                    }
-                });
+                        }
+                    });
+                }
             }
-        }
+        }catch (Exception $e){}
     }
 
 
