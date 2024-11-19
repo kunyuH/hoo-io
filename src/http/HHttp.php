@@ -5,10 +5,9 @@ namespace hoo\io\http;
 
 use Cloudladder\Http\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Models\HttpLogModel;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -21,7 +20,7 @@ class HHttp extends Client
      * @param $uri
      * @param array $options
      * @return ResponseInterface
-     * @throws GuzzleException
+     * @throws GuzzleException|HooException
      */
     public function request($method, $uri = '', array $options = []): ResponseInterface
     {
@@ -44,7 +43,9 @@ class HHttp extends Client
                 $res,$err
             );
 
-        } catch (\Throwable $e) {dd($e->getMessage());}
+        } catch (\Throwable $e) {
+            throw new HooException($e->getMessage());
+        }
 
         // 重置响应主体流
         $response->getBody()->rewind();

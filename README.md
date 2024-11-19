@@ -113,5 +113,32 @@ HM_SQL_LOG_CLEAN=60,
 #-------------------------------------------------------
 ```
 
+## 快捷配置 必要配置 其它可依据情况添加
+```bash
+#--------------------CLOCKWORK--------------------------
+# 限制环境 local 开发环境可进 test 测试环境可进 production 生产环境 且请求头中有灰度标识可进 其它环境不可进
+# 是否开启CLOCKWORK服务
+CLOCKWORK_ENABLE=true
+# 收集的数据存储时效 单位：分钟
+CLOCKWORK_STORAGE_EXPIRATION=120
+# 【控制面板访问】是否开启第二层密码
+CLOCKWORK_AUTHENTICATION=false
+# 【控制面板访问】第二层密码（默认密码：VerySecretPassword）
+CLOCKWORK_AUTHENTICATION_PASSWORD=
+#-------------------------------------------------------
+
+#--------------------hoo_hm--------------------------
+HOO_ENABLE=true
+# 登录账号
+HOO_NAME=
+# 登录密码
+HOO_PASSWORD=
+# 服务前缀
+SERVICE_NAME=
+# 资源前缀 用于日志查看器资源加载 需要带/开头
+ASSET_URL=
+#-------------------------------------------------------
+```
+
 - 注意
 - 如果开启鉴权插件-则需处理网关阻挡问题
