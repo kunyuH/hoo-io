@@ -144,10 +144,26 @@ $html .= '</div>';
                                 <input type="text" name="path" placeholder="path" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="user_id" placeholder="user_id" class="form-control">
+                                <input type="text" name="input" placeholder="input" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
+                                <input type="text" name="output" placeholder="output" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="user_id" placeholder="user id" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="hoo_traceid" placeholder="hoo traceid" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group float-left">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="start_date" placeholder="start date" value="{{$start_date}}" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="end_date" placeholder="end date" value="{{$end_date}}" class="form-control">
                             </div>
                         </div>
                     </div>

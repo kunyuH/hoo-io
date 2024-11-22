@@ -11,12 +11,28 @@ class SqlViewerController extends BaseController
 {
     public function index(SqlLogViewerRequest $request)
     {
+        $run_path = $request->input('run_path');
+        $sql = $request->input('sql');
         $hoo_traceid = $request->input('hoo_traceid');
         $connection_name = $request->input('connection_name');
         $database = $request->input('database');
-        $run_path = $request->input('run_path');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+        if(empty($start_date)){
+            # 获取7天前时间
+            $start_date = date('Y-m-d',strtotime('-7 days'));
+        }
+        if(empty($end_date)){
+            $end_date = date('Y-m-d');
+        }
 
         $logList = SqlLogModel::query()
+            ->when(!empty($run_path),function (Builder $q) use ($run_path){
+                $q->where('run_path','like','%'.$run_path.'%');
+            })
+            ->when(!empty($sql),function (Builder $q) use ($sql){
+                $q->where('sql','like','%'.$sql.'%');
+            })
             ->when(!empty($database),function (Builder $q) use ($database){
                 $q->where('database','=',$database);
             })
@@ -26,8 +42,13 @@ class SqlViewerController extends BaseController
             ->when(!empty($hoo_traceid),function (Builder $q) use ($hoo_traceid){
                 $q->where('hoo_traceid','=',$hoo_traceid);
             })
-            ->when(!empty($run_path),function (Builder $q) use ($run_path){
-                $q->where('run_path','=',$run_path);
+            ->when(!empty($start_date),function (Builder $q) use ($start_date){
+                $start_date = $start_date.' 00:00:00';
+                $q->where('created_at','>=',$start_date);
+            })
+            ->when(!empty($end_date),function (Builder $q) use ($end_date){
+                $end_date = $end_date.' 23:59:59';
+                $q->where('created_at','<=',$end_date);
             })
             ->orderBy('id','desc')
             ->paginate(20);
@@ -49,6 +70,8 @@ class SqlViewerController extends BaseController
         return $this->v('SqlViewer.index',[
             'sevenVisits'=>$sevenVisits,
             'logList'=>$logList,
+            'start_date'=>$start_date,
+            'end_date'=>$end_date,
         ]);
     }
 

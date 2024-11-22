@@ -72,13 +72,29 @@ $cdn = get_cdn().'/hm';
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
-                            </div>
-                            <div class="col">
                                 <input type="text" name="path" placeholder="path" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="run_path" placeholder="run_path" class="form-control">
+                                <input type="text" name="options" placeholder="options" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="response" placeholder="response" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="run_path" placeholder="run path" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="hoo_traceid" placeholder="hoo traceid" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group float-left">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="start_date" placeholder="start date" value="{{$start_date}}" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="end_date" placeholder="end date" value="{{$end_date}}" class="form-control">
                             </div>
                         </div>
                     </div>

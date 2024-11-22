@@ -4,7 +4,6 @@ $cdn = get_cdn().'/hm';
 <script src="<?php echo $cdn?>/ace-builds-master/src/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="<?php echo $cdn?>/ace-builds-master/src/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 
-
 <div class="row">
     <div class="col pr-2">
         <div class="card">
@@ -60,7 +59,7 @@ $cdn = get_cdn().'/hm';
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-{{--                        <th scope="col">object_id</th>--}}
+                        <th scope="col" style="width: 20px">object_id</th>
                         <th scope="col">name</th>
                         <th scope="col">group</th>
                         <th scope="col">label</th>
@@ -71,7 +70,7 @@ $cdn = get_cdn().'/hm';
                     @foreach($LogicalBlocks as $k=>$block)
                         <tr>
                             <th scope="row">{{$k+1}}</th>
-{{--                            <td>{{$block->object_id}}</td>--}}
+                            <td class="ellipsis">{{$block->object_id}}</td>
                             <td><a href="javascript:"
                                    class="code-object-item-ky-req"
                                    data-id="{{$block->id}}"
@@ -86,7 +85,7 @@ $cdn = get_cdn().'/hm';
                                 <a href="javascript:"
                                    class="ky-req ml-2"
                                    data-href="{{jump_link('/hm/logical-block/copy-new?id='.$block->id)}}"
-                                   data-confirm-ky="确定复制【{{$block->name}}】么？"
+                                   data-confirm-ky="确定复制【{{$block->name}}】么？ 复制后会新增一个副本"
                                    data-type="POST"
                                 >复制</a>
                                 <a href="javascript:"
@@ -203,6 +202,8 @@ $cdn = get_cdn().'/hm';
      */
     var edit_id = "code-object-edit"
     edit_init(edit_id)
+
+
 
     /**
      * 最大化

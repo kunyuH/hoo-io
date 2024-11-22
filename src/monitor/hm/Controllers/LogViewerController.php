@@ -15,19 +15,44 @@ class LogViewerController extends BaseController
     public function index(LogViewerRequest $request)
     {
         $path = $request->input('path');
+        $input = $request->input('input');
+        $output = $request->input('output');
         $user_id = $request->input('user_id');
         $hoo_traceid = $request->input('hoo_traceid');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+        if(empty($start_date)){
+            # 获取7天前时间
+            $start_date = date('Y-m-d',strtotime('-7 days'));
+        }
+        if(empty($end_date)){
+            $end_date = date('Y-m-d');
+        }
 
         $apiLogList = ApiLogModel::query()
             ->with(['HttpLog'])
             ->when(!empty($path),function (Builder $q) use ($path){
-                $q->where('path','=',$path);
+                $q->where('path','like','%'.$path.'%');
+            })
+            ->when(!empty($input),function (Builder $q) use ($input){
+                $q->where('input','like','%'.$input.'%');
+            })
+            ->when(!empty($output),function (Builder $q) use ($output){
+                $q->where('output','like','%'.$output.'%');
             })
             ->when(!empty($user_id),function (Builder $q) use ($user_id){
                 $q->where('user_id','=',$user_id);
             })
             ->when(!empty($hoo_traceid),function (Builder $q) use ($hoo_traceid){
                 $q->where('hoo_traceid','=',$hoo_traceid);
+            })
+            ->when(!empty($start_date),function (Builder $q) use ($start_date){
+                $start_date = $start_date.' 00:00:00';
+                $q->where('created_at','>=',$start_date);
+            })
+            ->when(!empty($end_date),function (Builder $q) use ($end_date){
+                $end_date = $end_date.' 23:59:59';
+                $q->where('created_at','<=',$end_date);
             })
             ->orderBy('id','desc')
             ->paginate(20);
@@ -49,6 +74,8 @@ class LogViewerController extends BaseController
         return $this->v('logViewer.index',[
             'sevenVisits'=>$apiSevenVisits,
             'apiLogList'=>$apiLogList,
+            'start_date'=>$start_date,
+            'end_date'=>$end_date,
         ]);
     }
 

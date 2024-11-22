@@ -70,6 +70,16 @@ $cdn = get_cdn().'/hm';
         .table td{
             line-height: 1.5;
         }
+
+        /* ellipsis 样式：用于隐藏超出文本 */
+        .ellipsis {
+            max-width: 100px; /* Limit cell width */
+            position: relative;
+            white-space: nowrap; /* 单行显示 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 超出部分显示省略号 */
+            cursor: pointer;
+        }
     </style>
     <script>
         var jump_link = function (url) {
@@ -102,6 +112,22 @@ $cdn = get_cdn().'/hm';
             document.execCommand("copy");
             document.body.removeChild(tempInput);
         }
+
+        /**
+         * 内容悬停提示
+         */
+        $(document).on("mouseover",".ellipsis",function(){
+            layer.tips($(this).text(), this, {
+                tips: 1
+            });
+        })
+        $(document).on("click",".ellipsis",function(){
+            /**
+             * 复制内容
+             */
+            copyToClipboard($(this).text())
+            layer.msg('复制成功', {icon: 1});
+        })
 
     </script>
 

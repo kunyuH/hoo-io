@@ -64,16 +64,29 @@ $cdn = get_cdn().'/hm';
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="text" name="hoo_traceid" placeholder="hoo_traceid" class="form-control">
+                                <input type="text" name="run path" placeholder="run_path" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="sql" placeholder="sql" class="form-control">
                             </div>
                             <div class="col">
                                 <input type="text" name="database" placeholder="database" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="connection_name" placeholder="connection_name" class="form-control">
+                                <input type="text" name="connection_name" placeholder="connection name" class="form-control">
                             </div>
                             <div class="col">
-                                <input type="text" name="run_path" placeholder="run_path" class="form-control">
+                                <input type="text" name="hoo_traceid" placeholder="hoo traceid" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group float-left">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="start_date" placeholder="start date" value="{{$start_date}}" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" name="end_date" placeholder="end date" value="{{$end_date}}" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -94,7 +107,7 @@ $cdn = get_cdn().'/hm';
                         <th style="width: 70px;">hoo_traceid</th>
                         <th>database</th>
                         <th>connection_name</th>
-                        <th style="width: 400px">options</th>
+                        <th style="width: 400px">sql</th>
                         <th>run_time(ms)</th>
                         <th>run_path</th>
                         <th>op</th>
