@@ -353,14 +353,24 @@ class LogicalBlockService extends BaseService
      * @param $logical_block
      * @param $name
      * @param $resData
+     * @param $mode 返回数据模式
+     *  data 返回数据 如果存在错误 则出异常并输出错误  【默认】
+     *  data and error  返回数据和异常 以数组形式
      * @return array|mixed
      */
-    public function execByObjectId($object_id,$resData=[])
+    public function execByObjectId($object_id,$resData=[],$out_mode='data')
     {
         $block = LogicalBlockModel::query()
             ->where('object_id',$object_id)->first();
         list($resData,$error) = $this->execByCode($block->logical_block,$block->name,$resData);
-        return [$resData,$error];
+        if($out_mode == 'out data'){
+            if(!empty($error)){
+                throw new HooException($error->getMessage(),$error->getCode());
+            }
+            return $resData;
+        }else{
+            return [$resData,$error];
+        }
     }
 
     /**

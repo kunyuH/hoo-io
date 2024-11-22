@@ -43,7 +43,7 @@ use Illuminate\Support\Facades\Facade;
  * @var LogicalBlockService::execById()
  *
  * 逻辑块运行【通过对象id】
- * @method static execByObjectId($object_id, $resData = [])
+ * @method static execByObjectId($object_id, $resData = [], $out_mode='data')
  * @var LogicalBlockService::execByObjectId()
  *
  * 逻辑块运行【通过源代码直接运行】
