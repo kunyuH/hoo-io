@@ -19,8 +19,8 @@ class HHttpViewerController extends BaseController
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
         if(empty($start_date)){
-            # 获取7天前时间
-            $start_date = date('Y-m-d',strtotime('-7 days'));
+            # 获取当天前时间
+            $start_date = date('Y-m-d');
         }
         if(empty($end_date)){
             $end_date = date('Y-m-d');
@@ -74,6 +74,24 @@ class HHttpViewerController extends BaseController
             'start_date'=>$start_date,
             'end_date'=>$end_date,
         ]);
+    }
+
+    public function sevenVisits(HhttpLogViewerRequest $request)
+    {
+        # 获取7天前时间
+        $sevenDaysAgo = date('Y-m-d H:i:s',strtotime('-7 days'));
+
+        # 获取近7日天访问量 与 平均性能
+        $sevenVisits = Cache::remember('hhttpSevenVisits',60*60, function () use ($sevenDaysAgo){
+            return HttpLogModel::query()
+                ->select(
+                    DB::raw('count(*) as count'),
+                    DB::raw('ROUND(avg(run_time),2) as avg')
+                )
+                ->whereBetween('created_at',[$sevenDaysAgo,date('Y-m-d H:i:s')])
+                ->first();
+        });
+        return $this->resSuccess($sevenVisits);
     }
 
     /**

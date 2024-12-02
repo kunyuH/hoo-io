@@ -87,7 +87,7 @@ class IoServiceProvider extends ServiceProvider
     public function registerRoutes()
     {
         try{
-            # 检查表是否存在 
+            # 检查表是否存在
             if (Schema::hasTable((new LogicalPipelinesModel())->getTable())) {
                 $pipelines = LogicalPipelinesModel::query()
                     ->where(function (Builder $q){
@@ -229,6 +229,7 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::prefix('log-viewer')->group(function (){
                     Route::get('index',[LogViewerController::class,'index']);
+                    Route::get('seven-visits',[LogViewerController::class,'sevenVisits']);
                     Route::get('details',[LogViewerController::class,'details']);
                     Route::get('service-statistics-item',[LogViewerController::class,'serviceStatisticsItem']);
                     Route::post('show-log',[LogViewerController::class,'showLog']);
@@ -239,6 +240,7 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::prefix('hhttp-log-viewer')->group(function (){
                     Route::get('index',[HHttpViewerController::class,'index']);
+                    Route::get('seven-visits',[HHttpViewerController::class,'sevenVisits']);
                     Route::get('details',[HHttpViewerController::class,'details']);
                     Route::get('service-statistics-item',[HHttpViewerController::class,'serviceStatisticsItem']);Route::get('seven-visits-item',[LogViewerController::class,'sevenVisitsItem']);
                     Route::get('seven-visits-item',[HHttpViewerController::class,'sevenVisitsItem']);
@@ -246,6 +248,7 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::prefix('sql-log-viewer')->group(function (){
                     Route::get('index',[SqlViewerController::class,'index']);
+                    Route::get('seven-visits',[SqlViewerController::class,'sevenVisits']);
                     Route::get('details',[SqlViewerController::class,'details']);
                     Route::get('service-statistics-item',[SqlViewerController::class,'serviceStatisticsItem']);
                 });

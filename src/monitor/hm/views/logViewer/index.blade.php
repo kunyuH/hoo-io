@@ -95,8 +95,8 @@ $html .= '</div>';
                                 <h5 class="card-title">近7日服务可用性</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">每小时更新</h6>
                                 <p class="card-text mb-2">
-                                    访问次数：{{$sevenVisits->count}}<br>
-                                    平均性能：{{intval($sevenVisits->avg)}}<span style="font-weight: 500">ms</span>
+                                    访问次数：<span id="seven-visits-count">--</span><br>
+                                    平均性能：<span id="seven-visits-avg">--</span>
                                     <br>
                                     <a href="javascript:"
                                         data-title="API性能趋势明细"
@@ -250,6 +250,8 @@ $html .= '</div>';
 
         // 加载磁盘占用情况
         loadDiskUsage()
+        //加载近7日服务可用性
+        sevenVisits()
     })
 
     /**
@@ -275,6 +277,30 @@ $html .= '</div>';
             }
         });
     }
+
+    /**
+     * 加载近7日服务可用性
+     */
+    function sevenVisits() {
+        $.ajax({
+            type:'get',
+            url:jump_link('/hm/log-viewer/seven-visits'),
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                $("#seven-visits-count").html('加载中...');
+                $("#seven-visits-count").html('加载中...');
+            },
+            success:function(result){
+                $("#seven-visits-count").html(result.data.count);
+                $("#seven-visits-avg").html(result.data.avg+'<span style="font-weight: 500">ms</span>');
+            },
+            error: function(xhr, status, error) {
+                $("#seven-visits-count").html('加载失败');
+                $("#seven-visits-count").html('加载失败');
+            }
+        });
+    }
+
     /**
      * 搜索
      */
