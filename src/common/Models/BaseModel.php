@@ -13,6 +13,8 @@ class BaseModel extends Model
      */
     protected $guarded = [];
 
+    protected $connection = 'hoo-mysql';
+
     /**
      * 获取完整表名
      * @return array|string|string[]
