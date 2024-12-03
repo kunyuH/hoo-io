@@ -22,34 +22,6 @@ filesystems.php 增加配置:
     'days'   => 30, # 保留30天 根据具体情况设置
 ],
 ```
-### 数据库配置
-database.php connections内增加配置:
-- 注意设置表前缀
-```php
-'hoo-mysql'            => [
-        'driver'         => 'mysql',
-        'url'            => env('DATABASE_URL'),
-        'host'           => env('DB_HOST', '127.0.0.1'),
-        'port'           => env('DB_PORT', '3306'),
-        'database'       => env('DB_DATABASE', 'forge'),
-        'username'       => env('DB_USERNAME', 'forge'),
-        'password'       => env('DB_PASSWORD', ''),
-        'unix_socket'    => env('DB_SOCKET', ''),
-        'charset'        => 'utf8mb4',
-        'collation'      => 'utf8mb4_unicode_ci',
-        'prefix'         => env('DB_PREFIX', ''),
-        'prefix_indexes' => true,
-        'strict'         => true,
-        'engine'         => null,
-//            'options' => extension_loaded('pdo_mysql') ? array_filter([
-//                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-//            ]) : [],
-        'options'        => extension_loaded('pdo_mysql') ? array_filter([
-            PDO::MYSQL_ATTR_SSL_CA     => env('MYSQL_ATTR_SSL_CA'),
-            PDO::ATTR_EMULATE_PREPARES => true
-        ]) : [],
-    ],
-```
 
 ### http客户端调用(与GuzzleHttp用法一致；增加了请求日志记录)
 ```php
@@ -58,6 +30,20 @@ $res = (new HHttp())->post(
     uri: $uri,
     options: [
         'form_params' => $requestData
+    ]
+);
+$data = $res->getBody()->getContents()
+#----------------------------------------------------------------
+$uri = config('http_service.inner_service') . '/api/test';
+$res = (new HHttp())->post(
+    uri: $uri,
+    options: [
+        'headers' => [
+            'Content-Type' => 'application/json'
+        ],
+        'json' => [
+            'card_no' => $account_id,
+        ],
     ]
 );
 $data = $res->getBody()->getContents()
