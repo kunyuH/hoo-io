@@ -100,6 +100,8 @@ HOO_LOGIN_RETRY=
 SERVICE_NAME=
 # 资源前缀 用于日志查看器资源加载 需要带/开头
 ASSET_URL=
+# 数据连接 不填写则默认mysql
+HOO_DATABASE_DEFAULT=
 #-------------------------------------------------------
 ```
 
@@ -165,6 +167,8 @@ HOO_PASSWORD=
 SERVICE_NAME=
 # 资源前缀 用于日志查看器资源加载 需要带/开头
 ASSET_URL=
+# 数据连接 不填写则默认mysql
+HOO_DATABASE_DEFAULT=
 #-------------------------------------------------------
 ```
 

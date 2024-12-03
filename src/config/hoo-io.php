@@ -10,7 +10,11 @@ return [
     'HOO_PASSWORD'=>env('HOO_PASSWORD'),
     'HOO_LOGIN_RETRY'=>env('HOO_LOGIN_RETRY',5), //登录重试次数 默认5次
 
-    'SERVICE_NAME'=>env('SERVICE_NAME', ''),
+    'SERVICE_NAME'=>env('SERVICE_NAME', ''),    //服务前缀
+
+    'HOO_DATABASE_DEFAULT'=>env('HOO_DATABASE_DEFAULT', null),    //服务前缀
+
+
     /**
      * 因为插件部分功能依赖CLOCKWORK插件 而页面访问链接需要资源前缀
      * 故也需要设置

@@ -13,7 +13,13 @@ class BaseModel extends Model
      */
     protected $guarded = [];
 
-    protected $connection = 'hoo-mysql';
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        if(config('hoo-io.HOO_DATABASE_DEFAULT')){
+            $this->connection = config('hoo-io.HOO_DATABASE_DEFAULT'); // 从配置文件动态获取连接
+        }
+    }
 
     /**
      * 获取完整表名
