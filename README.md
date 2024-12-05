@@ -76,6 +76,8 @@ CLOCKWORK_AUTHENTICATION_PASSWORD=
 ```bash
 #--------------------hoo_hm--------------------------
 HOO_ENABLE=true
+# 是否需要登录 默认true
+IS_LOGIN=true
 # 登录账号
 HOO_NAME=
 # 登录密码

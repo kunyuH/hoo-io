@@ -134,6 +134,10 @@ class IoServiceProvider extends ServiceProvider
             if(empty(Config::get('hoo-io.HOO_ENABLE'))){
                 return false;
             }
+            # true 设置是否开启登录校验
+            if(empty(Config::get('hoo-io.IS_LOGIN'))){
+                return true;
+            }
             if(!HooSession::get(SessionEnum::USER_INFO_KEY)){
                 return false;
             }

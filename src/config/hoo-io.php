@@ -6,6 +6,7 @@ return [
 
     #--------------------hoo_hm--------------------------
     'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io  默认启用
+    'IS_LOGIN'=>env('IS_LOGIN', true),      //是否需要账密登录  默认需要
     'HOO_NAME'=>env('HOO_NAME'),
     'HOO_PASSWORD'=>env('HOO_PASSWORD'),
     'HOO_LOGIN_RETRY'=>env('HOO_LOGIN_RETRY',5), //登录重试次数 默认5次
