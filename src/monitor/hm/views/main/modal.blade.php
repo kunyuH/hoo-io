@@ -8,7 +8,7 @@ $cdn = get_cdn().'/hm';
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>hoo-modal</title>
-    <link href="<?php echo $cdn?>/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <link href="<?php echo $cdn?>/layui/layui-v2.9.20/css/layui.css" rel="stylesheet">
     <link href="<?php echo $cdn?>/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $cdn?>/icons-1.11.3/font/bootstrap-icons.css">
 </head>
@@ -18,7 +18,7 @@ $cdn = get_cdn().'/hm';
 
 <script src="<?php echo $cdn?>/js/bootstrap.bundle.min.js"></script>
 
-<script src="<?php echo $cdn?>/layui-v2.6.8/layui/layui.js"></script>
+<script src="<?php echo $cdn?>/layui/layui-v2.9.20/layui.js"></script>
 <script src="<?php echo $cdn?>/js/overall.js"></script>
 <script src="<?php echo $cdn?>/js/base64js.min.js"></script>
 <script src="<?php echo $cdn?>/js/sm4js.js"></script>

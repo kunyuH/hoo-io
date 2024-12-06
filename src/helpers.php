@@ -205,6 +205,32 @@ if (! function_exists('get_chinese_weekday')) {
         return '星期' . $weekdays[$weekdayNumber];
     }
 }
+if (! function_exists('get_directory_tree')) {
+    function get_directory_tree($directory, $allowed_extensions = []) {
+        $folders = [];
+        $files = [];
+
+        // 遍历目录
+        foreach (scandir($directory) as $file) {
+            if ($file == '.' || $file == '..') continue;
+
+            $path = $directory . '/' . $file;
+            if (is_dir($path)) {
+                // 如果是目录，递归获取子目录内容
+                $folders[$file] = get_directory_tree($path, $allowed_extensions);
+            } else {
+                // 如果是文件，检查文件后缀是否在允许的扩展名列表中
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                if (empty($allowed_extensions) || in_array($extension, $allowed_extensions)) {
+                    $files[] = $file;
+                }
+            }
+        }
+
+        // 合并文件夹和文件列表，文件夹在前，文件在后
+        return array_merge($folders, $files);
+    }
+}
 
 
 

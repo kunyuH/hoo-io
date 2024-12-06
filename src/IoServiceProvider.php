@@ -17,6 +17,7 @@ use hoo\io\common\Middleware\HooMid;
 use hoo\io\monitor\hm\Controllers\LogicalBlockController;
 use hoo\io\monitor\hm\Controllers\IndexController;
 use hoo\io\monitor\hm\Controllers\LogicalPipelinesController;
+use hoo\io\monitor\hm\Controllers\HooLogController;
 use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
 use hoo\io\monitor\hm\Services\LogicalPipelinesApiRunService;
@@ -230,6 +231,12 @@ class IoServiceProvider extends ServiceProvider
 
                 Route::get('run-command',[IndexController::class,'runCommand']);
                 Route::post('run-command',[IndexController::class,'runCommand']);
+
+                Route::prefix('hoo-log')->group(function (){
+                    Route::get('index',[HooLogController::class,'index']);
+                    Route::get('get-path-tree',[HooLogController::class,'getPathTree']);
+                    Route::get('search',[HooLogController::class,'search']);
+                });
 
                 Route::prefix('log-viewer')->group(function (){
                     Route::get('index',[LogViewerController::class,'index']);
