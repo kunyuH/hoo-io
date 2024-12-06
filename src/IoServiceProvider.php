@@ -236,6 +236,7 @@ class IoServiceProvider extends ServiceProvider
                     Route::get('index',[HooLogController::class,'index']);
                     Route::get('get-path-tree',[HooLogController::class,'getPathTree']);
                     Route::get('search',[HooLogController::class,'search']);
+                    Route::get('del',[HooLogController::class,'del']);
                 });
 
                 Route::prefix('log-viewer')->group(function (){

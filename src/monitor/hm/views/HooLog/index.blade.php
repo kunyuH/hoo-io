@@ -50,43 +50,70 @@ $cdn = get_cdn().'/hm';
 </div>
 
 <script>
+    /**
+     * 页面加载后运行
+     */
+    $(document).ready(function(){
+        //加载文件树
+        loadPathTree();
+    })
 
-    $.ajax({
-        type:'get',
-        url:jump_link('/hm/hoo-log/get-path-tree'),
-        dataType:"json",//返回数据形式为json
-        beforeSend:function(e){
-            $('#ID-tree-demo-showLine').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
+    /**
+     * 加载文件树
+     */
+    function loadPathTree(){
+        $.ajax({
+            type:'get',
+            url:jump_link('/hm/hoo-log/get-path-tree'),
+            dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                $('#ID-tree-demo-showLine').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
 
-        },
-        success:function(result){
-            $("#ID-tree-demo-showLine").html('');
-            layui.use(function(){
-                var tree = layui.tree;
-                var data = result.data;
-                // 渲染
-                tree.render({
-                    elem: '#ID-tree-demo-showLine',
-                    data: data,
-                    showLine: true,  // 是否开启连接线
-                    onlyIconControl: false,
-                    click: function(obj){
+            },
+            success:function(result){
+                $("#ID-tree-demo-showLine").html('');
+                layui.use(function(){
+                    var tree = layui.tree;
+                    var data = result.data;
+                    // 渲染
+                    tree.render({
+                        elem: '#ID-tree-demo-showLine',
+                        data: data,
+                        showLine: true,  // 是否开启连接线
+                        onlyIconControl: false,
+                        edit: ['del'],
+                        click: function(obj){
 
-                        $('#hoo-input-path').attr('value',obj.data.file_path)
-                        $('#hoo-input-limit').attr('value',10)
-                        $('#hoo-input-offset').attr('value',0)
+                            $('#hoo-input-path').attr('value',obj.data.file_path)
+                            $('#hoo-input-limit').attr('value',10)
+                            $('#hoo-input-offset').attr('value',0)
 
-                        // search_log(obj.data.file_path)
-                        // 触发按钮点击
-                        $('.hoo-log-search').click()
-                    }
+                            // search_log(obj.data.file_path)
+                            // 触发按钮点击
+                            $('.hoo-log-search').click()
+                        },
+                        operate: function(obj){
+                            var type = obj.type; // 得到操作类型：add、edit、del
+                            var data = obj.data; // 得到当前节点的数据
+                            var elem = obj.elem; // 得到当前节点元素
+
+                            // Ajax 操作
+                            var file_path = data.file_path; // 得到节点索引
+                            if(type === 'del'){ // 增加节点
+                                del_log(file_path)
+                                //返回 key 值
+                                console.log("删除节点",file_path)
+                            };
+                        }
+                    });
                 });
-            });
-        },
-        error: function(xhr, status, error) {
-            $("#ID-tree-demo-showLine").html('加载失败！');
-        }
-    });
+            },
+            error: function(xhr, status, error) {
+                $("#ID-tree-demo-showLine").html('加载失败！');
+            }
+        });
+    }
+
 
     /**
      * 搜索
@@ -121,6 +148,30 @@ $cdn = get_cdn().'/hm';
                     $("#hoo-log-show").html(result);
                 }else{
                     $("#hoo-log-show").html(result);
+                }
+            },
+            error: function(xhr, status, error) {
+                $("#hoo-log-show").html('加载失败！');
+            }
+        });
+    }
+
+    function del_log(path) {
+        $.ajax({
+            type:'get',
+            url:jump_link('/hm/hoo-log/del'),
+            data:{path:path},
+            // dataType:"json",//返回数据形式为json
+            beforeSend:function(e){
+                layer.closeAll();
+                index = layer.load(1);
+            },
+            success:function(result){
+                layer.close(index);
+                if(result.code==200){
+                    layer.msg(result.message,{icon: 1});
+                }else{
+                    layer.alert(result.message,{icon:5});
                 }
             },
             error: function(xhr, status, error) {

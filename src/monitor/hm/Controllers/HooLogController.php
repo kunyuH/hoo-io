@@ -1,8 +1,10 @@
 <?php
 namespace hoo\io\monitor\hm\Controllers;
 
+use hoo\io\common\Exceptions\HooException;
 use hoo\io\common\Services\LogSearch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class HooLogController extends BaseController
 {
@@ -28,6 +30,12 @@ class HooLogController extends BaseController
         return $this->resSuccess($file_tree);
     }
 
+    /**
+     * 日志搜索
+     * @param Request $request
+     * @return string
+     * @throws \hoo\io\common\Exceptions\HooException
+     */
     public function search(Request $request)
     {
         $path = $request->input('path');
@@ -36,6 +44,8 @@ class HooLogController extends BaseController
         $offset = $request->input('offset',0);
         if(empty($path)){
             $path = base_path().$this->log_path;
+        }else{
+            $path = base_path().$this->log_path.$path;
         }
         if(empty($limit)){
             $limit = 10;
@@ -43,14 +53,10 @@ class HooLogController extends BaseController
         if(empty($offset)){
             $offset = 0;
         }
-
         $fileExtension = 'log'; // 可选.指定日志文件后缀
-
-        $path = base_path().$this->log_path.$path;
 
         $list = (new LogSearch($path))->search($keyword, $limit, $offset, $fileExtension);
 
-//        dd($list);
         return $this->view('HooLog.search',[
             'list'=>$list,
             'path'=>$path,
@@ -58,6 +64,31 @@ class HooLogController extends BaseController
             'limit'=>$limit,
             'offset'=>$offset,
         ]);
+    }
+
+    public function del(Request $request)
+    {
+        $path = $request->input('path');
+        if(empty($path)){throw new HooException('请选择要删除的文件');}
+        $path = base_path().$this->log_path.$path;
+        # 判断是否文件夹
+        if(is_dir($path)){
+            // 使用Laravel的File门面获取文件夹内所有文件
+            $files = File::files($path);
+
+            // 遍历并打印出所有文件的路径
+            foreach ($files as $file) {
+                unlink($file->getPathname());
+            }
+            # 删除文件夹
+            rmdir($path);
+        }else if(file_exists($path)){
+            unlink($path);
+        }
+
+
+        return $this->resSuccess('删除成功');
+
     }
 
     private function to_layui_data($directory,$path='')

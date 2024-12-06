@@ -70,8 +70,9 @@ class LogSearch extends BaseService
             $grep = "cat";
         }
         // 使用 find 找到所有日志文件.结合 grep 进行内容搜索
-        // awk 实现分页.跳过 $offset 条记录.显示 $limit 条
-        $command = "$findCommand -exec ".$grep." {} + | tac | awk 'NR > $offset && NR <= ($offset + $limit)'";
+        // awk 实现分页.跳过 $offset 条记录.显示 $limit 条  tac 可按时间排序
+//        $command = "$findCommand -exec ".$grep." {} + | tac | awk 'NR > $offset && NR <= ($offset + $limit)'";
+        $command = "$findCommand -exec ".$grep." {} + | awk 'NR > $offset && NR <= ($offset + $limit)'";
 
         // 执行命令
         $output = [];

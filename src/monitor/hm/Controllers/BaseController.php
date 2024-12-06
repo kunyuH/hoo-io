@@ -143,9 +143,10 @@ class BaseController extends Controller
         $str = str_replace('E_RECOVERABLE_ERROR','<span style="color: #ff0000;">E_RECOVERABLE_ERROR</span>',$str);
         $str = str_replace('E_DEPRECATED','<span style="color: #ff9900;">E_DEPRECATED</span>',$str);
         $str = str_replace('DONE','<span style="color: rgb(0, 187, 0);">DONE</span>',$str);
-        # 方括号内加粗
-        $str = preg_replace('/\[(.*?)\]/','<b>[$1]</b>',$str);
-        
+        # 方括号内加粗 如果换行则不生效到下一行
+//        $str = preg_replace('/\[(.*?)\]/','<b>[$1]</b>',$str);
+        $str = preg_replace('/\[(.*?)]/', '<b>[$1]</b>', $str);
+
         return mb_detect_encoding($str, 'UTF-8', true) === 'UTF-8'?$str:utf8_encode($str);
     }
 }
