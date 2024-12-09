@@ -178,7 +178,7 @@ $cdn = get_cdn().'/hm';
                     html += '</div>'
                     $("#hoo-log-show").html(html)
 
-                    loadLogPage(result.data.count,result.data.page)
+                    loadLogPage(result.data.count,result.data.page,result.data.limit)
 
                 }else{
                     $("#hoo-log-show").html('加载失败！'+result.message);
@@ -190,7 +190,7 @@ $cdn = get_cdn().'/hm';
         });
     }
 
-    function loadLogPage(count,curr=1){
+    function loadLogPage(count,curr=1,limit=50){
         layui.use(function(){
             var laypage = layui.laypage;
             // 自定义排版
@@ -198,7 +198,7 @@ $cdn = get_cdn().'/hm';
                 elem: 'hoo-log-page',
                 count: count,
                 curr: curr,
-                limit: 50,
+                limit: limit,
                 limits: [10, 50, 100, 300, 500],
                 layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'], // 功能布局
                 jump: function(obj, first){

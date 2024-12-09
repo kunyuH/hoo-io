@@ -68,6 +68,7 @@ class HooLogController extends BaseController
             'list'=>$list,
             'count'=>$count,
             'page'=>$page,
+            'limit'=>$limit, 
         ]);
     }
 
