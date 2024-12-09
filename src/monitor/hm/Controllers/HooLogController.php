@@ -41,31 +41,42 @@ class HooLogController extends BaseController
         $path = $request->input('path');
         $keyword = $request->input('keyword');
         $limit = $request->input('limit',10);
-        $offset = $request->input('offset',0);
+        $page = $request->input('page',1);
         if(empty($path)){
             $path = base_path().$this->log_path;
         }else{
             $path = base_path().$this->log_path.$path;
         }
-        if(empty($limit)){
-            $limit = 10;
-        }
-        if(empty($offset)){
-            $offset = 0;
-        }
         $fileExtension = 'log'; // 可选.指定日志文件后缀
 
-        $list = (new LogSearch($path))->search($keyword, $limit, $offset, $fileExtension);
+        $offset = ($page-1)*$limit;
 
-        return $this->view('HooLog.search',[
+        $list = (new LogSearch($path,$fileExtension))
+            ->where($keyword)
+            ->limit($limit,$offset)
+            ->get();
+        $count = (new LogSearch($path,$fileExtension))
+            ->where($keyword)
+            ->limit($limit,$offset)
+            ->count();
+
+        foreach ($list as &$item){
+            $item = htmlspecialchars($item);
+        }
+
+        return $this->resSuccess([
             'list'=>$list,
-            'path'=>$path,
-            'keyword'=>$keyword,
-            'limit'=>$limit,
-            'offset'=>$offset,
+            'count'=>$count,
+            'page'=>$page,
         ]);
     }
 
+    /**
+     * 删除日志
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws HooException
+     */
     public function del(Request $request)
     {
         $path = $request->input('path');

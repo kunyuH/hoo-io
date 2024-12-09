@@ -29,51 +29,113 @@ use Illuminate\Support\Facades\Log;
  */
 class LogSearch extends BaseService
 {
-    private $logDir; // 日志目录
+    private $logDir;        // 日志目录
+    private $fileExtension; // 指定日志文件扩展名.可选.默认搜所有文件
 
-    public function __construct($logDir)
+
+    private $keyword;       // 搜索词
+    private $limit;         // 每页显示条数
+    private $offset;        // 起始行号
+
+    public function __construct($logDir,$fileExtension='')
     {
 //        if (!is_dir($logDir)) {
 //            throw new HooException("日志目录不存在: $logDir");
 //        }
 
         $this->logDir = $logDir;
+        $this->fileExtension = $fileExtension;
+    }
+
+    public function where($keyword)
+    {
+        $this->keyword = $keyword;
+        return $this;
+    }
+
+    public function limit($limit = 10, $offset = 0)
+    {
+        $this->limit = $limit;
+        $this->offset = $offset;
+        return $this;
     }
 
     /**
-     * 搜索日志目录中的日志内容.支持递归
-     *
-     * @param string $keyword 搜索关键词
-     * @param int $limit 每页条数
-     * @param int $offset 偏移量.从第几条开始
-     * @param string $fileExtension 指定日志文件扩展名.可选.默认搜所有文件
-     * @return array 搜索结果
+     * 获取日志文件内容
+     * @return array
+     * @throws HooException
      */
-    public function search($keyword=null, $limit = 10, $offset = 0, $fileExtension = '')
+    public function get()
     {
-        if(empty($keyword)){
+        if(empty($this->keyword)){
             $escapedKeyword = "''";
         }else{
             // 确保关键词和目录路径是安全的.避免命令注入
-            $escapedKeyword = escapeshellarg($keyword);
+            $escapedKeyword = escapeshellarg($this->keyword);
         }
         $escapedLogDir = escapeshellarg($this->logDir);
 
         // 如果指定扩展名.限制只搜索特定类型文件
         $findCommand = "find $escapedLogDir -type f";
-        if (!empty($fileExtension)) {
-            $escapedExtension = escapeshellarg("*.$fileExtension");
+        if (!empty($this->fileExtension)) {
+            $escapedExtension = escapeshellarg("*.$this->fileExtension");
+            $findCommand .= " -name $escapedExtension";
+        }
+        $grep = "grep -in {$escapedKeyword}";
+        # true 没有搜索词
+        if($escapedKeyword == "''"){
+            // true 是目录 则显示内容所在的具体文件
+            if(is_dir($this->logDir)){
+                $grep = "awk '{print FILENAME \": \" $0}'";
+            }else{
+                $grep = "cat";
+            }
+        }
+        // 使用 find 找到所有日志文件.结合 grep 进行内容搜索
+        // awk 实现分页.跳过 $this->offset 条记录.显示 $this->limit 条  tac 可按时间排序
+        $command = "$findCommand -exec ".$grep." {} + | awk 'NR > $this->offset && NR <= ($this->offset + $this->limit) {print NR \").  \" $0}'";
+
+        return $this->runCommand($command);
+    }
+
+    /**
+     * 获取总数量
+     * @return array
+     * @throws HooException
+     */
+    public function count()
+    {
+        if(empty($this->keyword)){
+            $escapedKeyword = "''";
+        }else{
+            // 确保关键词和目录路径是安全的.避免命令注入
+            $escapedKeyword = escapeshellarg($this->keyword);
+        }
+        $escapedLogDir = escapeshellarg($this->logDir);
+
+        // 如果指定扩展名.限制只搜索特定类型文件
+        $findCommand = "find $escapedLogDir -type f";
+        if (!empty($this->fileExtension)) {
+            $escapedExtension = escapeshellarg("*.$this->fileExtension");
             $findCommand .= " -name $escapedExtension";
         }
         $grep = "grep -i {$escapedKeyword}";
         if($escapedKeyword == "''"){
             $grep = "cat";
         }
-        // 使用 find 找到所有日志文件.结合 grep 进行内容搜索
-        // awk 实现分页.跳过 $offset 条记录.显示 $limit 条  tac 可按时间排序
-//        $command = "$findCommand -exec ".$grep." {} + | tac | awk 'NR > $offset && NR <= ($offset + $limit)'";
-        $command = "$findCommand -exec ".$grep." {} + | awk 'NR > $offset && NR <= ($offset + $limit)'";
+        $command = "$findCommand -exec ".$grep." {} + | wc -l";
 
+        return $this->runCommand($command);
+    }
+
+    /**
+     * 执行命令
+     * @param $command
+     * @return array
+     * @throws HooException
+     */
+    private function runCommand($command)
+    {
         // 执行命令
         $output = [];
         $returnVar = 0;
@@ -86,8 +148,7 @@ class LogSearch extends BaseService
             '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
             'exec' => $command,
         ]);
-
-
+        
         if ($returnVar !== 0 && empty($output)) {
             throw new HooException("搜索过程中出现错误或未找到匹配结果！");
         }

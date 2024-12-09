@@ -23,12 +23,6 @@ $cdn = get_cdn().'/hm';
                             <div class="col">
                                 <input id="hoo-input-keyword" type="text" name="keyword" placeholder="keyword" class="form-control">
                             </div>
-                            <div class="col">
-                                <input id="hoo-input-limit" type="text" name="limit" placeholder="limit" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input id="hoo-input-offset" type="text" name="offset" placeholder="offset" class="form-control">
-                            </div>
                         </div>
                     </div>
                     <div class="float-right">
@@ -42,13 +36,40 @@ $cdn = get_cdn().'/hm';
                     </div>
                 </form>
                 <hr>
+                <div id="hoo-log-page"></div>
                 <div id="hoo-log-show"></div>
-
             </div>
         </div>
     </div>
 </div>
-
+<style>
+    .log-date{
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        /*background-color: #00ff9c;*/
+        color: #00ff9c;
+        font-weight: bold;
+    }
+    .log-level{
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+    .log-level-info{
+        /*background-color: #83a598;*/
+        color: #83a598;
+    }
+    .log-level-debug{
+        /*background-color: #458588;*/
+        color: #458588;
+    }
+    .log-level-error{
+        /*background-color: #fb4934;*/
+        color: #fb4934;
+    }
+</style>
 <script>
     /**
      * 页面加载后运行
@@ -85,8 +106,6 @@ $cdn = get_cdn().'/hm';
                         click: function(obj){
 
                             $('#hoo-input-path').attr('value',obj.data.file_path)
-                            $('#hoo-input-limit').attr('value',10)
-                            $('#hoo-input-offset').attr('value',0)
 
                             // search_log(obj.data.file_path)
                             // 触发按钮点击
@@ -101,8 +120,6 @@ $cdn = get_cdn().'/hm';
                             var file_path = data.file_path; // 得到节点索引
                             if(type === 'del'){ // 增加节点
                                 del_log(file_path)
-                                //返回 key 值
-                                console.log("删除节点",file_path)
                             };
                         }
                     });
@@ -126,33 +143,77 @@ $cdn = get_cdn().'/hm';
             return obj;
         }, {});
 
-        search_log(formData['path'],formData['keyword'],formData['limit'],formData['offset'])
+        search_log(formData['path'],formData['keyword'])
 
     })
 
-    function search_log(path,keyword='',limit='',offset='') {
+    function search_log(path,keyword='',limit=10,page=1) {
         $.ajax({
             type:'get',
             url:jump_link('/hm/hoo-log/search'),
-            data:{path:path,keyword:keyword,limit:limit,offset:offset},
+            data:{path:path,keyword:keyword,limit:limit,page:page},
             // dataType:"json",//返回数据形式为json
             beforeSend:function(e){
                 $('#hoo-log-show').html('<div class="spinner-border text-dark" style="width: 1rem;height: 1rem" role="status"><span class="sr-only">Loading...</span></div>')
 
             },
             success:function(result){
-                //如果返回的是json 则转为字符串
-                if(typeof result == 'object'){
-                    result = JSON.stringify(result)
-                    result = result.replace(/\\n/g, "<br>").replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-                    $("#hoo-log-show").html(result);
+                if(result.code==200){
+                    html = '<div style="background-color: #141414;border-radius: .25rem;padding: 10px 10px;color: #dddddd;">'
+                    $("#hoo-log-show").html('<div style="background-color: #141414;border-radius: .25rem;padding: 0 15px;color: #dddddd;">')
+                    // 遍历
+                    for (var key in result.data.list) {
+
+                        log_txt = result['data']['list'][key]
+                            // 替换日期部分
+                            .replace(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/, '<span class="log-date">$1</span>')
+                            // 替换日志等级部分
+                            .replace(/local\.(INFO):/, '<span class="log-level log-level-info">$&</span>')
+                            .replace(/local\.(DEBUG):/, '<span class="log-level log-level-debug">$&</span>')
+                            .replace(/local\.(ERROR):/, '<span class="log-level log-level-error">$&</span>');
+
+
+                        html += '<div style="margin: 5px 0px;">'+log_txt+'</div>'
+                    }
+                    html += '</div>'
+                    $("#hoo-log-show").html(html)
+
+                    loadLogPage(result.data.count,result.data.page)
+
                 }else{
-                    $("#hoo-log-show").html(result);
+                    $("#hoo-log-show").html('加载失败！'+result.message);
                 }
             },
             error: function(xhr, status, error) {
                 $("#hoo-log-show").html('加载失败！');
             }
+        });
+    }
+
+    function loadLogPage(count,curr=1){
+        layui.use(function(){
+            var laypage = layui.laypage;
+            // 自定义排版
+            laypage.render({
+                elem: 'hoo-log-page',
+                count: count,
+                curr: curr,
+                limit: 50,
+                limits: [10, 50, 100, 300, 500],
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'], // 功能布局
+                jump: function(obj, first){
+                    // 首次不执行
+                    if(!first){
+                        var formData = $("#form-hoo-log-search").serializeArray();
+                        // 遍历
+                        formData = formData.reduce(function(obj, item) {
+                            obj[item.name] = item.value;
+                            return obj;
+                        }, {});
+                        search_log(formData['path'],formData['keyword'],obj.limit,obj.curr)
+                    }
+                }
+            });
         });
     }
 
