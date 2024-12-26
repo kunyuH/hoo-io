@@ -25,7 +25,7 @@ class ApiLogModel extends BaseModel
     {
         try{
             # 检验是否存在http日志表
-            if (Schema::hasTable($this->getTable()) && Config::get('hoo-io.HM_API_LOG')) {
+            if (Config::get('hoo-io.HM_API_LOG') && Schema::hasTable($this->getTable())) {
                 # 字符串长度超出 则不记录
                 if (strlen($input) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
                     $input = 'input is too long';
