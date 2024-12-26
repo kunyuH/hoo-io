@@ -51,14 +51,14 @@ class DevCommand extends BaseCommand
         $LogicalBlock = new LogicalBlockModel();
         if (!Schema::hasTable($LogicalBlock->getTable())) {
             Schema::create($LogicalBlock->getTable(), function (Blueprint $table) {
-                $table->integerIncrements('id');
+                $table->integerIncrements('id')->comment('主键 自增id');
                 // 字段不为空 不加索引
-                $table->string('object_id',50);
-                $table->string('name',50);
-                $table->string('group',50);
-                $table->string('label')->nullable();
-                $table->text('remark')->nullable();
-                $table->longText('logical_block')->nullable();
+                $table->string('object_id',50)->comment('对象id');
+                $table->string('name',50)->comment('名称');
+                $table->string('group',50)->comment('分组');
+                $table->string('label')->nullable()->comment('标签');
+                $table->text('remark')->nullable()->comment('简介');
+                $table->longText('logical_block')->nullable()->comment('逻辑块');
                 $table->dateTime('created_at')->nullable();
                 $table->dateTime('updated_at')->nullable();
                 $table->dateTime('deleted_at')->nullable();
@@ -72,7 +72,7 @@ class DevCommand extends BaseCommand
         $Logs = new LogsModel();
         if (!Schema::hasTable($Logs->getTable())) {
             Schema::create($Logs->getTable(), function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('name',100);
                 $table->string('label_a',100)->nullable();
                 $table->string('label_b',100)->nullable();
@@ -91,7 +91,7 @@ class DevCommand extends BaseCommand
         $LogicalPipelines = new LogicalPipelinesModel();
         if (!Schema::hasTable($LogicalPipelines->getTable())) {
             Schema::create($LogicalPipelines->getTable(), function (Blueprint $table) {
-                $table->integerIncrements('id');
+                $table->integerIncrements('id')->comment('主键 自增id');
                 $table->string('rec_subject_id',50);
                 $table->string('name',50);
                 $table->string('group',50);
@@ -111,7 +111,7 @@ class DevCommand extends BaseCommand
         $LogicalPipelinesArrange = new LogicalPipelinesArrangeModel();
         if (!Schema::hasTable($LogicalPipelinesArrange->getTable())) {
             Schema::create($LogicalPipelinesArrange->getTable(), function (Blueprint $table) {
-                $table->integerIncrements('id');
+                $table->integerIncrements('id')->comment('主键 自增id');
                 $table->integer('logical_pipeline_id');
                 $table->integer('logical_block_id')->nullable();
                 $table->integer('next_id');
@@ -131,7 +131,7 @@ class DevCommand extends BaseCommand
         $ApiLog = new ApiLogModel();
         if (!Schema::hasTable($ApiLog->getTable())) {
             Schema::create($ApiLog->getTable(), function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
                 $table->string('user_id',100)->nullable();
@@ -158,7 +158,7 @@ class DevCommand extends BaseCommand
         $HttpLog = new HttpLogModel();
         if (!Schema::hasTable($HttpLog->getTable())) {
             Schema::create($HttpLog->getTable(), function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
                 $table->longText('url')->nullable();
@@ -184,7 +184,7 @@ class DevCommand extends BaseCommand
         if (!Schema::hasTable($SqlLog->getTable())) {
             Schema::create($SqlLog->getTable(), function (Blueprint $table) {
                 # bin
-                $table->bigIncrements('id');
+                $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
                 $table->string('database',100)->nullable();
