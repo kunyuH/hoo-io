@@ -28,6 +28,9 @@ return [
     'HM_API_LOG'=>env('HM_API_LOG', true),
     # 默认api日志中user_id 提取 request 对象内的属性
     'HM_API_LOG_USER_FILED'=>env('HM_API_LOG_USER_FILED', 'member_id'),
+    # 允许不记录日志的路由
+    'HM_API_LOG_NOT_ROUTE'=>env('HM_API_LOG_NOT_ROUTE',''),
+
 
     # hhttp日志开关 是否记录
     'HM_HTTP_LOG'=>env('HM_HTTP_LOG', true),

@@ -105,10 +105,12 @@ HOO_DATABASE_DEFAULT=
 HM_API_LOG=true
 # 记录api请求日志时 记录的用户唯一标识是取请求中的哪个字段 默认是member_id
 HM_API_LOG_USER_FILED='member_id'
+# 允许不记录日志的路由
+HM_API_LOG_NOT_ROUTE=
 
 
 # 记录程序访问第三方http api 时是否记录日志到数据库 默认记录到数据库（前提条件是数据库中存在日志表）
-HM_API_LOG=true
+HM_HTTP_LOG=true
 # hhttp日志开关 跑命令时的hhttp日志是否记录 默认false
 HM_COMMAND_HTTP_LOG=false
 

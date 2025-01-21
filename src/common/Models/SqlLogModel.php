@@ -21,6 +21,11 @@ class SqlLogModel extends BaseModel
      */
     public function log($run_time,$database,$connection_name,$sql)
     {
+        # true 未开启sql日志记录
+        if(!$this->isRecord()){
+            return;
+        }
+
         # 排除自己;api和http日志
         if (!in_string([
             $this->getTableName(),
@@ -28,14 +33,11 @@ class SqlLogModel extends BaseModel
             (new ApiLogModel())->getTableName()
         ],$sql)) {
 
-            # true 未开启sql日志记录
-            if(!$this->isRecord()){
-                return;
-            }
-            
-            # 字符串长度超出 则不记录
-            if (strlen($sql) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
-                $sql = 'sql is too long';
+            # 字符串长度超出 则只截取长度以内的字符
+            $HM_API_HTTP_LOG_LENGTH = Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH');
+
+            if (strlen($sql) > $HM_API_HTTP_LOG_LENGTH) {
+                $sql = "长度超出，截取部分==>".mb_substr($sql, 0, $HM_API_HTTP_LOG_LENGTH, "UTF-8")."...";
             }
             # 暂存到上下文中
             ContextService::setSqlLog([

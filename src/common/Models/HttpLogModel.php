@@ -24,20 +24,22 @@ class HttpLogModel extends BaseModel
      */
     public function log($run_time,$path,$uri,$method,$options,$resStr,$err)
     {
-        # true 未开启HHTTP日志记录
+        # true 不否记录http日志
         if(!$this->isRecord()){
             return;
         }
 
         # 检验是否存在http日志表
         if (Schema::hasTable($this->getTable())) {
-            # 字符串长度超出 则不记录
-            if (strlen($options) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
-                $options = 'options is too long';
+            # 字符串长度超出 则只截取长度以内的字符
+            $HM_API_HTTP_LOG_LENGTH = Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH');
+            
+            if (strlen($options) > $HM_API_HTTP_LOG_LENGTH) {
+                $options = "长度超出，截取部分==>".mb_substr($options, 0, $HM_API_HTTP_LOG_LENGTH, "UTF-8")."...";
             }
-            # 字符串长度超出 则不记录
-            if (strlen($resStr) > Config::get('hoo-io.HM_API_HTTP_LOG_LENGTH')) {
-                $resStr = 'response is too long';
+            # 字符串长度超出 则只截取长度以内的字符
+            if (strlen($resStr) > $HM_API_HTTP_LOG_LENGTH) {
+                $resStr = "长度超出，截取部分==>".mb_substr($resStr, 0, $HM_API_HTTP_LOG_LENGTH, "UTF-8")."...";
             }
             self::insert([
                 'app_name'=>$_SERVER['APP_NAME']??'',
