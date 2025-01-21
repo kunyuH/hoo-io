@@ -31,7 +31,7 @@ class ApiLogModel extends BaseModel
                 $path = '/'.$path;
             }
 
-            # true 不否记录http日志
+            # true 不否记录api日志
             if(!$this->isRecord($path)){
                 return;
             }
@@ -72,12 +72,11 @@ class ApiLogModel extends BaseModel
      */
     private function isRecord($path): bool
     {
-        
+
         # true 不记录api 日志
         if(!Config::get('hoo-io.HM_API_LOG')){
             return false;
         }
-        
         $not_routes = Config::get('hoo-io.HM_API_LOG_NOT_ROUTE');
         $not_routes = explode(',',$not_routes);
 

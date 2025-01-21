@@ -143,12 +143,12 @@ class LogSearch extends BaseService
         exec($command, $output, $returnVar);
         $after_time = microtime(true);
 
-        # 记录日志 格式化记录数组
-        Log::channel('debug')->log('info', "【命令】", [
-            '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
-            'exec' => $command,
-        ]);
-        
+//        # 记录日志 格式化记录数组
+//        Log::channel('debug')->log('info', "【命令】", [
+//            '耗时' => round($after_time - $before_time, 3) * 1000 . 'ms',
+//            'exec' => $command,
+//        ]);
+
         if ($returnVar !== 0 && empty($output)) {
             throw new HooException("搜索过程中出现错误或未找到匹配结果！");
         }

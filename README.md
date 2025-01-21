@@ -105,7 +105,7 @@ HOO_DATABASE_DEFAULT=
 HM_API_LOG=true
 # 记录api请求日志时 记录的用户唯一标识是取请求中的哪个字段 默认是member_id
 HM_API_LOG_USER_FILED='member_id'
-# 允许不记录日志的路由 默认 /hm/hoo-log/*
+# 允许不记录日志的路由
 HM_API_LOG_NOT_ROUTE=
 
 
