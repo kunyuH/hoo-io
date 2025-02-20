@@ -130,6 +130,28 @@ HM_API_LOG_CLEAN=60,
 HM_HPPT_LOG_CLEAN=60,
 # sql日志清理多久之前的日志 默认 60天前的
 HM_SQL_LOG_CLEAN=60,
+
+
+#********************gateway代理配置*********************************
+# 中间件 默认 authLogin
+GATE_MID=
+# 最后执行的中间件 可在中间件中执行代理服务的数据清洗
+# 例如：GATE_LAST_MID=App\Http\Middleware\AuthLogin
+GATE_LAST_MID=
+# input 内需忽略传递的参数 默认'member_info,member_id,account_id'
+GATE_IGNORE_INPUT=
+/**
+ * 代理模式 默认 loose
+ * strict 严格模式【线上需使用此配置】
+ *      代理host 与 代理api必须从值域中选取
+ *      值域中可提取的参数 必须属于配置的可使用值域
+ * loose 宽松模式
+ *      代理host 与 代理api 可从值域中选取 也可直接填写
+ *      值域中可提取的参数 可自由使用
+ */
+GATE_MODE=
+# 值域为config时 默认从apis内提取
+GATE_MODE_DEFAULT_STRICT_CONFIG=
 #-------------------------------------------------------
 ```
 

@@ -7,6 +7,7 @@ use hoo\io\common\Console\Command\LogClean;
 use hoo\io\common\Console\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
+use hoo\io\gateway\HttpService;
 use hoo\io\monitor\hm\Controllers\HHttpViewerController;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
 use hoo\io\monitor\hm\Controllers\SqlViewerController;
@@ -21,8 +22,11 @@ use hoo\io\monitor\hm\Controllers\HooLogController;
 use hoo\io\monitor\hm\Controllers\LoginController;
 use hoo\io\monitor\hm\Middleware\HmAuth;
 use hoo\io\monitor\hm\Services\LogicalPipelinesApiRunService;
+use hoo\io\gateway\GatewayController;
+use hoo\io\gateway\GatewayMiddleware;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
@@ -48,7 +52,7 @@ class IoServiceProvider extends ServiceProvider
             $this->registerMiddleware();
 
             /**
-             * 注册 hm  监控 路由
+             * 注册 路由
              */
             $this->registerWebRoutes();
 
@@ -172,6 +176,9 @@ class IoServiceProvider extends ServiceProvider
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
         Route::aliasMiddleware('hoo.auth',HmAuth::class);
+        Route::aliasMiddleware('hoo.gateway',GatewayMiddleware::class);
+
+
     }
 
     /**
@@ -211,11 +218,18 @@ class IoServiceProvider extends ServiceProvider
     }
 
     /**
-     * 注册 hm  监控 路由
+     * 注册 路由
      * @return void
      */
     public function registerWebRoutes()
     {
+        /**
+         * 服务代理
+         */
+        Route::prefix('api/gateway')->middleware('hoo.gateway')->group(function (){
+            Route::post('send', [GatewayController::class, 'gateway']);
+        });
+        
         Route::prefix('hm')->group(function (){
 
             Route::post('login', [LoginController::class,'login']);

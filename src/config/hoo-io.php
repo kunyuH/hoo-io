@@ -54,7 +54,6 @@ return [
     'HM_SQL_LOG_CLEAN'=>env('HM_SQL_LOG_CLEAN', 60),
     #-------------------------------------------------------
 
-
     /**
      * 以下配置也需要在env中设置
      * 因为插件部分功能依赖CLOCKWORK插件 所以CLOCKWORK插件配置也需要设置
@@ -63,4 +62,24 @@ return [
 //    'CLOCKWORK_STORAGE_EXPIRATION'
 //    'CLOCKWORK_AUTHENTICATION'
 //    'CLOCKWORK_AUTHENTICATION_PASSWORD'
+
+    #********************gateway代理配置*********************************/
+    # 中间件 默认 authLogin
+    'GATE_MID'                              =>explode(',', env('GATE_MID', 'authLogin')),
+    # 最后执行的中间件 可在中间件中执行代理服务的数据清洗
+    'GATE_LAST_MID'                         =>env('GATE_LAST_MID'),
+    # input 内需忽略传递的参数 默认'member_info,member_id,account_id'
+    'GATE_IGNORE_INPUT'                     => explode(',', env('GATE_IGNORE_INPUT', 'member_info,member_id,account_id')),
+    /**
+     * 代理模式 默认 loose
+     * strict 严格模式【线上需使用此配置】
+     *      代理host必须从值域中选取
+     *      gateway-host值域中可提取的参数 必须属于配置的可使用值域      //TODO 待实现
+     * loose 宽松模式
+     *      代理host可从值域中选取 也可直接填写
+     *      gateway-host值域中可提取的参数 可自由使用                 //TODO 待实现
+     */
+    'GATE_MODE'                             => env('GATE_MODE', 'loose'),
+    # 值域为config时 默认从apis的配置内提取
+    'GATE_MODE_DEFAULT_STRICT_CONFIG'       => env('GATE_MODE_DEFAULT_STRICT_CONFIG', 'apis'),
 ];
