@@ -93,8 +93,13 @@ class IoServiceProvider extends ServiceProvider
     public function registerRoutes()
     {
         try{
+            $schema = new Schema;
+            if(config('hoo-io.HOO_DATABASE_DEFAULT')) {
+                $schema = Schema::connection(config('hoo-io.HOO_DATABASE_DEFAULT'));
+            }
+
             # 检查表是否存在
-            if (hoo_schema()->hasTable((new LogicalPipelinesModel())->getTable())) {
+            if ($schema->hasTable((new LogicalPipelinesModel())->getTable())) {
                 $pipelines = LogicalPipelinesModel::query()
                     ->where(function (Builder $q){
                         $q->whereNull('deleted_at')
