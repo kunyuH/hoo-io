@@ -280,6 +280,42 @@ class LogicalBlockService extends BaseService
     }
 
     /**
+     * 获取逻辑块对象【通过对象id】
+     * @param $object_id
+     * @return object|string
+     * @throws \ReflectionException
+     */
+    public function getObject($object_id)
+    {
+        $block = LogicalBlockModel::query()
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at');
+            })
+            ->where('object_id',$object_id)->first();
+        if(empty($block)){
+            return false;
+        }
+
+        $logical_block = $block->logical_block;
+
+        # 加载时应用的类名
+        $class_name = 'Foo_'.md5(time().Uuid::uuid1()->toString());
+        # 字符串替换
+        $logical_block = str_replace('Foo',$class_name,$logical_block);
+
+        // 将变量内容写入临时文件
+        $tmpfname = tempnam(sys_get_temp_dir(), 'logical-block:');
+        file_put_contents($tmpfname, $logical_block);
+
+        include $tmpfname;
+        unlink($tmpfname);
+
+        # 实例化
+        $class = new \ReflectionClass($class_name);
+        return $class->newInstance();
+    }
+
+    /**
      * 参数处理
      * 1. 上游逻辑块未传递参数，且 当前逻辑块不接收参数，则入参置空
      * 2. 上游逻辑块未传递参数，且 当前逻辑块接收参数，
@@ -346,7 +382,11 @@ class LogicalBlockService extends BaseService
      */
     public function execById($id,$resData=[],$out_mode='data')
     {
-        $block = LogicalBlockModel::find($id);
+        $block = LogicalBlockModel::query()
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at');
+            })
+            ->where('id',$id)->first();
         list($resData,$error) = $this->execByCode($block->logical_block,$block->name,$resData);
         if($out_mode == 'data'){
             if(!empty($error)){
@@ -371,6 +411,9 @@ class LogicalBlockService extends BaseService
     public function execByObjectId($object_id,$resData=[],$out_mode='data')
     {
         $block = LogicalBlockModel::query()
+            ->where(function (Builder $q){
+                $q->whereNull('deleted_at');
+            })
             ->where('object_id',$object_id)->first();
         list($resData,$error) = $this->execByCode($block->logical_block,$block->name,$resData);
         if($out_mode == 'data'){

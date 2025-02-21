@@ -49,8 +49,8 @@ class DevCommand extends BaseCommand
     {
         # 检查表是否存在
         $LogicalBlock = new LogicalBlockModel();
-        if (!Schema::hasTable($LogicalBlock->getTable())) {
-            Schema::create($LogicalBlock->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($LogicalBlock->getTable())) {
+            hoo_schema()->create($LogicalBlock->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id')->comment('主键 自增id');
                 // 字段不为空 不加索引
                 $table->string('object_id',50)->comment('对象id');
@@ -70,8 +70,8 @@ class DevCommand extends BaseCommand
             $this->info($LogicalBlock->getTableName().'表创建成功');
         }
         $Logs = new LogsModel();
-        if (!Schema::hasTable($Logs->getTable())) {
-            Schema::create($Logs->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($Logs->getTable())) {
+            hoo_schema()->create($Logs->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('name',100);
                 $table->string('label_a',100)->nullable();
@@ -89,8 +89,8 @@ class DevCommand extends BaseCommand
             $this->info($Logs->getTableName().'表创建成功');
         }
         $LogicalPipelines = new LogicalPipelinesModel();
-        if (!Schema::hasTable($LogicalPipelines->getTable())) {
-            Schema::create($LogicalPipelines->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($LogicalPipelines->getTable())) {
+            hoo_schema()->create($LogicalPipelines->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id')->comment('主键 自增id');
                 $table->string('rec_subject_id',50);
                 $table->string('name',50);
@@ -109,8 +109,8 @@ class DevCommand extends BaseCommand
             $this->info($LogicalPipelines->getTableName().'表创建成功');
         }
         $LogicalPipelinesArrange = new LogicalPipelinesArrangeModel();
-        if (!Schema::hasTable($LogicalPipelinesArrange->getTable())) {
-            Schema::create($LogicalPipelinesArrange->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($LogicalPipelinesArrange->getTable())) {
+            hoo_schema()->create($LogicalPipelinesArrange->getTable(), function (Blueprint $table) {
                 $table->integerIncrements('id')->comment('主键 自增id');
                 $table->integer('logical_pipeline_id');
                 $table->integer('logical_block_id')->nullable();
@@ -129,8 +129,8 @@ class DevCommand extends BaseCommand
             $this->info($LogicalPipelinesArrange->getTableName().' 表创建成功');
         }
         $ApiLog = new ApiLogModel();
-        if (!Schema::hasTable($ApiLog->getTable())) {
-            Schema::create($ApiLog->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($ApiLog->getTable())) {
+            hoo_schema()->create($ApiLog->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
@@ -156,8 +156,8 @@ class DevCommand extends BaseCommand
             $this->info('hm_api_log 表创建成功');
         }
         $HttpLog = new HttpLogModel();
-        if (!Schema::hasTable($HttpLog->getTable())) {
-            Schema::create($HttpLog->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($HttpLog->getTable())) {
+            hoo_schema()->create($HttpLog->getTable(), function (Blueprint $table) {
                 $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();
                 $table->string('hoo_traceid',50)->nullable();
@@ -181,8 +181,8 @@ class DevCommand extends BaseCommand
             $this->info($HttpLog->getTableName().' 表创建成功');
         }
         $SqlLog = new SqlLogModel();
-        if (!Schema::hasTable($SqlLog->getTable())) {
-            Schema::create($SqlLog->getTable(), function (Blueprint $table) {
+        if (!hoo_schema()->hasTable($SqlLog->getTable())) {
+            hoo_schema()->create($SqlLog->getTable(), function (Blueprint $table) {
                 # bin
                 $table->bigIncrements('id')->comment('主键 自增id');
                 $table->string('app_name',100)->nullable();

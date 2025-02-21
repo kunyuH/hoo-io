@@ -7,6 +7,7 @@ use hoo\io\common\Console\Command\LogClean;
 use hoo\io\common\Console\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
+use hoo\io\common\Middleware\LoadConfig;
 use hoo\io\gateway\HttpService;
 use hoo\io\monitor\hm\Controllers\HHttpViewerController;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
@@ -93,7 +94,7 @@ class IoServiceProvider extends ServiceProvider
     {
         try{
             # 检查表是否存在
-            if (Schema::hasTable((new LogicalPipelinesModel())->getTable())) {
+            if (hoo_schema()->hasTable((new LogicalPipelinesModel())->getTable())) {
                 $pipelines = LogicalPipelinesModel::query()
                     ->where(function (Builder $q){
                         $q->whereNull('deleted_at')
@@ -172,6 +173,7 @@ class IoServiceProvider extends ServiceProvider
     {
         //注册中间件-默认运行
         $kernel = $this->app->make(Kernel::class);
+        $kernel->pushMiddleware(LoadConfig::class);
         $kernel->pushMiddleware(ApiLogMid::class);
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
@@ -229,7 +231,7 @@ class IoServiceProvider extends ServiceProvider
         Route::prefix('api/gateway')->middleware('hoo.gateway')->group(function (){
             Route::post('send', [GatewayController::class, 'gateway']);
         });
-        
+
         Route::prefix('hm')->group(function (){
 
             Route::post('login', [LoginController::class,'login']);

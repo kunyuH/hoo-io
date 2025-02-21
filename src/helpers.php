@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 
 if (! function_exists('jump_link')) {
     function jump_link($url)
@@ -18,6 +19,17 @@ if (! function_exists('get_cdn')) {
     function get_cdn()
     {
         return 'https://js.tuguaishou.com/other';
+    }
+}
+
+if (! function_exists('hoo_schema')) {
+    function hoo_schema()
+    {
+        if(config('hoo-io.HOO_DATABASE_DEFAULT')) {
+            return Schema::connection(config('hoo-io.HOO_DATABASE_DEFAULT'));
+        }else{
+            return new Schema;
+        }
     }
 }
 

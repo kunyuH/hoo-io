@@ -131,6 +131,11 @@ HM_HPPT_LOG_CLEAN=60,
 # sql日志清理多久之前的日志 默认 60天前的
 HM_SQL_LOG_CLEAN=60,
 
+#--------------------动态从逻辑块中加载配置-------------------
+# 是否启用动态从逻辑块中加载配置 默认false
+HOO_LOAD_CONFIG_ENABLE=
+# 返回配置的逻辑块对象id  默认 c9cf7d34-8294-b348-0796-94718ae48f0d
+HOO_LOGICAL_BLOCK_OBJECT_ID=
 
 #********************gateway代理配置*********************************
 # 中间件 默认 authLogin
@@ -150,7 +155,7 @@ GATE_IGNORE_INPUT=
  *      值域中可提取的参数 可自由使用
  */
 GATE_MODE=
-# 值域为config时 默认从apis内提取
+# 值域为config时 从那个配置文件中提取   默认：apis
 GATE_MODE_DEFAULT_STRICT_CONFIG=
 #-------------------------------------------------------
 ```

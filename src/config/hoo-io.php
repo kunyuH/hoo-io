@@ -2,10 +2,15 @@
 
 return [
 
-    'APP_ENV'=>env('APP_ENV', ''), //是否启用hoo.io
+    'APP_ENV'=>env('APP_ENV', ''),
+    'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io  默认启用
+
+    #--------------------动态从逻辑块中加载配置-------------------
+    'HOO_LOAD_CONFIG_ENABLE'=>env('HOO_LOAD_CONFIG_ENABLE', false),            //是否启用动态从逻辑块中加载配置
+    'HOO_LOGICAL_BLOCK_OBJECT_ID'=>env('HOO_LOGICAL_BLOCK_OBJECT_ID', 'c9cf7d34-8294-b348-0796-94718ae48f0d'),  //逻辑块对象id
+
 
     #--------------------hoo_hm--------------------------
-    'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io  默认启用
     'IS_LOGIN'=>env('IS_LOGIN', true),      //是否需要账密登录  默认需要
     'HOO_NAME'=>env('HOO_NAME'),
     'HOO_PASSWORD'=>env('HOO_PASSWORD'),
@@ -13,8 +18,7 @@ return [
 
     'SERVICE_NAME'=>env('SERVICE_NAME', ''),    //服务前缀
 
-    'HOO_DATABASE_DEFAULT'=>env('HOO_DATABASE_DEFAULT', null),    //服务前缀
-
+    'HOO_DATABASE_DEFAULT'=>env('HOO_DATABASE_DEFAULT', null),    //数据连接 不填写则默认mysql
 
     /**
      * 因为插件部分功能依赖CLOCKWORK插件 而页面访问链接需要资源前缀

@@ -22,7 +22,7 @@ class HttpService
     public function gateway($request)
     {
         # 代理地址提取
-        list($input,$_,$gateway_host,$gateway_api,$gateway_method,$header) = $this->getGatewayInfo($request);
+        list($input,$_,$gateway_host,$gateway_api,$gateway_method,$_,$header) = $this->getGatewayInfo($request);
 
         # 携带参数 作用域:参数:算法 解析
         $input = $this->getGatewayArg($input);
@@ -72,10 +72,11 @@ class HttpService
         /**
          * 规定代理地址信息 存放位置
          * header
-         * 1.header内gateway-mid
-         * 1.header内gateway-host
-         * 1.header内gateway-api
-         * 2.header内gateway-method
+         * 1.header内gateway-mid             接口需执行的中间件
+         * 2.header内gateway-host            代理服务host
+         * 3.header内gateway-api             代理接口
+         * 4.header内gateway-method          代理请求方式
+         * 5.header内gateway-data-model      代理服务 数据处理模型
          * form-data
          * 3.form-data内header
          * header = [
@@ -83,6 +84,7 @@ class HttpService
          *      gateway-host
          *      gateway-api
          *      gateway-method
+         *      gateway-data-model
          * ]
          */
         $input = $request->input();
@@ -91,6 +93,7 @@ class HttpService
             $gateway_host = $request->header('gateway-host');
             $gateway_api = $request->header('gateway-api');
             $gateway_method = $request->header('gateway-method');
+            $gateway_data_model = $request->header('gateway-data-model');
 
             $header = array_map(function ($v){
                 return $v[0]??null;
@@ -107,6 +110,8 @@ class HttpService
             $gateway_api = $header['gateway-api']??'';
             $gateway_method = $header['gateway-method']??'';
 
+            $gateway_data_model = $header['gateway-data-model']??'';
+
             unset($input['header']);
         }
 
@@ -118,6 +123,7 @@ class HttpService
         unset($header['gateway-host']);
         unset($header['gateway-api']);
         unset($header['gateway-method']);
+        unset($header['gateway-data-model']);
 
         if(config('hoo-io.GATE_MODE') == 'strict'){
             if(empty($this->is_in_domain($gateway_host))){
@@ -129,8 +135,9 @@ class HttpService
         $gateway_host = $this->getArg($gateway_host);
         $gateway_api = $this->getArg($gateway_api);
         $gateway_method = $this->getArg($gateway_method);
+        $gateway_data_model = $this->getArg($gateway_data_model);
 
-        return [$input,$gateway_mid,$gateway_host,$gateway_api,$gateway_method,$header];
+        return [$input,$gateway_mid,$gateway_host,$gateway_api,$gateway_method,$gateway_data_model,$header];
     }
 
     /**
