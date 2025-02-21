@@ -93,18 +93,8 @@ class IoServiceProvider extends ServiceProvider
     public function registerRoutes()
     {
         try{
-
-            /**
-             * 未使用 hoo_schema() 写法 因为docker编译时会报错
-             */
-            if(config('hoo-io.HOO_DATABASE_DEFAULT')) {
-                $hasTable = Schema::connection(config('hoo-io.HOO_DATABASE_DEFAULT'))->hasTable((new LogicalPipelinesModel())->getTable());
-            }else{
-                $hasTable = Schema::hasTable((new LogicalPipelinesModel())->getTable());
-            }
-
             # 检查表是否存在
-            if ($hasTable) {
+            if (hoo_schema()->hasTable((new LogicalPipelinesModel())->getTable())) {
                 $pipelines = LogicalPipelinesModel::query()
                     ->where(function (Builder $q){
                         $q->whereNull('deleted_at')

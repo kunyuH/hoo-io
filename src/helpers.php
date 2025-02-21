@@ -28,7 +28,7 @@ if (! function_exists('hoo_schema')) {
         if(config('hoo-io.HOO_DATABASE_DEFAULT')) {
             return Schema::connection(config('hoo-io.HOO_DATABASE_DEFAULT'));
         }else{
-            return new Schema;
+            return Schema::connection(null);
         }
     }
 }
