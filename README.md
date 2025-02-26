@@ -139,7 +139,7 @@ HOO_LOGICAL_BLOCK_OBJECT_ID=
 
 #********************gateway代理配置*********************************
 # 中间件 默认 authLogin
-GATE_MID=
+GATE_DEFAULT_MID=
 # 最后执行的中间件 可在中间件中执行代理服务的数据清洗
 # 例如：GATE_LAST_MID=App\Http\Middleware\AuthLogin
 GATE_LAST_MID=

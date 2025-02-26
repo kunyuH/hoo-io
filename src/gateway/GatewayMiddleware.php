@@ -23,17 +23,24 @@ class GatewayMiddleware
     public function handle(Request $request, Closure $next)
     {
         $middlewares=[];
-
+        $mids = Route::getMiddleware();
+        
         /********************中间件可通过传参配置*****************************/
         # 1. 装载接口参数中指定执行的中间件
         list($_, $gateway_mid, $_, $_, $_, $gateway_data_model, $_) = (new HttpService())->getGatewayInfo($request);
         $gateway_mid = explode(',', $gateway_mid);
         if($gateway_mid[0]??null){
-            $mids = Route::getMiddleware();
-            $middlewares = [];
             foreach ($gateway_mid as $mid){
                 if(isset($mids[$mid])){
                     $middlewares[] = (new $mids[$mid]());
+                }
+            }
+        }else{
+            /********************如果没有传递 则默认执行的中间件*****************************/
+            $default_mids = config('hoo-io.GATE_DEFAULT_MID');
+            foreach ($default_mids as $default_mid){
+                if(isset($mids[$default_mid])){
+                    $middlewares[] = (new $mids[$default_mid]());
                 }
             }
         }
