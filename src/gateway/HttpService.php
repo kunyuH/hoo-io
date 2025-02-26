@@ -52,12 +52,15 @@ class HttpService
         $gateway_url = $gateway_host.$gateway_api;
 
         $http = new HHttp();
-        $res = $http->request($gateway_method,$gateway_url,
-            [
-                'headers' => $headers,
-                'json' => $input
-            ]
-        );
+
+        $send_data = [
+            'json' => $input
+        ];
+        if($headers){
+            $send_data['headers'] = $headers;
+        }
+
+        $res = $http->request($gateway_method,$gateway_url,$send_data);
         return json_decode($res->getBody()->getContents(),true);
     }
 
@@ -131,11 +134,11 @@ class HttpService
             }
         }
 
-        $gateway_mid = $this->getArg($gateway_mid);
-        $gateway_host = $this->getArg($gateway_host);
-        $gateway_api = $this->getArg($gateway_api);
-        $gateway_method = $this->getArg($gateway_method);
-        $gateway_data_model = $this->getArg($gateway_data_model);
+        $gateway_mid = $this->getArg($gateway_mid, $input);
+        $gateway_host = $this->getArg($gateway_host, $input);
+        $gateway_api = $this->getArg($gateway_api, $input);
+        $gateway_method = $this->getArg($gateway_method, $input);
+        $gateway_data_model = $this->getArg($gateway_data_model, $input);
 
         return [$input,$gateway_mid,$gateway_host,$gateway_api,$gateway_method,$gateway_data_model,$header];
     }
@@ -150,7 +153,7 @@ class HttpService
     {
         # 作用域:参数:算法 解析
         foreach ($input as $key=>&$value){
-            $value = $this->getArg($value);
+            $value = $this->getArg($value, $input);
         }
 
         # 忽略传递的input
@@ -162,7 +165,6 @@ class HttpService
                 unset($input[$item]);
             }
         }
-
         return $input;
     }
 
@@ -173,7 +175,7 @@ class HttpService
      * @param $value
      * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed|string
      */
-    private function getArg($value)
+    private function getArg($value, $input)
     {
         # true 是字符串 且 前6位为input:
         if(is_string($value)){
