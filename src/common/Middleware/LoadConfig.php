@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 动态从逻辑块中加载配置
@@ -32,7 +33,9 @@ class LoadConfig
                         ));
                     }
                 }
-            }catch (\Throwable $e) {}
+            }catch (\Throwable $e) {
+                Log::channel('debug')->log('info', "配置加载失败", ['error'=>$e->getMessage()]);
+            }
         }
 
         return $next($request);
