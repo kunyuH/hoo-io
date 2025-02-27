@@ -138,10 +138,13 @@ HOO_LOAD_CONFIG_ENABLE=
 HOO_LOGICAL_BLOCK_OBJECT_ID=
 
 #********************gateway代理配置*********************************
+# 最先执行的中间件 可在中间件中执行代理服务的数据清洗
+# 例如：GATE_LAST_MID=App\Http\Middleware\AuthLogin   a33014eb-9ce2-9ef0-081c-c070d0bbed26
+GATE_FIRST_MID=
 # 中间件 默认 authLogin
 GATE_DEFAULT_MID=
 # 最后执行的中间件 可在中间件中执行代理服务的数据清洗
-# 例如：GATE_LAST_MID=App\Http\Middleware\AuthLogin
+# 例如：GATE_LAST_MID=App\Http\Middleware\AuthLogin   a33014eb-9ce2-9ef0-081c-c070d0bbed26
 GATE_LAST_MID=
 # input 内需忽略传递的参数 默认'member_info,member_id,account_id'
 GATE_IGNORE_INPUT=

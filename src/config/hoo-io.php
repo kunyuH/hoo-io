@@ -68,10 +68,12 @@ return [
 //    'CLOCKWORK_AUTHENTICATION_PASSWORD'
 
     #********************gateway代理配置*********************************/
+    # 最先执行的中间件 可在中间件中执行代理服务的数据清洗
+    'GATE_FIRST_MID'                        =>explode(',', env('GATE_FIRST_MID')),
     # 中间件 默认 authLogin
     'GATE_DEFAULT_MID'                      =>explode(',', env('GATE_DEFAULT_MID', 'authLogin')),
     # 最后执行的中间件 可在中间件中执行代理服务的数据清洗
-    'GATE_LAST_MID'                         =>env('GATE_LAST_MID'),
+    'GATE_LAST_MID'                         =>explode(',', env('GATE_LAST_MID')),
     # input 内需忽略传递的参数 默认'member_info,member_id,account_id'
     'GATE_IGNORE_INPUT'                     => explode(',', env('GATE_IGNORE_INPUT', 'member_info,member_id,account_id')),
     /**

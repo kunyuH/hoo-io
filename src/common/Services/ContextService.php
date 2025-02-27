@@ -2,6 +2,7 @@
 
 namespace hoo\io\common\Services;
 
+use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use Illuminate\Support\Str;
 
 /**
@@ -40,5 +41,19 @@ class ContextService extends BaseService
     }
     public static function clearSqlLog(){
         self::$sql_log = [];
+    }
+
+    /**
+     * 判断是否安装了逻辑块 模块
+     * @return bool
+     * @return void
+     */
+    public static $Logical_block = null;
+    public static function isLogicalBlockInstall()
+    {
+        if(self::$Logical_block === null){
+            self::$Logical_block = hoo_schema()->hasTable((new LogicalBlockModel())->getTable());
+        }
+        return self::$Logical_block;
     }
 }
