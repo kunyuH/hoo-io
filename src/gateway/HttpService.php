@@ -15,11 +15,11 @@ class HttpService
     private static $config_domain = 'config::';
     private static $input_domain = 'input::';
 
-    public const gateway_mid = 'gateway_mid';
-    public const gateway_host = 'gateway_host';
-    public const gateway_api = 'gateway_api';
-    public const gateway_method = 'gateway_method';
-    public const gateway_data_model = 'gateway_data_model';
+    public const gateway_mid = 'gateway-mid';
+    public const gateway_host = 'gateway-host';
+    public const gateway_api = 'gateway-api';
+    public const gateway_method = 'gateway-method';
+    public const gateway_data_model = 'gateway-data_model';
 
     public const gateway_arg = [
         self::gateway_mid,
@@ -146,6 +146,7 @@ class HttpService
 
         }else{
             $header = $input['header']??[];
+
             if(is_json($header)){
                 $header = json_decode($header,true);
             }
