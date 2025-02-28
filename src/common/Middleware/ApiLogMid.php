@@ -4,6 +4,7 @@ namespace hoo\io\common\Middleware;
 
 use Closure;
 use hoo\io\common\Models\ApiLogModel;
+use hoo\io\gateway\HttpService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,15 @@ class ApiLogMid
     {
         $t1 = microtime(true);
         $input = $request->input();
+
+        # 代理参数 处理 放入$input 后续在日志中展示
+        $gateway = (new HttpService())->getGatewayInfo($request)['gateway'];
+        foreach ($gateway as $key=>$item) {
+            if(!empty($item)){
+                $input['header'][$key] = $item;
+            }
+        }
+
         if ($this->is_set_log($request->path())) {
             Log::channel('debug')->log('info', "【接口入参】", [
                 '格式化展示'=>$input ?? [],

@@ -34,7 +34,7 @@ class LoadConfig
                     }
                 }
             }catch (\Throwable $e) {
-                Log::channel('debug')->log('info', "配置加载失败", ['error'=>$e->getMessage()]);
+                Log::channel('debug')->log('info', "配置加载失败", [$e]);
             }
         }
 

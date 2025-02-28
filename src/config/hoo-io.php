@@ -75,7 +75,9 @@ return [
     # 最后执行的中间件 可在中间件中执行代理服务的数据清洗
     'GATE_LAST_MID'                         =>explode(',', env('GATE_LAST_MID')),
     # input 内需忽略传递的参数 默认'member_info,member_id,account_id'
-    'GATE_IGNORE_INPUT'                     => explode(',', env('GATE_IGNORE_INPUT', 'member_info,member_id,account_id')),
+    'GATE_IGNORE_INPUT'                     =>explode(',', env('GATE_IGNORE_INPUT', 'member_info,member_id,account_id')),
+    # header 中允许可代理过去的参数 默认为空
+    'GATE_HEADER_ARG'                       =>explode(',', env('GATE_HEADER_ARG')),
     /**
      * 代理模式 默认 loose
      * strict 严格模式【线上需使用此配置】

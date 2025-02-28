@@ -8,7 +8,8 @@ use hoo\io\common\Console\Command\RunCodeCommand;
 use hoo\io\common\Enums\SessionEnum;
 use hoo\io\common\Middleware\ApiLogMid;
 use hoo\io\common\Middleware\LoadConfig;
-use hoo\io\gateway\HttpService;
+use hoo\io\gateway\GatewayFirstMiddleware;
+use hoo\io\gateway\GatewayLastMiddleware;
 use hoo\io\monitor\hm\Controllers\HHttpViewerController;
 use hoo\io\monitor\hm\Controllers\LogViewerController;
 use hoo\io\monitor\hm\Controllers\SqlViewerController;
@@ -178,9 +179,9 @@ class IoServiceProvider extends ServiceProvider
         $kernel->pushMiddleware(HooMid::class);
         //注册中间件-路由中引用执行【鉴权中间件】
         Route::aliasMiddleware('hoo.auth',HmAuth::class);
+        Route::aliasMiddleware('hoo.gateway.first',GatewayFirstMiddleware::class);
         Route::aliasMiddleware('hoo.gateway',GatewayMiddleware::class);
-
-
+        Route::aliasMiddleware('hoo.gateway.last',GatewayLastMiddleware::class);
     }
 
     /**
@@ -228,7 +229,13 @@ class IoServiceProvider extends ServiceProvider
         /**
          * 服务代理
          */
-        Route::prefix('api/gateway')->middleware('hoo.gateway')->group(function (){
+        Route::prefix('api/gateway')
+            ->middleware([
+                'hoo.gateway.first',
+                'hoo.gateway',
+                'hoo.gateway.last',
+            ])
+            ->group(function (){
             Route::post('send', [GatewayController::class, 'gateway']);
         });
 

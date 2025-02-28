@@ -5,6 +5,7 @@ namespace hoo\io\gateway;
 
 use GuzzleHttp\Exception\GuzzleException;
 use hoo\io\common\Exceptions\HooException;
+use hoo\io\common\Services\ContextService;
 use hoo\io\http\HHttp;
 use hoo\io\http\Resources\InnerResource;
 
@@ -14,6 +15,20 @@ class HttpService
     private static $config_domain = 'config::';
     private static $input_domain = 'input::';
 
+    public const gateway_mid = 'gateway_mid';
+    public const gateway_host = 'gateway_host';
+    public const gateway_api = 'gateway_api';
+    public const gateway_method = 'gateway_method';
+    public const gateway_data_model = 'gateway_data_model';
+
+    public const gateway_arg = [
+        self::gateway_mid,
+        self::gateway_host,
+        self::gateway_api,
+        self::gateway_method,
+        self::gateway_data_model,
+    ];
+
     /**
      * 服务代理
      * @param $request
@@ -22,10 +37,22 @@ class HttpService
     public function gateway($request)
     {
         # 代理地址提取
-        list($input,$_,$gateway_host,$gateway_api,$gateway_method,$_,$header) = $this->getGatewayInfo($request);
+        $input = $this->getGatewayInfo($request)['input'];
+        $gateway_host = $this->getGatewayInfo($request)['gateway']['gateway_host'];
+        $gateway_api = $this->getGatewayInfo($request)['gateway']['gateway_api'];
+        $gateway_method = $this->getGatewayInfo($request)['gateway']['gateway_method'];
+        $header = $this->getGatewayInfo($request)['header'];
 
         # 携带参数 作用域:参数:算法 解析
         $input = $this->getGatewayArg($input);
+
+        # 允许header中可代理过去的参数
+        $GATE_HEADER_ARG = config('hoo-io.GATE_HEADER_ARG');
+        foreach ($header as $key => $value){
+            if(!in_array($key,$GATE_HEADER_ARG)){
+                unset($header[$key]);
+            }
+        }
 
         $data = $this->send($gateway_host,$gateway_api,$gateway_method,$input,$header);
         return $data;
@@ -67,10 +94,11 @@ class HttpService
     /**
      * 获取代理信息
      * @param $request
+     * @param $is_rs   // 是否直接回源 true 直接回源 false 使用静态缓存
      * @return array
      * @throws \Exception
      */
-    public function getGatewayInfo($request): array
+    public function getGatewayInfo($request, $is_rs = false): array
     {
         /**
          * 规定代理地址信息 存放位置
@@ -90,43 +118,56 @@ class HttpService
          *      gateway-data-model
          * ]
          */
+        # 缓存中提取
+        if(ContextService::get('getGatewayInfo') && $is_rs==false){
+            return ContextService::get('getGatewayInfo');
+        }
+
         $input = $request->input();
-        if($request->header('gateway-api')){
-            $gateway_mid = $request->header('gateway-mid');
-            $gateway_host = $request->header('gateway-host');
-            $gateway_api = $request->header('gateway-api');
-            $gateway_method = $request->header('gateway-method');
-            $gateway_data_model = $request->header('gateway-data-model');
+        if($request->header(self::gateway_api)){
+            $gateway_mid = $request->header(self::gateway_mid);
+            $gateway_host = $request->header(self::gateway_host);
+            $gateway_api = $request->header(self::gateway_api);
+            $gateway_method = $request->header(self::gateway_method);
+            $gateway_data_model = $request->header(self::gateway_data_model);
+
+//            # 由于无法直接修改header中的参数 可选方案  先将修改的暂存到上下文中
+//            # 后续获取是 如果暂存的上下文中存在则覆盖掉header中设置的值
+//            $gateway_info = ContextService::get('setGatewayInfo');
+//            if(isset($gateway_info[self::gateway_mid])){$gateway_mid = $gateway_info[self::gateway_mid];}
+//            if(isset($gateway_info[self::gateway_host])){$gateway_host = $gateway_info[self::gateway_host];}
+//            if(isset($gateway_info[self::gateway_api])){$gateway_api = $gateway_info[self::gateway_api];}
+//            if(isset($gateway_info[self::gateway_method])){$gateway_method = $gateway_info[self::gateway_method];}
+//            if(isset($gateway_info[self::gateway_data_model])){$gateway_data_model = $gateway_info[self::gateway_data_model];}
 
             $header = array_map(function ($v){
                 return $v[0]??null;
             },$request->header());
 
         }else{
-            $input = $request->input();
             $header = $input['header']??[];
             if(is_json($header)){
                 $header = json_decode($header,true);
             }
-            $gateway_mid = $header['gateway-mid']??'';
-            $gateway_host = $header['gateway-host']??'';
-            $gateway_api = $header['gateway-api']??'';
-            $gateway_method = $header['gateway-method']??'';
+            $gateway_mid = $header[self::gateway_mid]??'';
+            $gateway_host = $header[self::gateway_host]??'';
+            $gateway_api = $header[self::gateway_api]??'';
+            $gateway_method = $header[self::gateway_method]??'';
 
-            $gateway_data_model = $header['gateway-data-model']??'';
+            $gateway_data_model = $header[self::gateway_data_model]??'';
 
             unset($input['header']);
         }
 
-        if(empty($gateway_host) or empty($gateway_api) or empty($gateway_method)){
-            throw new HooException('缺失代理信息：gateway-host；gateway-api或gateway-method！');
-        }
+//        if(empty($gateway_host) or empty($gateway_api) or empty($gateway_method)){
+//            throw new HooException('缺失代理信息：gateway-host；gateway-api或gateway-method！');
+//        }
 
-        unset($header['gateway-mid']);
-        unset($header['gateway-host']);
-        unset($header['gateway-api']);
-        unset($header['gateway-method']);
-        unset($header['gateway-data-model']);
+        unset($header[self::gateway_mid]);
+        unset($header[self::gateway_host]);
+        unset($header[self::gateway_api]);
+        unset($header[self::gateway_method]);
+        unset($header[self::gateway_data_model]);
 
         if(config('hoo-io.GATE_MODE') == 'strict'){
             if(empty($this->is_in_domain($gateway_host))){
@@ -140,7 +181,54 @@ class HttpService
         $gateway_method = $this->getArg($gateway_method, $input);
         $gateway_data_model = $this->getArg($gateway_data_model, $input);
 
-        return [$input,$gateway_mid,$gateway_host,$gateway_api,$gateway_method,$gateway_data_model,$header];
+        $pam = [
+            'input'=>$input,
+            'gateway'=>[
+                'gateway_mid'=>$gateway_mid,
+                'gateway_host'=>$gateway_host,
+                'gateway_api'=>$gateway_api,
+                'gateway_method'=>$gateway_method,
+                'gateway_data_model'=>$gateway_data_model,
+            ],
+            'header'=>$header
+        ];
+        # 单例缓存
+        ContextService::set('getGatewayInfo',$pam);
+
+        return $pam;
+    }
+
+    /**
+     * 代理参数设置
+     * @param $request
+     * @param $gateway_info
+     * @return void
+     */
+    public function setGatewayInfo($request, $gateway_info)
+    {
+        $input = $request->input();
+        # 代理参数在header中
+        if($request->header(self::gateway_api)){
+//            # 由于无法直接修改header中的参数 可选方案  先将修改的暂存到上下文中
+//            # 后续获取是 如果暂存的上下文中存在则覆盖掉header中设置的值
+//            ContextService::set('setGatewayInfo',$gateway_info);
+            foreach ($gateway_info as $key=>$item){
+                $request->headers->set($key,$item);
+            }
+        }else{          # 代理参数在input 内 header中
+            $header = $input['header']??[];
+            if(is_json($header)){
+                $header = json_decode($header,true);
+            }
+
+            foreach ($gateway_info as $key=>$item){
+                $header[$key] = $item;
+            }
+            $request->merge(['header'   =>$header]);
+        }
+        # 清理代理缓存
+        ContextService::del('getGatewayInfo');
+        return $request;
     }
 
     /**

@@ -10,6 +10,26 @@ use Illuminate\Support\Str;
  */
 class ContextService extends BaseService
 {
+    
+    private static $context = [];
+    
+    public static function set($key,$value)
+    {
+        self::$context[$key] = $value;
+        return true;
+    }
+    
+    public static function get($key)
+    {
+        return self::$context[$key]??null;
+    }
+
+    public static function del($key)
+    {
+        unset(self::$context[$key]);
+    }
+    
+    
     /**
      * 服务运行流水号 用于运行链路追踪
      * 比如 http日志

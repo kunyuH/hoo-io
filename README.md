@@ -148,6 +148,8 @@ GATE_DEFAULT_MID=
 GATE_LAST_MID=
 # input 内需忽略传递的参数 默认'member_info,member_id,account_id'
 GATE_IGNORE_INPUT=
+# header 中允许可代理过去的参数 默认为空  多个以英文逗号分割
+GATE_HEADER_ARG=
 /**
  * 代理模式 默认 loose
  * strict 严格模式【线上需使用此配置】

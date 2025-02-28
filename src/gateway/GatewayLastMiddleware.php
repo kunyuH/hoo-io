@@ -4,8 +4,6 @@ namespace hoo\io\gateway;
 
 use Closure;
 use hoo\io\common\Services\ContextService;
-use hoo\io\gateway\HttpService;
-use hoo\io\monitor\hm\Models\LogicalBlockModel;
 use hoo\io\monitor\hm\Support\Facades\LogicalBlock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,38 +12,18 @@ use Illuminate\Pipeline\Pipeline;
 
 /**
  * 服务代理 中间件
- *  用于授权，入参出参处理等情况
- *
- * 指定中间件
- * 数据模型中间件
- *
- * 服务代理 数据模型
- *  使用中间件技术承载逻辑方案
- *  用于处理代理服务 入参出参数据处理
+ * 最后运行
  */
-class GatewayMiddleware
+class GatewayLastMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
         $middlewares=[];
         /********************中间件可通过传参配置*****************************/
 
-        # 2. 装载接口参数中指定执行的中间件
-        $gateway_data_model = (new HttpService())->getGatewayInfo($request)['gateway']['gateway_data_model'];
-        $gateway_mid = (new HttpService())->getGatewayInfo($request)['gateway']['gateway_mid'];
-
-        $gateway_mid = explode(',', $gateway_mid);
-
-        if($gateway_mid[0]??null){
-            $middlewares = array_merge($middlewares, $this->getMidObj($gateway_mid));
-        }else{
-            /********************如果没有传递 则默认执行的中间件*****************************/
-            $default_mids = config('hoo-io.GATE_DEFAULT_MID');
-            $middlewares = array_merge($middlewares, $this->getMidObj($default_mids));
-        }
-        # 3. 装载数据处理模型（中间件） 来源于逻辑块
-        $gateway_data_model = explode(',', $gateway_data_model);
-        $middlewares = array_merge($middlewares, $this->getMidObj($gateway_data_model));
+        # 2. 装载配置中最后执行的中间件
+        $last_mid = config('hoo-io.GATE_LAST_MID');
+        $middlewares = array_merge($middlewares, $this->getMidObj($last_mid));
 
         // 4.使用管道按顺序执行中间件
         if(!empty($middlewares)){
