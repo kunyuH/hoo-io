@@ -98,7 +98,7 @@ class HttpService
      * @return array
      * @throws \Exception
      */
-    public function getGatewayInfo($request, $is_rs = false): array
+    public function getGatewayInfo($request, $is_rs = true): array
     {
         /**
          * 规定代理地址信息 存放位置
@@ -124,6 +124,7 @@ class HttpService
         }
 
         $input = $request->input();
+
         if($request->header(self::gateway_api)){
             $gateway_mid = $request->header(self::gateway_mid);
             $gateway_host = $request->header(self::gateway_host);
@@ -240,6 +241,7 @@ class HttpService
      */
     public function getGatewayArg($input): mixed
     {
+
         # 作用域:参数:算法 解析
         foreach ($input as $key=>&$value){
             $value = $this->getArg($value, $input);
