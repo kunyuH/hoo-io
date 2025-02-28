@@ -19,7 +19,7 @@ class HttpService
     public const gateway_host = 'gateway-host';
     public const gateway_api = 'gateway-api';
     public const gateway_method = 'gateway-method';
-    public const gateway_data_model = 'gateway-data_model';
+    public const gateway_data_model = 'gateway-data-model';
 
     public const gateway_arg = [
         self::gateway_mid,
