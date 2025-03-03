@@ -3,7 +3,7 @@
 return [
 
     'APP_ENV'=>env('APP_ENV', ''),
-    'HOO_ENABLE'=>env('HOO_ENABLE', true), //是否启用hoo.io  默认启用
+    'HOO_ENABLE'=>env('HOO_ENABLE', false), //是否启用hoo.io  默认不启用
 
     #--------------------动态从逻辑块中加载配置-------------------
     'HOO_LOAD_CONFIG_ENABLE'=>env('HOO_LOAD_CONFIG_ENABLE', false),            //是否启用动态从逻辑块中加载配置
