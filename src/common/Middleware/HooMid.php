@@ -32,6 +32,12 @@ class HooMid
             $reqPath = $reqPath . '/';
         }
 
+        # true 设置不开启 默认开启
+        if(ho_fnmatchs('hm/*',$reqPath) and empty(Config::get('hoo-io.HOO_ENABLE'))){
+            header('HTTP/1.1 500 Server Error');
+            exit();
+        }
+
         # clockwork
         if(ho_fnmatchs('clockwork/*',$reqPath) || ho_fnmatchs('__clockwork/*',$reqPath)) {
             # 判断是否有权限
