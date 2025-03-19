@@ -42,13 +42,16 @@ class HHttp extends Client
                 $method, $uri, $options,
                 $res,$err
             );
-
+            // 重置响应主体流
+            $response->getBody()->rewind();
         } catch (\Throwable $e) {
-            throw new HooException($e->getMessage());
+            $error = $e->getMessage();
+            if($err){
+                $error = $err;
+            }
+            throw new HooException($error);
         }
 
-        // 重置响应主体流
-        $response->getBody()->rewind();
         return $response;
     }
 
