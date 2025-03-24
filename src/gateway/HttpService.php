@@ -204,7 +204,7 @@ class HttpService
      * 代理参数设置
      * @param $request
      * @param $gateway_info
-     * @return void
+     * @return mixed
      */
     public function setGatewayInfo($request, $gateway_info)
     {
