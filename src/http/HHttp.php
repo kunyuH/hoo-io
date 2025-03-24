@@ -36,12 +36,14 @@ class HHttp extends Client
                 $res = $response->getBody()->getContents();
             }catch (\Error $e){$res = '';}
 
-            // 记录请求日志
-            $this->log(
-                $before_time, $after_time,
-                $method, $uri, $options,
-                $res,$err
-            );
+            try{
+                // 记录请求日志
+                $this->log(
+                    $before_time, $after_time,
+                    $method, $uri, $options,
+                    $res,$err
+                );
+            }catch (\Error $e){}
             // 重置响应主体流
             $response->getBody()->rewind();
         } catch (\Throwable $e) {
