@@ -183,6 +183,8 @@ class HttpService
         $gateway_method = $this->getArg($gateway_method, $input);
         $gateway_data_model = $this->getArg($gateway_data_model, $input);
 
+        $gateway_api = '/'.ltrim($gateway_api,'/');
+
         $pam = [
             'input'=>$input,
             'gateway'=>[
